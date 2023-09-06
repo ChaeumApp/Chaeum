@@ -12,4 +12,6 @@ public interface UserService {
     int userLogout(TokenDto tokenDto);
 
     int checkEmail(String userEmail);
+
+    int userUpdate(UserDto userDto);
 }

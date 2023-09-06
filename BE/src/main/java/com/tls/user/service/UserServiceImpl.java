@@ -26,4 +26,9 @@ public class UserServiceImpl implements UserService {
     public int checkEmail(String userEmail) {
         return 0;
     }
+
+    @Override
+    public int userUpdate(UserDto userDto) {
+        return 0;
+    }
 }

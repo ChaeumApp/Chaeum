@@ -42,7 +42,7 @@ public class JwtTokenProvider {
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
             .setSubject(userId)
-            .claim("userId", userId)
+            .claim("userEmail", userId)
             .claim("auth", authorities)
             .setExpiration(accessTokenExpiresIn)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.get("userId").toString(), "", authorities);
+        UserDetails principal = new User(claims.get("userEmail").toString(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
