@@ -16,4 +16,9 @@ public class UserServiceImpl implements UserService {
     public TokenDto userLogin(String userEmail, String userPwd) {
         return null;
     }
+
+    @Override
+    public int userLogout(TokenDto tokenDto) {
+        return 0;
+    }
 }

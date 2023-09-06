@@ -8,4 +8,6 @@ public interface UserService {
     int userSignup(UserDto userDto);
 
     TokenDto userLogin(String userEmail, String userPwd);
+
+    int userLogout(TokenDto tokenDto);
 }
