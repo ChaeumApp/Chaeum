@@ -10,4 +10,6 @@ public interface UserService {
     TokenDto userLogin(String userEmail, String userPwd);
 
     int userLogout(TokenDto tokenDto);
+
+    int checkEmail(String userEmail);
 }

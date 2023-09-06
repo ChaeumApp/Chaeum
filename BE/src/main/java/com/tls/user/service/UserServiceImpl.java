@@ -21,4 +21,9 @@ public class UserServiceImpl implements UserService {
     public int userLogout(TokenDto tokenDto) {
         return 0;
     }
+
+    @Override
+    public int checkEmail(String userEmail) {
+        return 0;
+    }
 }
