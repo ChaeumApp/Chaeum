@@ -1,5 +1,7 @@
 package com.tls.user.controller;
 
+import com.tls.jwt.JwtAuthenticationFilter;
+import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
 import com.tls.user.service.UserService;
@@ -7,12 +9,16 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +26,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Api(value = "유저 API", description = "회원 관련 API 입니다.")
+@Api(tags = "유저 API", description = "회원 관련 API 입니다.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.")
@@ -95,5 +103,27 @@ public class UserController {
         } else {
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PutMapping(value = "/change")
+    @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다."),
+        @ApiResponse(responseCode = "401", description = "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다."),
+        @ApiResponse(responseCode = "500", description = "업데이트에 실패하면 fail 을 반환한다.")
+    })
+    public ResponseEntity<?> userUpdate(@RequestBody UserDto userDto,
+        @RequestHeader("Authorization") String tokenWithPrefix) {
+        // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
+        Authentication authentication = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7));
+        if (userDto.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
+            int responseCode = userService.userUpdate(userDto);
+            if (responseCode == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>("unauthorized", HttpStatus.UNAUTHORIZED);
     }
 }
