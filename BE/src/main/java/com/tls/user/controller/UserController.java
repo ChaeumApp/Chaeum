@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,8 +48,33 @@ public class UserController {
         @ApiResponse(responseCode = "406", description = "fail")
     })
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
-    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> userLogin(@RequestBody UserDto userDto) {
+        log.info("userLogin call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
         TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "success"),
+        @ApiResponse(responseCode = "406", description = "fail")
+    })
+    @Operation(summary = "로그아웃 메서드", description = "유저 정보를 넘겨주면 로그아웃을 시도한다.")
+    public ResponseEntity<?> userLogout(@RequestHeader("Authorization") String tokenWithPrefix) {
+        log.info("userLogout call");
+
+        String token = tokenWithPrefix.substring(7);
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(token);
+        tokenDto.setGrantType("Bearer");
+
+        int resultCode = userService.userLogout(tokenDto);
+        if (resultCode == 200) {
+            log.debug("logout 성공");
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } else {
+            log.info("logout 실패");
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 }
