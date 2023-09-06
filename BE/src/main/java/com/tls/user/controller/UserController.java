@@ -1,5 +1,6 @@
 package com.tls.user.controller;
 
+import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
 import com.tls.user.service.UserService;
 import io.swagger.annotations.Api;
@@ -38,5 +39,16 @@ public class UserController {
         } else {
             return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PostMapping("/login")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "success"),
+        @ApiResponse(responseCode = "406", description = "fail")
+    })
+    @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+        TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
+        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 }
