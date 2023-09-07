@@ -104,7 +104,7 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/change")
+    @PutMapping
     @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다."),
@@ -200,7 +200,12 @@ public class UserController {
             tokenWithPrefix.substring(7));
         if (userEmail.equals(authentication.getName())) { // 만약 인증 정보와 일치하면
             int resultCode = userService.deleteUser(userEmail);
-            if (resultCode == 1) {
+            if (resultCode == 1) { // 회원정보 삭제 성공했으면 로그아웃 처리 후 반환
+                String token = tokenWithPrefix.substring(7);
+                TokenDto tokenDto = new TokenDto();
+                tokenDto.setAccessToken(token);
+                tokenDto.setGrantType("Bearer");
+                userService.userLogout(tokenDto);
                 return new ResponseEntity<>("success", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
