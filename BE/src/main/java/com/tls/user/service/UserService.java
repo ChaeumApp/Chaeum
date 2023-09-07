@@ -20,4 +20,6 @@ public interface UserService {
     int sendEmailAuthCode(String userEmail);
 
     int checkEmailAuthCode(String userEmail, int code);
+
+    int deleteUser(String userEmail);
 }

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -128,7 +129,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/find/pwd")
-    @Operation(summary = "비밀번호 찾기", description = "이메일과 생년월일을 입력하면 해당 이메일로 임시비밀번호를 발급해준다.")
+    @Operation(summary = "비밀번호 찾기 메서드", description = "이메일과 생년월일을 입력하면 해당 이메일로 임시비밀번호를 발급해준다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다."),
         @ApiResponse(responseCode = "401", description = "생일과 이메일이 일치하지 않으면 unauthorized 를 반환한다."),
@@ -165,7 +166,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/checkEmail/{code}")
-    @Operation(summary = "회원가입 시 입력된 이메일로 전송된 인증번호를 검증한다.", description = "이메일 가입을 위한 이메일 인증번호 확인")
+    @Operation(summary = "이메일 인증번호 검증 메서드", description = "회원가입 시 이메일로 전송된 인증번호를 검증한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "이메일 인증에 성공하면 success 를 반환한다."),
         @ApiResponse(responseCode = "401", description = "이메일 인증 코드가 일치하지 않을 경우 unauthorized 를 반환한다."),
@@ -181,6 +182,31 @@ public class UserController {
             return new ResponseEntity<>("unauthorized", HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping
+    @Operation(summary = "회원탈퇴 메서드", description = "회원 탈퇴를 위한 메서드")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "회원 탈퇴에 성공하면 success 를 반환한다."),
+        @ApiResponse(responseCode = "401", description = "Token정보와 Email 주소가 않을 경우 unauthorized 를 반환한다."),
+        @ApiResponse(responseCode = "500", description = "서버 오류 발생 시 fail 을 반환한다.")
+    })
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String tokenWithPrefix,
+        @RequestBody String userEmail) {
+        log.info("deleteUser call :: {}", userEmail);
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(
+            tokenWithPrefix.substring(7));
+        if (userEmail.equals(authentication.getName())) { // 만약 인증 정보와 일치하면
+            int resultCode = userService.deleteUser(userEmail);
+            if (resultCode == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else { // 인증정보와 현재 로그인한 정보가 일치하지 않으면
+            return new ResponseEntity<>("fail", HttpStatus.UNAUTHORIZED);
         }
     }
 
