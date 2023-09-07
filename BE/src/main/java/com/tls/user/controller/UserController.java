@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Api(tags = "유저 API", value = "회원 관련 API 입니다.")
+@Api(tags = "유저 API", description = "회원 관련 API 입니다.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
@@ -50,11 +50,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 TokenDto를 반환한다."),
         @ApiResponse(responseCode = "406", description = "로그인 시도 중 오류 발생")
     })
-    @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
     public ResponseEntity<?> userLogin(@RequestBody UserDto userDto) {
         log.info("userLogin call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
         TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
@@ -62,11 +62,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃 메서드", description = "유저 정보를 넘겨주면 로그아웃을 시도한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "success"),
         @ApiResponse(responseCode = "406", description = "fail")
     })
-    @Operation(summary = "로그아웃 메서드", description = "유저 정보를 넘겨주면 로그아웃을 시도한다.")
     public ResponseEntity<?> userLogout(@RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("userLogout call");
 
