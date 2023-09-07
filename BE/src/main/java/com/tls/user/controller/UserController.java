@@ -140,6 +140,7 @@ public class UserController {
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.UNAUTHORIZED);
         } else if (resultCode == 1) {
+            log.info("{} 로 임시 비밀번호를 전송하였습니다.", userDto.getUserEmail());
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
