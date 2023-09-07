@@ -137,8 +137,8 @@ public class UserServiceImpl implements UserService {
                 String tempPassword = new RandomStringCreator().getTempPassword();
                 MailDto mailDto = new MailDto();
                 mailDto.setAddress(userEmail);
-                mailDto.setTitle("말하길 임시 비밀번호 안내 이메일입니다.");
-                mailDto.setMessage("안녕하세요. 말하길입니다!\n임시 비밀번호 안내 이메일입니다.\n회원님의 임시 비밀번호는 "
+                mailDto.setTitle("채움 임시 비밀번호 안내 이메일입니다.");
+                mailDto.setMessage("안녕하세요. 채움입니다!\n임시 비밀번호 안내 이메일입니다.\n회원님의 임시 비밀번호는 "
                     + tempPassword + " 입니다.\n로그인 후에 비밀번호를 변경해 주세요.");
 
                 Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
