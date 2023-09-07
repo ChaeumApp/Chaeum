@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
             }
 
             // 해당 Access Token 유효시간을 가지고 와서 BlackList에 저장하기
-            Long expiration =
+            long expiration =
                 Jwts.parser().setSigningKey(secretkey).parseClaimsJws(tokenDto.getAccessToken())
                     .getBody().getExpiration().getTime() - new java.util.Date().getTime();
             redisTemplate.opsForValue()
@@ -160,15 +160,15 @@ public class UserServiceImpl implements UserService {
     public int sendEmailAuthCode(String userEmail) {
         try {
             Random random = new Random();        //랜덤 함수 선언
-            int createNum = 0;            //1자리 난수
-            String ranNum = "";            //1자리 난수 형변환 변수
+            int createNum;            //1자리 난수
+            String ranNum;            //1자리 난수 형변환 변수
             int letter = 6;            //난수 자릿수:6
-            String resultNum = "";        //결과 난수
+            StringBuilder resultNum = new StringBuilder();        //결과 난수
 
             for (int i = 0; i < letter; i++) {
                 createNum = random.nextInt(9);        //0부터 9까지 올 수 있는 1자리 난수 생성
                 ranNum = Integer.toString(createNum);  //1자리 난수를 String으로 형변환
-                resultNum += ranNum;            //생성된 난수(문자열)을 원하는 수(letter)만큼 더하며 나열
+                resultNum.append(ranNum);            //생성된 난수(문자열)을 원하는 수(letter)만큼 더하며 나열
             }
 
             MailDto mailDto = new MailDto();
@@ -199,6 +199,22 @@ public class UserServiceImpl implements UserService {
                 return 1; // 일치하거나 204204(절대코드) 일 경우
             }
             return 0; // 그 외의 경우 0
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public int deleteUser(String userEmail) {
+        try {
+            Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
+            updateUser.ifPresent(selectUser -> {
+                selectUser.setUserEmail(
+                    new RandomStringCreator().getRandomString(20)); // 삭제 시 이메일 파기
+                selectUser.setUserActivated(false); // activated를 false로
+                userRepository.save(selectUser);
+            });
+            return 1;
         } catch (Exception e) {
             return -1;
         }
