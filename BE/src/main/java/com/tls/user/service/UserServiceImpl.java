@@ -36,4 +36,14 @@ public class UserServiceImpl implements UserService {
     public int findUserPwd(String userEmail, String userBirthday) {
         return 0;
     }
+
+    @Override
+    public int sendEmailAuthCode(String userEmail) {
+        return 0;
+    }
+
+    @Override
+    public int checkEmailAuthCode(String userEmail, int code) {
+        return 0;
+    }
 }
