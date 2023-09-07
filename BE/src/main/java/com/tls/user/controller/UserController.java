@@ -126,4 +126,22 @@ public class UserController {
         }
         return new ResponseEntity<>("unauthorized", HttpStatus.UNAUTHORIZED);
     }
+
+    @PostMapping(value = "/find/pwd")
+    @Operation(summary = "비밀번호 찾기", description = "이메일과 생년월일을 입력하면 해당 이메일로 임시비밀번호를 발급해준다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다."),
+        @ApiResponse(responseCode = "401", description = "생일과 이메일이 일치하지 않으면 unauthorized 를 반환한다."),
+        @ApiResponse(responseCode = "500", description = "업데이트에 실패하면 fail 을 반환한다.")
+    })
+    public ResponseEntity<?> findUserPwd(@RequestBody UserDto userDto){
+        int resultCode = userService.findUserPwd(userDto.getUserEmail(), userDto.getUserBirthday());
+        if (resultCode == 0){
+            return new ResponseEntity<>("unauthorized", HttpStatus.UNAUTHORIZED);
+        } else if(resultCode == 1){
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

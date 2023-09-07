@@ -31,4 +31,9 @@ public class UserServiceImpl implements UserService {
     public int userUpdate(UserDto userDto) {
         return 0;
     }
+
+    @Override
+    public int findUserPwd(String userEmail, String userBirthday) {
+        return 0;
+    }
 }
