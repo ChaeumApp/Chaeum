@@ -14,4 +14,6 @@ public interface UserService {
     int checkEmail(String userEmail);
 
     int userUpdate(UserDto userDto);
+
+    int findUserPwd(String userEmail, String userBirthday);
 }
