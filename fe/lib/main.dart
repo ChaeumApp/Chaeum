@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './repeat/bottom.dart';
 import './main/mainbody.dart';
+import './main/splash.dart';
 
 
 void main() {
@@ -14,10 +15,11 @@ void main() {
     )
   );
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(
       fontFamily: "Pretendard",
     ),
-      home: const Main())
+      home: const Splash())
   );
 }
 
