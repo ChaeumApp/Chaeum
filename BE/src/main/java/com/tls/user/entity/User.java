@@ -21,6 +21,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Table(name = "user_tb")
 @DynamicInsert
 public class User {
+
     @Id
     @Column(name = "user_id")
     private int userId;
@@ -43,4 +44,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "vegan_id")
     private Vegan vegan;
+
+    public void updateUserPwd(String newUserPwd) {
+        this.userPwd = newUserPwd;
+    }
+
+    public void deactivateUser() {
+        this.userEmail = null;
+        this.userActivated = false;
+    }
 }
