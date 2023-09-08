@@ -58,7 +58,7 @@ public class UserController {
     })
     public ResponseEntity<?> signIn(@RequestBody UserDto userDto) {
         log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
-        TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
+        TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
         if (tokenDto != null) {
             log.debug("signin 성공");
             return new ResponseEntity<>(tokenDto, HttpStatus.OK);
