@@ -40,9 +40,9 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "회원가입 성공하면 ok 를 반환한다."),
         @ApiResponse(responseCode = "406", description = "회원가입 중 오류발생 시 fail 을 반환한다.")
     })
-    public ResponseEntity<?> userSignup(@RequestBody UserDto userDto) {
-        log.info("userSignup call:: {}", userDto);
-        int resultCode = userService.userSignup(userDto);
+    public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
+        log.info("signUp call:: {}", userDto);
+        int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
             return new ResponseEntity<>("ok", HttpStatus.OK);
         } else {
@@ -50,33 +50,33 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 TokenDto를 반환한다."),
         @ApiResponse(responseCode = "406", description = "로그인 시도 중 오류 발생")
     })
-    public ResponseEntity<?> userLogin(@RequestBody UserDto userDto) {
-        log.info("userLogin call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
-        TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
+    public ResponseEntity<?> signIn(@RequestBody UserDto userDto) {
+        log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
+        TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/signout")
     @Operation(summary = "로그아웃 메서드", description = "유저 정보를 넘겨주면 로그아웃을 시도한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "success"),
         @ApiResponse(responseCode = "406", description = "fail")
     })
-    public ResponseEntity<?> userLogout(@RequestHeader("Authorization") String tokenWithPrefix) {
-        log.info("userLogout call");
+    public ResponseEntity<?> signOut(@RequestHeader("Authorization") String tokenWithPrefix) {
+        log.info("signOut call");
 
         String token = tokenWithPrefix.substring(7);
         TokenDto tokenDto = new TokenDto();
         tokenDto.setAccessToken(token);
         tokenDto.setGrantType("Bearer");
 
-        int resultCode = userService.userLogout(tokenDto);
+        int resultCode = userService.signOut(tokenDto);
         if (resultCode == 200) {
             log.debug("logout 성공");
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -111,14 +111,14 @@ public class UserController {
         @ApiResponse(responseCode = "401", description = "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다."),
         @ApiResponse(responseCode = "500", description = "업데이트에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> userUpdate(@RequestBody UserDto userDto,
+    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto,
         @RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("findUserPwd call :: {}", userDto.getUserEmail());
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
             tokenWithPrefix.substring(7));
         if (userDto.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-            int responseCode = userService.userUpdate(userDto);
+            int responseCode = userService.updateUser(userDto);
             if (responseCode == 1) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
             } else {
@@ -205,7 +205,7 @@ public class UserController {
                 TokenDto tokenDto = new TokenDto();
                 tokenDto.setAccessToken(token);
                 tokenDto.setGrantType("Bearer");
-                userService.userLogout(tokenDto);
+                userService.signOut(tokenDto);
                 return new ResponseEntity<>("success", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);

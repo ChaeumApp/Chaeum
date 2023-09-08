@@ -5,15 +5,15 @@ import com.tls.user.dto.UserDto;
 
 public interface UserService {
 
-    int userSignup(UserDto userDto);
+    int signUp(UserDto userDto);
 
-    TokenDto userLogin(String userEmail, String userPwd);
+    TokenDto signIn(String userEmail, String userPwd);
 
-    int userLogout(TokenDto tokenDto);
+    int signOut(TokenDto tokenDto);
 
     int checkEmail(String userEmail);
 
-    int userUpdate(UserDto userDto);
+    int updateUser(UserDto userDto);
 
     int findUserPwd(String userEmail, String userBirthday);
 

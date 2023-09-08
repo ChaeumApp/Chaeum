@@ -31,7 +31,7 @@ public class JwtTokenProvider {
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
-    public TokenDto generateToken(Authentication authentication, String userId) {
+    public TokenDto generateToken(String userId) {
         // 권한 가져오기
         String authorities = "ROLE_USER";
 
@@ -42,7 +42,7 @@ public class JwtTokenProvider {
             .setSubject(userId)
             .claim("userEmail", userId)
             .claim("auth", authorities)
-//            .setExpiration(accessTokenExpiresIn)
+            .setExpiration(accessTokenExpiresIn)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
         // Refresh Token 생성
