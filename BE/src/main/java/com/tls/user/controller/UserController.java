@@ -53,13 +53,19 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "로그인에 성공하면 TokenDto를 반환한다."),
-        @ApiResponse(responseCode = "406", description = "로그인 시도 중 오류 발생")
+        @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success를 반환한다."),
+        @ApiResponse(responseCode = "406", description = "로그인 시도 중 오류 발생 시 fail을 반환한다.")
     })
     public ResponseEntity<?> userLogin(@RequestBody UserDto userDto) {
         log.info("userLogin call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
         TokenDto tokenDto = userService.userLogin(userDto.getUserEmail(), userDto.getUserPwd());
-        return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+        if (tokenDto != null) {
+            log.debug("signin 성공");
+            return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+        } else {
+            log.debug("signin 실패");
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PostMapping("/logout")
@@ -69,7 +75,7 @@ public class UserController {
         @ApiResponse(responseCode = "406", description = "fail")
     })
     public ResponseEntity<?> userLogout(@RequestHeader("Authorization") String tokenWithPrefix) {
-        log.info("userLogout call");
+        log.info("signout call");
 
         String token = tokenWithPrefix.substring(7);
         TokenDto tokenDto = new TokenDto();
@@ -78,10 +84,10 @@ public class UserController {
 
         int resultCode = userService.userLogout(tokenDto);
         if (resultCode == 200) {
-            log.debug("logout 성공");
+            log.debug("signout 성공");
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
-            log.info("logout 실패");
+            log.info("signout 실패");
             return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
         }
     }
