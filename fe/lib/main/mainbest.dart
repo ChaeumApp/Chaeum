@@ -32,13 +32,14 @@ class MainBest extends StatelessWidget {
                 height: 150,
                 margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Stack(children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: Image.asset('assets/images/temporary/${ranking[i]['image']}.jpg',
                           width: 120, height: 120,
-                          fit: BoxFit.fill,),
+                          fit: BoxFit.cover,),
                       ),
                       Container(
                         width: 25,
