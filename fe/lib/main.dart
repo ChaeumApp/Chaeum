@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './repeat/bottom.dart';
+//메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
-
+//유저
+import './user/mypage.dart';
 
 void main() {
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark
-    )
-  );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      fontFamily: "Pretendard",
-    ),
-      home: const Splash())
-  );
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: "Pretendard",
+      ),
+      home: const Splash()));
 }
 
 class Main extends StatelessWidget {
@@ -39,14 +36,12 @@ class Main extends StatelessWidget {
                 Center(child: Text('레시피')),
                 Mainb(),
                 Center(child: Text('검색')),
-                Center(child: Text('내정보')),
+                MyPage(),
               ],
             ),
           ),
           extendBodyBehindAppBar: true,
-          bottomNavigationBar: Bottom(),)
-
-    );
+          bottomNavigationBar: Bottom(),
+        ));
   }
 }
-
