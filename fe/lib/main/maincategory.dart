@@ -18,6 +18,25 @@ class MainCategory extends StatelessWidget {
       {'name' : '베이커리/잼', 'image' : 'bakery'}
     ];
     
-    return Text('하.. 미치겠군...');
+    return SliverGrid(delegate: SliverChildBuilderDelegate(
+        (c, i)=> Center(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(13, 0, 13, 0),
+                width: 60,
+                  height: 60,
+                  child: Image.asset('assets/images/main/${category[i]['image']}.png',)),
+              Text('${category[i]['name']}',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),)
+            ],
+          ),
+        ),
+    childCount: 10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5
+        ));
   }
 }
