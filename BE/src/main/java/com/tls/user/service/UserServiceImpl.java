@@ -39,10 +39,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Value("${jwt.secret}")
-    private String secretkey;
+    private String secretKey;
 
     @Override
-    public int userSignup(UserDto userDto) {
+    public int signUp(UserDto userDto) {
         try {
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto userLogin(String userEmail, String userPwd) {
+    public TokenDto signIn(String userEmail, String userPwd) {
         try {
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 .authenticate(authenticationToken);
 
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
-            TokenDto tokenDto = jwtTokenProvider.generateToken(authentication, userEmail);
+            TokenDto tokenDto = jwtTokenProvider.generateToken(userEmail);
 
             if (authentication.isAuthenticated()) {
                 //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int userLogout(TokenDto tokenDto) {
+    public int signOut(TokenDto tokenDto) {
         // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
         if (!jwtTokenProvider.validateToken(tokenDto.getAccessToken())) {
             return -1;
@@ -111,12 +111,13 @@ public class UserServiceImpl implements UserService {
 
             // 해당 Access Token 유효시간을 가지고 와서 BlackList에 저장하기
             long expiration =
-                Jwts.parser().setSigningKey(secretkey).parseClaimsJws(tokenDto.getAccessToken())
+                Jwts.parser().setSigningKey(secretKey).parseClaimsJws(tokenDto.getAccessToken())
                     .getBody().getExpiration().getTime() - new java.util.Date().getTime();
             redisTemplate.opsForValue()
                 .set(tokenDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
             return 200;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
@@ -136,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int userUpdate(UserDto userDto) {
+    public int updateUser(UserDto userDto) {
         try {
             Optional<User> updateUser = userRepository.findByUserEmail(userDto.getUserEmail());
             updateUser.ifPresent(selectUser -> {
