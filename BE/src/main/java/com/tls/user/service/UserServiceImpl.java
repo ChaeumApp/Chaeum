@@ -79,10 +79,10 @@ public class UserServiceImpl implements UserService {
 
             if (authentication.isAuthenticated()) {
                 //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
-                redisTemplate.opsForValue().set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
-                    TimeUnit.MILLISECONDS);
+                redisTemplate.opsForValue()
+                    .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
+                        TimeUnit.MILLISECONDS);
             }
-
             return tokenDto;
         } catch (Exception e) {
             e.printStackTrace();
