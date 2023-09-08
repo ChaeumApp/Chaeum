@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private int userId;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(name = "user_email")
     private String userEmail;
 
     @Column(name = "user_pwd", nullable = false)
