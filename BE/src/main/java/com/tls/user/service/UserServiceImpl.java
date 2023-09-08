@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
-                .userPwd(userDto.getUserPwd())
+                .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
                 .userBirthday(Date.valueOf(userDto.getUserBirthday()))
                 .userGender(userDto.getUserGender())
                 .userActivated(true)
@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
                 .build();
             userRepository.save(user);
         } catch (Exception e) {
+            e.printStackTrace();
             return 406;
         }
         return 200;
@@ -62,26 +63,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto userLogin(String userEmail, String userPwd) {
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-            userEmail, userPwd);
+        try {
+            // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+            // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userEmail, userPwd);
 
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-        Authentication authentication = authenticationManagerBuilder.getObject()
-            .authenticate(authenticationToken);
+            // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+            // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+            Authentication authentication = authenticationManagerBuilder.getObject()
+                .authenticate(authenticationToken);
 
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDto tokenDto = jwtTokenProvider.generateToken(authentication, userEmail);
+            // 3. 인증 정보를 기반으로 JWT 토큰 생성
+            TokenDto tokenDto = jwtTokenProvider.generateToken(authentication, userEmail);
 
-        if (authentication.isAuthenticated()) {
-            //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
-            redisTemplate.opsForValue().set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
-                TimeUnit.MILLISECONDS);
+            if (authentication.isAuthenticated()) {
+                //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
+                redisTemplate.opsForValue().set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
+                    TimeUnit.MILLISECONDS);
+            }
+
+            return tokenDto;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return tokenDto;
+        return null;
     }
 
     @Override
