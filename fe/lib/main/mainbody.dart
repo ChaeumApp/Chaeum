@@ -3,6 +3,7 @@ import '../repeat/search.dart';
 import './maincategory.dart';
 import './mainbest.dart';
 import './mainrowprice.dart';
+import './maincarousel.dart';
 
 
 class Mainb extends StatefulWidget {
@@ -12,14 +13,17 @@ class Mainb extends StatefulWidget {
   State<Mainb> createState() => _MainbState();
 }
 
-class _MainbState extends State<Mainb> {
+class _MainbState extends State<Mainb> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: Search()),
         SliverToBoxAdapter(
-            child: Image.asset('assets/images/main/main_banner1.png',)),
+            child: MainCarousel()),
         Title(num : 0),
         MainCategory(),
         Title(num : 1),
