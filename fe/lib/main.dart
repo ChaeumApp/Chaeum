@@ -6,6 +6,7 @@ import './main/mainbody.dart';
 import './main/splash.dart';
 //유저
 import './user/mypage.dart';
+import './user/login.dart';
 
 void main() {
   // 상태바 색상 변경하는 코드
@@ -36,7 +37,7 @@ class Main extends StatelessWidget {
                 Center(child: Text('레시피')),
                 Mainb(),
                 Center(child: Text('검색')),
-                MyPage(),
+                Login(),
               ],
             ),
           ),
