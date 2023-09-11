@@ -233,9 +233,7 @@ class Detail extends StatelessWidget {
               return [
                 SliverAppBar(
                   backgroundColor: Colors.white,
-                  iconTheme: IconThemeData(
-                    color: Colors.black
-                  ),
+                  iconTheme: IconThemeData(color: Colors.black),
                   collapsedHeight: 312,
                   expandedHeight: 312,
                   flexibleSpace: ProfileView(category: category),
@@ -285,7 +283,7 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      // color: Colors.white,
       child: tabBar,
     );
   }
