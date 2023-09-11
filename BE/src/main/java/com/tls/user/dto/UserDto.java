@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-
+    private int userId;
     private String userEmail;
     private String userPwd;
     private String userBirthday;
     private String userGender;
-    private boolean userActivated;
+    private Boolean userActivated;
     private int veganId;
 }

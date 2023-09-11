@@ -3,6 +3,7 @@ package com.tls.user.controller;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
+import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
@@ -46,6 +48,36 @@ public class UserController {
         if (resultCode == 200) {
             return new ResponseEntity<>("ok", HttpStatus.OK);
         } else {
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @GetMapping("/signup/naver")
+    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
+        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpN(@RequestParam(name = "code") String code) {
+        try {
+            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @GetMapping("/signup/kakao")
+    @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
+        @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpK(@RequestParam(name = "code") String code) {
+        try {
+            return ResponseEntity.ok(oAuthService.signUp(code, "kakao"));
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
         }
     }
