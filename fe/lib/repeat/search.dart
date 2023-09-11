@@ -12,7 +12,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Container(
       height: 70,
-      margin: EdgeInsets.fromLTRB(3, 3, 10, 6),
+      margin: EdgeInsets.fromLTRB(3, 3, 10, 3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
