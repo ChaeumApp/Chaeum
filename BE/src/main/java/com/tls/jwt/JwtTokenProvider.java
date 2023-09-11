@@ -31,18 +31,16 @@ public class JwtTokenProvider {
     }
 
     // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
-    public TokenDto generateToken(Authentication authentication, String userId) {
+    public TokenDto generateToken(String userId) {
         // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
+        String authorities = "ROLE_USER";
 
         long now = (new Date()).getTime();
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
             .setSubject(userId)
-            .claim("userId", userId)
+            .claim("userEmail", userId)
             .claim("auth", authorities)
             .setExpiration(accessTokenExpiresIn)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -65,18 +63,18 @@ public class JwtTokenProvider {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get("auth") == null) {
+        if (claims.get("userEmail") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
-            Arrays.stream(claims.get("auth").toString().split(","))
+            Arrays.stream(claims.get("userEmail").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.get("userId").toString(), "", authorities);
+        UserDetails principal = new User(claims.get("userEmail").toString(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
