@@ -213,6 +213,7 @@
 import 'package:flutter/material.dart';
 import './recomproduct.dart';
 import './profile.dart';
+import './priceinfo.dart';
 
 class Detail extends StatelessWidget {
   Detail({super.key, this.category});
@@ -260,9 +261,7 @@ class Detail extends StatelessWidget {
             },
             body: TabBarView(children: [
               RecommendProduct(),
-              Container(
-                color: Colors.red,
-              ),
+              PriceInfo(),
               Container(
                 color: Colors.black,
               ),
