@@ -211,8 +211,7 @@
 // }
 
 import 'package:flutter/material.dart';
-
-// import './detailtab.dart';
+import './recomproduct.dart';
 import './profile.dart';
 
 class Detail extends StatelessWidget {
@@ -262,10 +261,7 @@ class Detail extends StatelessWidget {
               ];
             },
             body: TabBarView(children: [
-              Container(
-                height: 6000,
-                color: Colors.blue,
-              ),
+              RecommendProduct(),
               Container(
                 color: Colors.red,
               ),
