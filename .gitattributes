@@ -1,0 +1,1 @@
+*.{zip,jar,[[:space:]]gif,[[:space:]]apk} filter=lfs diff=lfs merge=lfs -text
