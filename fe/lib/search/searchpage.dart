@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './searchbar.dart';
-import './product.dart';
+// import './product.dart';
 import './recipe.dart';
 
 // void main() {
@@ -225,7 +225,7 @@ class SearchPage extends StatelessWidget {
               ];
             },
             body: TabBarView(children: [
-              Product(),
+              // Product(),
               Recipe(),
             ]),
           ),
