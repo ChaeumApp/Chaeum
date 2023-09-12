@@ -52,7 +52,7 @@ class ProfileView extends StatelessWidget {
                   child: Text(
                     '$category',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 21,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -62,6 +62,7 @@ class ProfileView extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xff73324C),
                     fontWeight: FontWeight.w700,
+                    fontSize: 16
                   ),
                 ),
                 Text(
@@ -69,6 +70,7 @@ class ProfileView extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xff73324C),
                     fontWeight: FontWeight.w700,
+                    fontSize: 16
                   ),
                 ),
               ],
