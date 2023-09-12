@@ -16,6 +16,7 @@ class _AddInfoState extends State<AddInfo> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: VisualDensity.maximumDensity,
       padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +40,7 @@ class _AddInfoState extends State<AddInfo> {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,83 +81,99 @@ class _AddInfoState extends State<AddInfo> {
               ],
             ),
           ),
-          Row(
-            children: [
-              Flexible(
-                fit: FlexFit.tight,
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '비건여부',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    DropdownButton(
-                      alignment: Alignment.bottomRight,
-                      value: widget.selectedVegan,
-                      items: widget.veganList.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          widget.selectedVegan = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Flexible(
-                fit: FlexFit.tight,
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '알러지여부',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    DropdownButton(
-                      alignment: Alignment.bottomRight,
-                      value: widget.selectedAllergie,
-                      items: widget.allergieList.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          widget.selectedAllergie = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 100,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                    onPressed: () {},
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Color(0xffA1CBA1))),
-                    child: Text('제출하기')),
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '비건여부',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                      DropdownButton(
+                        alignment: Alignment.bottomRight,
+                        value: widget.selectedVegan,
+                        items: widget.veganList.map((String item) {
+                          return DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (dynamic value) {
+                          setState(() {
+                            widget.selectedVegan = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '알러지여부',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                      DropdownButton(
+                        alignment: Alignment.bottomRight,
+                        value: widget.selectedAllergie,
+                        items: widget.allergieList.map((String item) {
+                          return DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (dynamic value) {
+                          setState(() {
+                            widget.selectedAllergie = value;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-          Text('이전으로')
+          SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: TextButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Color(0xffA1CBA1))),
+                      child: SizedBox(
+                        height: 30,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '제출하기',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      )),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
