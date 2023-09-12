@@ -40,6 +40,7 @@ class PriceChart extends StatelessWidget {
       Color(0xffA1CBA1),
       Color(0xff4C8C4C),
     ];
+
     return SizedBox(
       width: 400,
       height: 250,
@@ -110,7 +111,12 @@ class PriceChart extends StatelessWidget {
                           text = data[11]['date'] as String;
                           break;
                       }
-                      return Text(text);
+                      return Container(
+                        margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                        child: Text(text, style: TextStyle(
+                          color: Colors.black45
+                        ),),
+                      );
                     },
                   ),
                 ),
@@ -120,7 +126,7 @@ class PriceChart extends StatelessWidget {
                   )
                 )
               ),
-              maxX: 12,
+              maxX: 11.5,
               maxY: maxY,
               minY: minY,
               minX: -0.5,
@@ -141,33 +147,46 @@ class PriceChart extends StatelessWidget {
                       FlSpot(11, (data[11]['price'] as int).toDouble()),
                     ],
                     isCurved: false,
-                    gradient: LinearGradient(
-                      colors: gradientColors
-                          .map((e) => e.withOpacity(0.8))
-                          .toList(),
-                    ),
-                    barWidth: 4,
+                    color: Color(0xffA1CBA1),
+                    // gradient: LinearGradient(
+                    //   colors: gradientColors
+                    //       .map((e) => e.withOpacity(1))
+                    //       .toList(),
+                    // ),
+                    barWidth: 3,
                     belowBarData: BarAreaData(
                         // show: true,
-                        )),
+                        ),
+                dotData: FlDotData(
+                  // show: false
+                  getDotPainter: (spot, percent, barData, index){
+                    return FlDotCirclePainter(
+                      color: const Color(0xffA1CBA1),
+                      strokeWidth: 0,
+                      radius: 5,
+                    );
+                  }
+                )
+                ),
               ],
           lineTouchData: LineTouchData(
             enabled: true,
             touchTooltipData: LineTouchTooltipData(
               tooltipBgColor: Colors.white,
+              tooltipBorder: BorderSide(
+                color: Color(0xffA1CBA1)
+              ),
               fitInsideHorizontally: true,
                 getTooltipItems: (touchedSpots) {
                   return touchedSpots.map(
                         (LineBarSpot touchedSpot) {
                       const textStyle = TextStyle(
                           color: Colors.black,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600);
                       return LineTooltipItem(
                         '${touchedSpot.y.toStringAsFixed(0)}원', // 숫자를 화폐 형식으로 표시
-                        TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        textStyle,
                       );
                     },
                   ).toList();
