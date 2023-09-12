@@ -37,7 +37,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   carousel_slider: ^4.2.1
   http: ^1.1.0
-  provider: ^6.0.6
+  provider: ^6.0.5
+  multi_select_flutter: ^4.1.3
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/main/
+    - assets/images/login/
     - assets/images/repeat/
     - assets/images/temporary/
   # An image asset can refer to one or more resolution-specific "variants", see
