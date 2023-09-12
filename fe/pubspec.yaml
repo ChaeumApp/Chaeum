@@ -38,7 +38,8 @@ dependencies:
   carousel_slider: ^4.2.1
   http: ^1.1.0
   provider: ^6.0.5
-  multi_select_flutter: ^4.1.3
+  intl: ^0.18.1
+  fl_chart: ^0.63.0
 
 dev_dependencies:
   flutter_test:
@@ -68,9 +69,9 @@ flutter:
   assets:
     - assets/images/
     - assets/images/main/
-    - assets/images/login/
     - assets/images/repeat/
     - assets/images/temporary/
+    - assets/images/detail/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
