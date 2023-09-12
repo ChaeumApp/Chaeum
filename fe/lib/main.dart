@@ -3,24 +3,20 @@ import 'package:flutter/services.dart';
 import './repeat/bottom.dart';
 import './main/mainbody.dart';
 import './main/splash.dart';
-
+import './category/ingrecate.dart';
+import './search/searchpage.dart';
 
 void main() {
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark
-    )
-  );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      fontFamily: "Pretendard",
-    ),
-      home: const Splash())
-  );
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: "Pretendard",
+      ),
+      home: const Splash()));
 }
 
 class Main extends StatelessWidget {
@@ -35,18 +31,16 @@ class Main extends StatelessWidget {
           body: SafeArea(
             child: TabBarView(
               children: [
-                Center(child: Text('식재료')),
+                Ingrecate(),
                 Center(child: Text('레시피')),
                 Mainb(),
-                Center(child: Text('검색')),
+                SearchPage(),
                 Center(child: Text('내정보')),
               ],
             ),
           ),
           extendBodyBehindAppBar: true,
-          bottomNavigationBar: Bottom(),)
-
-    );
+          bottomNavigationBar: Bottom(),
+        ));
   }
 }
-
