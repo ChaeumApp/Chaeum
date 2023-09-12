@@ -1,4 +1,3 @@
-import 'package:fe/user/addinfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,8 @@ import './category/ingrecate.dart';
 import './search/searchpage.dart';//유저
 import './user/mypage.dart';
 import './user/login.dart';
-import 'package:fe/user/signup.dart';
+import './user/signup.dart';
+import './user/addinfo.dart';
 //스토어
 import './store/userStore.dart';
 
