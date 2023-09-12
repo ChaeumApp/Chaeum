@@ -6,7 +6,8 @@ import './repeat/bottom.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
-//유저
+import './category/ingrecate.dart';
+import './search/searchpage.dart';//유저
 import './user/mypage.dart';
 import './user/login.dart';
 import 'package:fe/user/signup.dart';
@@ -41,10 +42,10 @@ class Main extends StatelessWidget {
           body: SafeArea(
             child: TabBarView(
               children: [
-                Center(child: Text('식재료')),
+                Ingrecate(),
                 Center(child: Text('레시피')),
                 Mainb(),
-                Center(child: Text('검색')),
+                SearchPage(),
                 AddInfo(),
               ],
             ),
