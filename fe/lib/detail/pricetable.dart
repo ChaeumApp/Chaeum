@@ -47,7 +47,8 @@ class PriceTable extends StatelessWidget {
     children: [
       TableRow(children: [
         DataTable(
-          dataRowHeight: 50,
+          dataRowMinHeight: 50,
+            dataRowMaxHeight: 50,
             columns: [
               DataColumn(label: Text('가격', style: TextStyle(
                 fontWeight: FontWeight.w700,
