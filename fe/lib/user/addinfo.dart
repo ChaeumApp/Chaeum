@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class AddInfo extends StatefulWidget {
   AddInfo({super.key});
 
   @override
   State<AddInfo> createState() => _AddInfoState();
+
   List<String> veganList = ['비건1', '비건2', '비건3'];
   String selectedVegan = '비건1';
   List<String> allergieList = ['없음', '있음'];
-  String selectedAllergie = '없음';
+  String havAllergie = '없음';
+  List<dynamic> allergieNameList = [
+    '난류',
+    '우유',
+    '메밀',
+    '땅콩',
+    '대두',
+    '밀',
+    '고등어',
+    '게',
+    '새우',
+    '돼지고기',
+    '복숭아',
+    '토마토',
+    '호두',
+    '닭고기',
+    '쇠고기',
+    '오징어',
+    '조개류'
+  ];
+
+  List<Object?> selectedAllergie = [];
 }
 
 class _AddInfoState extends State<AddInfo> {
@@ -51,6 +74,9 @@ class _AddInfoState extends State<AddInfo> {
                     child: TextField(
                       maxLength: 6,
                       decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 1.5),
+                          ),
                           isDense: true,
                           counterText: '',
                           contentPadding: EdgeInsets.symmetric(
@@ -64,6 +90,9 @@ class _AddInfoState extends State<AddInfo> {
                     child: TextField(
                       maxLength: 1,
                       decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 1.5),
+                          ),
                           isDense: true,
                           counterText: '',
                           contentPadding: EdgeInsets.symmetric(
@@ -127,7 +156,7 @@ class _AddInfoState extends State<AddInfo> {
                       ),
                       DropdownButton(
                         alignment: Alignment.bottomRight,
-                        value: widget.selectedAllergie,
+                        value: widget.havAllergie,
                         items: widget.allergieList.map((String item) {
                           return DropdownMenuItem<String>(
                             value: item,
@@ -136,13 +165,68 @@ class _AddInfoState extends State<AddInfo> {
                         }).toList(),
                         onChanged: (dynamic value) {
                           setState(() {
-                            widget.selectedAllergie = value;
+                            widget.havAllergie = value;
                           });
                         },
                       ),
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+          Container(
+            child: Column(
+              children: <Widget>[
+                MultiSelectBottomSheetField(
+                  backgroundColor: Colors.white,
+                  cancelText: Text(
+                    'kkk',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  selectedColor: Color(0xffA1CBA1),
+                  checkColor: Colors.white,
+                  selectedItemsTextStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color(0x00ffffff),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  initialChildSize: 0.4,
+                  listType: MultiSelectListType.CHIP,
+                  searchable: true,
+                  buttonText: Text("Allergy foods"),
+                  title: Text(""),
+                  items: widget.allergieNameList
+                      .map((allergie) =>
+                          MultiSelectItem<String>(allergie, allergie))
+                      .toList(),
+                  onConfirm: (values) {
+                    print(values);
+                    setState(() {
+                      widget.selectedAllergie = values;
+                    });
+                  },
+                  chipDisplay: MultiSelectChipDisplay(
+                    chipColor: Color(0xffA1CBA1),
+                    textStyle: TextStyle(color: Colors.white),
+                    onTap: (value) {
+                      setState(() {
+                        widget.selectedAllergie.remove(value);
+                      });
+                    },
+                  ),
+                ),
+                widget.selectedAllergie.isEmpty
+                    ? Container(
+                        padding: EdgeInsets.all(10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "None selected",
+                          style: TextStyle(color: Colors.black54),
+                        ))
+                    : Container(),
               ],
             ),
           ),
