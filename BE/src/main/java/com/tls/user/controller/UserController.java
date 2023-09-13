@@ -5,10 +5,12 @@ import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
 import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
+import com.tls.user.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import javax.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -255,4 +257,21 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "/{userid}")
+    @Operation(summary = "회원정보 조회 메서드", description = "회원 정보 조회를 위한 메서드")
+    public ResponseEntity<?> readProfile(@RequestBody UserVO userVO, ServletRequest request) {
+        return null;
+    }
+
+    @PutMapping(value = "/{userid}")
+    @Operation(summary = "회원정보 수정 메서드", description = "회원 정보 수정을 위한 메서드")
+    public ResponseEntity<?> updateProfile(@RequestBody UserVO userVO, ServletRequest request) {
+        return null;
+    }
+
+    @DeleteMapping(value = "/{userid}")
+    @Operation(summary = "회원 탈퇴 메서드", description = "회원 탈퇴를 위한 메서드")
+    public ResponseEntity<?> deleteProfile(@RequestBody UserVO userVO, ServletRequest request) {
+        return null;
+    }
 }
