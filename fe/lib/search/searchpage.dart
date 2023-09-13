@@ -225,7 +225,7 @@ class SearchPage extends StatelessWidget {
               ];
             },
             body: TabBarView(children: [
-              Product(),
+              // Product(),
               Recipe(),
             ]),
           ),
