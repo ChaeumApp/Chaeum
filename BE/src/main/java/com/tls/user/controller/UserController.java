@@ -52,6 +52,7 @@ public class UserController {
         }
     }
 
+    /*
     @GetMapping("/signup/naver")
     @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
     @ApiResponses(value = {
@@ -81,6 +82,7 @@ public class UserController {
             return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
         }
     }
+     */
 
     @PostMapping("/signin")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
