@@ -20,7 +20,8 @@ void main() {
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.grey[50], statusBarIconBrightness: Brightness.dark));
+      statusBarColor: Colors.grey[50],
+      statusBarIconBrightness: Brightness.dark));
   runApp(ChangeNotifierProvider(
     create: (c) => UserStore(),
     child: MaterialApp(
@@ -70,7 +71,7 @@ class _MainState extends State<Main> {
                 Center(child: Text('레시피')),
                 Mainb(),
                 SearchPage(),
-                MyPage(),
+                LogIn()
                 // FavoriteMore(),
               ],
             ),

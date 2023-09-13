@@ -1,5 +1,8 @@
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../user/mypage.dart';
+import 'package:dio/dio.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -11,6 +14,17 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
+  Dio dio = Dio();
+
+  login() async {
+    try {
+      Response response = await dio.post('http://10.0.2.2:8080/user/signin',
+          data: {'userEmail': '$controller', 'userPwd': '$controller2'});
+      print(response.data);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,13 +121,25 @@ class _LogInState extends State<LogIn> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                                     .hasMatch(
                                                         controller.text) &&
                                                 RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                                     .hasMatch(
                                                         controller2.text)) {
+                                              final response = await login();
+                                              print(response);
+                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
+                                              //{"login" : "id id_value password password_value"}
+                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
+                                              await context
+                                                  .watch<UserStore>()
+                                                  .storage
+                                                  .write(
+                                                      key: "login",
+                                                      value:
+                                                          "accessToken idController.text} refreshToken passController.text}");
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
