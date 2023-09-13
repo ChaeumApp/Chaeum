@@ -1,10 +1,12 @@
 package com.tls.Item.entity.composite;
 
 import com.tls.Item.entity.single.Item;
+import com.tls.Item.id.UserItemId;
 import com.tls.user.entity.User;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -19,15 +21,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "saved_item_tb")
+@IdClass(UserItemId.class)
 public class UserItem {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User userId;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
-    private Item item;
+    private Item itemId;
 }
