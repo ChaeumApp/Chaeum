@@ -1,21 +1,7 @@
 import 'package:flutter/material.dart';
-import '../search/detail/recipedetail.dart';
 
-class Recipe extends StatefulWidget {
-  const Recipe({super.key});
-
-  @override
-  State<Recipe> createState() => _RecipeState();
-}
-
-class _RecipeState extends State<Recipe> {
-  bool isFavorited = false;
-
-  void _toggleFavorite() {
-    setState(() {
-      isFavorited = !isFavorited;
-    });
-  }
+class Recipee extends StatelessWidget {
+  const Recipee ({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +22,9 @@ class _RecipeState extends State<Recipe> {
                 child: Column(
                   children: [
                     InkWell(
-                      // onTap: () {
-                      //   Navigator.pushNamed(context,"Recipedetail");
-                      // },
+                      onTap: () {
+                        Navigator.pushNamed(context, "singleItemPage");
+                      },
                       child: Container(
                         margin: EdgeInsets.fromLTRB(10, 10, 10, 4),
                         child: ClipRRect(
@@ -67,11 +53,11 @@ class _RecipeState extends State<Recipe> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(10, 1, 10, 0),
+                      margin: EdgeInsets.fromLTRB(10, 1, 10, 1),
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 1),
                         child: Container(
-                          child: Text("베이컨 블루치즈 크림토스트",
+                          child: Text("베이컨 치즈 토스트",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -80,26 +66,20 @@ class _RecipeState extends State<Recipe> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 1),
+                      margin: EdgeInsets.fromLTRB(10, 1, 10, 1),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("9.240원",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                              )),
-                          IconButton(
-                            icon: Icon(
-                              isFavorited
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: Colors.red[500],
-                            ),
-                            onPressed: _toggleFavorite,
-                          ),
-                        ],
-                      ),
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("9.240원",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                )),
+                            Icon(
+                              Icons.favorite_border,
+                              size: 22,
+                            )
+                          ]),
                     ),
                   ],
                 ),

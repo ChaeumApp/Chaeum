@@ -6,7 +6,8 @@ import './repeat/bottom.dart';
 import './main/mainbody.dart';
 import './main/splash.dart';
 import './category/ingrecate.dart';
-import './search/searchpage.dart';//유저
+import './category/recipecate.dart';
+import './search/searchpage.dart'; //유저
 import './user/mypage.dart';
 import './user/login.dart';
 import './user/signup.dart';
@@ -43,7 +44,7 @@ class Main extends StatelessWidget {
             child: TabBarView(
               children: [
                 Ingrecate(),
-                Center(child: Text('레시피')),
+                Recipecate(),
                 Mainb(),
                 SearchPage(),
                 AddInfo(),
