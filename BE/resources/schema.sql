@@ -4,12 +4,12 @@ USE chaeum;
 
 CREATE TABLE `user_tb`
 (
-    `user_id`        INT          NOT NULL,
-    `user_email`     varchar(50)  NOT NULL,
+    `user_id`        INT          NOT NULL primary key auto_increment,
+    `user_email`     varchar(50)  NULL,
     `user_pwd`       varchar(100) NOT NULL,
     `user_birthday`  date         NULL,
     `user_gender`    char(5)      NULL,
-    `user_activated` boolean      NOT NULL DEFAULT False,
+    `user_activated` boolean      NOT NULL DEFAULT true,
     `vegan_id`       INT          NOT NULL
 );
 
@@ -116,11 +116,6 @@ CREATE TABLE `ingredient_preference_tb`
     `ingr_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NULL
 );
-
-ALTER TABLE `user_tb`
-    ADD CONSTRAINT `PK_USER_TB` PRIMARY KEY (
-                                             `user_id`
-        );
 
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
@@ -340,3 +335,14 @@ ALTER TABLE `ingredient_preference_tb`
         REFERENCES `ingredient_tb` (
                                     `ingr_id`
             );
+
+
+insert into vegan_tb
+values (0, "hypeboy"),
+       (1, "vegan"),
+       (2, "lacto"),
+       (3, "ovo"),
+       (4, "lacto-ovo"),
+       (5, "pesco"),
+       (6, "polo"),
+       (7, "flexi");
