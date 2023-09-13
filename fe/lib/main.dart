@@ -20,7 +20,7 @@ void main() {
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
+      statusBarColor: Colors.grey[50], statusBarIconBrightness: Brightness.dark));
   runApp(ChangeNotifierProvider(
     create: (c) => UserStore(),
     child: MaterialApp(
