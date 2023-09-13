@@ -76,7 +76,7 @@ class _RecommendProductState extends State<RecommendProduct> {
                   height: 30,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xffA1CBA1), width: 2),
+                      border: Border.all(color: Color(0xffA1CBA1), width: 1.5),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: DropdownButton(

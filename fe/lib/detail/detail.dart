@@ -236,8 +236,8 @@ class Detail extends StatelessWidget {
                 SliverAppBar(
                   backgroundColor: Colors.white,
                   iconTheme: IconThemeData(color: Colors.black),
-                  collapsedHeight: 320,
-                  expandedHeight: 320,
+                  collapsedHeight: 325,
+                  expandedHeight: 325,
                   flexibleSpace: ProfileView(category: category),
                 ),
                 SliverPersistentHeader(
