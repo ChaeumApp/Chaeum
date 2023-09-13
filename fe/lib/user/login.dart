@@ -54,6 +54,7 @@ class _LogInState extends State<LogIn> {
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: TextField(
+                                    onChanged: (context) {},
                                     style: TextStyle(fontSize: 15),
                                     controller: controller,
                                     autofocus: true,
@@ -107,30 +108,38 @@ class _LogInState extends State<LogIn> {
                                   child: ButtonTheme(
                                       child: TextButton(
                                           onPressed: () {
-                                            if (controller.text ==
-                                                    'mei@hello.com' &&
-                                                controller2.text == '1234') {
+                                            if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(
+                                                        controller.text) &&
+                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                    .hasMatch(
+                                                        controller2.text)) {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
                                                           MyPage()));
-                                            } else if (controller.text ==
-                                                    'mei@hello.com' &&
-                                                controller2.text != '1234') {
+                                            } else if (RegExp(
+                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(
+                                                        controller.text) &&
+                                                !RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                    .hasMatch(
+                                                        controller2.text)) {
                                               showSnackBar(context,
-                                                  Text('Wrong password'));
-                                            } else if (controller.text !=
-                                                    'mei@hello.com' &&
-                                                controller2.text == '1234') {
-                                              showSnackBar(
-                                                  context, Text('Wrong email'));
+                                                  Text('비밀번호를 확인해 주세요'));
+                                            } else if (!RegExp(
+                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                    .hasMatch(
+                                                        controller.text) &&
+                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                    .hasMatch(controller2.text)) {
+                                              showSnackBar(context,
+                                                  Text('아이디를 이메일 형식을 입력해주세요'));
                                             } else {
                                               showSnackBar(
-                                                  context,
-                                                  Text(
-                                                      'Check your info again'));
+                                                  context, Text('다시 확인해주세요'));
                                             }
                                           },
                                           style: ButtonStyle(
