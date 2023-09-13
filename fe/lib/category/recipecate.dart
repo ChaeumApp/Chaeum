@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import './popular_product.dart';
+import './popular_recipe.dart';
 import './catepage.dart';
 
 void main() {
-  runApp(Ingrecate());
+  runApp(Recipecate());
 }
 
-class Ingrecate extends StatelessWidget {
-  Ingrecate({Key? key}) : super(key: key);
+class Recipecate extends StatelessWidget {
+  Recipecate({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class Ingrecate extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Color(0xffA1CBA1),
           toolbarHeight: 55,
-          title: Text('식재료 카테고리'),
+          title: Text('레시피 카테고리'),
           centerTitle: true,
           elevation: 0,
         ),
@@ -32,10 +32,10 @@ class Ingrecate extends StatelessWidget {
                   leading: Image.asset('assets/images/category/fr.png'),
                   title: Text('과일'),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CatePage()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => CatePage()),
+                    // );
                   },
                   trailing: Icon(Icons.keyboard_arrow_down),
                 ),
@@ -120,7 +120,7 @@ class Ingrecate extends StatelessWidget {
               Container(
                 margin: EdgeInsets.fromLTRB(3, 20, 0, 5),
                 child: Text(
-                  "항상 인기있는 식재료",
+                  "항상 인기있는 레시피",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -133,7 +133,7 @@ class Ingrecate extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(padding: EdgeInsets.symmetric(vertical: 3.0)),
-                      CategoryBest()
+                      RecipeBest()
                     ],
                   )),
             ],
