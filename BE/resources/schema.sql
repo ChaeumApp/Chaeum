@@ -41,7 +41,8 @@ CREATE TABLE `recipe_tb`
     `recipe_id`       INT          NOT NULL,
     `recipe_name`     varchar(30)  NOT NULL,
     `recipe_contents` varchar(500) NOT NULL,
-    `recipe_link`     varchar(100) NULL
+    `recipe_link`     varchar(100) NULL,
+    `recipe_thumbnail` varchar(200) NULL
 );
 
 CREATE TABLE `item_preference_tb`
