@@ -5,8 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
 
-class MyPage extends StatelessWidget {
+class MyPage extends StatefulWidget {
   MyPage({super.key});
+
+  @override
+  State<MyPage> createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (context.watch<UserStore>().storage.read(key: "login") != '') {}
+  }
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
 

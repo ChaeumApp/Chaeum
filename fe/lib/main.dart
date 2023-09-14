@@ -46,16 +46,13 @@ class _MainState extends State<Main> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var userInfo = _asyncMethod();
-      print('111');
-      print(userInfo);
-      context.read<UserStore>().changeUserInfo(userInfo);
+      _asyncMethod();
     });
   }
 
   _asyncMethod() async {
     print('시작');
-    var ccc = await context.watch<UserStore>().storage.read(key: 'login');
+    await context.watch<UserStore>().storage.read(key: 'login');
   }
 
   @override
