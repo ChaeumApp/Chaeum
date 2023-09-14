@@ -15,8 +15,6 @@ class _DetailSampleState extends State<DetailSample> {
     // headers: {'Authorization': 'Bearer Token'},
   ));
 
-
-
 // 즐겨찾기
   Future<void> favorite(email) async {
     try {
@@ -28,17 +26,13 @@ class _DetailSampleState extends State<DetailSample> {
     }
   }
 
-
 // 소분류 받아오기
   var categoryDetail = [];
 
   Future<void> getCategory(email, ingrId) async {
     try {
-      Response response = await dio.post('/ingr/detail',
-          data: {
-            'userEmail': email,
-            'ingrId': ingrId
-          });
+      Response response = await dio
+          .post('/ingr/detail', data: {'userEmail': email, 'ingrId': ingrId});
       setState(() {
         categoryDetail = response.data;
       });
@@ -47,17 +41,13 @@ class _DetailSampleState extends State<DetailSample> {
     }
   }
 
-
   // 소분류 추천상품
   var recProduct = [];
 
   Future<void> getRecProduct(email, ingrId) async {
     try {
       Response response = await dio.post('/ingr/detail/product',
-          data: {
-            'userEmail': email,
-            'ingrId': ingrId
-          });
+          data: {'userEmail': email, 'ingrId': ingrId});
       setState(() {
         recProduct = response.data;
       });
@@ -66,17 +56,13 @@ class _DetailSampleState extends State<DetailSample> {
     }
   }
 
-
   // 소분류 가격정보
   var priceInfo = [];
 
   Future<void> getPriceInfo(email, ingrId) async {
     try {
       Response response = await dio.post('/ingr/detail/price',
-          data: {
-            'userEmail': email,
-            'ingrId': ingrId
-          });
+          data: {'userEmail': email, 'ingrId': ingrId});
       setState(() {
         priceInfo = response.data;
       });
@@ -85,17 +71,13 @@ class _DetailSampleState extends State<DetailSample> {
     }
   }
 
-
   // 소분류 레시피
   var recipeList = [];
 
   Future<void> getRecipeList(email, ingrId) async {
     try {
       Response response = await dio.post('/ingr/detail/recipe',
-          data: {
-            'userEmail': email,
-            'ingrId': ingrId
-          });
+          data: {'userEmail': email, 'ingrId': ingrId});
       setState(() {
         recipeList = response.data;
       });
@@ -103,7 +85,6 @@ class _DetailSampleState extends State<DetailSample> {
       print(e);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
