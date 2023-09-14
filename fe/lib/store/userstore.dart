@@ -5,7 +5,7 @@ class UserStore extends ChangeNotifier {
   final storage = FlutterSecureStorage();
   var userInfo = '';
 
-  var Login = true;
+  var Login = false;
   changeUserInfo(userInfo) {
     userInfo = userInfo;
   }
