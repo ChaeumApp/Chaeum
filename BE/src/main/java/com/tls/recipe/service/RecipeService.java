@@ -12,4 +12,6 @@ public interface RecipeService {
     List<Recipe> suggestedRecipes(String userEmail);
 
     int selectRecipe(String userEmail, int recipeId);
+
+    int likeRecipe(String userEmail, int recipeId);
 }

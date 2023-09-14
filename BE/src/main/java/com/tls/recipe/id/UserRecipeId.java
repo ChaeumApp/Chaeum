@@ -2,7 +2,9 @@ package com.tls.recipe.id;
 
 import java.io.Serializable;
 import java.util.Objects;
+import lombok.Builder;
 
+@Builder
 public class UserRecipeId implements Serializable {
 
     private int userId;

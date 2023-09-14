@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,15 +64,36 @@ public class RecipeController {
         }
     }
 
-    @PostMapping("/selected/{recipeId}")
+    @GetMapping("/selected/{recipeId}")
     @Operation(summary = "레시피 선택 로그 기록 메서드", description = "레시피 클릭 시 레시피 아이디를 주면 로그를 기록한다.")
-    @ApiResponse(responseCode = "200", description = "레시피 로그 등록 성공 시 sucess 를 반환한다.\n"
+    @ApiResponse(responseCode = "200", description = "레시피 로그 등록 성공 시 success 를 반환한다.\n"
         + "레시피 로그 등록 실패 시 fail 을 반환한다.\n"
         + "없는 레시피를 클릭했다고 요청이 온다면 unauthorized 를 반환한다.")
     public ResponseEntity<?> selectRecipe(@PathVariable("recipeId") int recipeId, @RequestHeader("Authorization") String tokenWithPrefix){
         try{
             String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
             int resultCode = recipeService.selectRecipe(userEmail, recipeId);
+            if ( resultCode == 1 ) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else if ( resultCode == 0) {
+                return new ResponseEntity<>("unauthorized", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e ){
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/favorite/{recipeId}")
+    @Operation(summary = "레시피 즐겨찾기/즐찾해제 메서드", description = "즐겨찾기가 되어있지 않은 레시피의 경우 즐겨찾기를 하고, 즐겨찾기가 되어있는 레시피의 경우 즐겨찾기를 해제한다.")
+    @ApiResponse(responseCode = "200", description = "즐겨찾기 등록 성공 시 success 를 반환한다.\n"
+        + "즐겨찾기 등록 실패 시 fail 을 반환한다.\n"
+        + "없는 레시피를 클릭했다고 요청이 온다면 unauthorized 를 반환한다.")
+    public ResponseEntity<?> likeRecipe(@PathVariable("recipeId") int recipeId, @RequestHeader("Authorization") String tokenWithPrefix){
+        try{
+            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
+            int resultCode = recipeService.likeRecipe(userEmail, recipeId);
             if ( resultCode == 1 ) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
             } else if ( resultCode == 0) {
