@@ -1,3 +1,4 @@
+import 'package:fe/user/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -15,9 +16,16 @@ class _MyPageState extends State<MyPage> {
   void initState() {
     super.initState();
 
-    if (context.watch<UserStore>().storage.read(key: "login") != '') {}
+    if (context.watch<UserStore>().storage.read(key: "login") == notString) {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LogIn()),
+      );
+    }
   }
 
+  String? notString;
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
 
   @override
