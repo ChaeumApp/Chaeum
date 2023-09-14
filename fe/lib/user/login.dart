@@ -23,6 +23,7 @@ class _LogInState extends State<LogIn> {
             'userEmail': controller.text.toString(),
             'userPwd': controller2.text.toString()
           });
+      print('여기문제없어');
       return response.data;
     } catch (e) {
       print(e);

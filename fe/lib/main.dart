@@ -68,7 +68,7 @@ class _MainState extends State<Main> {
                 Center(child: Text('레시피')),
                 Mainb(),
                 SearchPage(),
-                LogIn()
+                MyPage()
                 // FavoriteMore(),
               ],
             ),
