@@ -6,21 +6,24 @@ import './repeat/bottom.dart';
 import './main/mainbody.dart';
 import './main/splash.dart';
 import './category/ingrecate.dart';
-import './search/searchpage.dart';//유저
+import './search/searchpage.dart';
+//유저
 import './user/mypage.dart';
 import './user/login.dart';
 import './user/signup.dart';
 import './user/addinfo.dart';
+import './user/my_more.dart';
 //스토어
-import './store/userStore.dart';
+import 'store/userstore.dart';
 
 void main() {
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.grey[50], statusBarIconBrightness: Brightness.dark));
+      statusBarColor: Colors.grey[50],
+      statusBarIconBrightness: Brightness.dark));
   runApp(ChangeNotifierProvider(
-    create: (c) => userStore(),
+    create: (c) => UserStore(),
     child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -30,8 +33,28 @@ void main() {
   ));
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({super.key});
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    print('시작');
+    var userInfo = await context.watch<UserStore>().storage.read(key: 'login');
+    await context.read<UserStore>().changeUserInfo(userInfo);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +69,8 @@ class Main extends StatelessWidget {
                 Center(child: Text('레시피')),
                 Mainb(),
                 SearchPage(),
-                AddInfo(),
+                LogIn()
+                // FavoriteMore(),
               ],
             ),
           ),

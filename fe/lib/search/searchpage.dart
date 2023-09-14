@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './searchbar.dart';
-import './product.dart';
+// import './product.dart';
 import './recipe.dart';
 
 // void main() {
