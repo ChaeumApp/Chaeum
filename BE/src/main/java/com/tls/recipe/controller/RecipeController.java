@@ -3,7 +3,6 @@ package com.tls.recipe.controller;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.service.RecipeService;
-import com.tls.user.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,18 +39,14 @@ public class RecipeController {
         }
     }
 
-    @PostMapping("/suggestion")
+    @GetMapping("/suggestion")
     @Operation(summary = "사용자 맞춤형 레시피 추천 메서드", description = "유저 정보에 맞는 추천 레시피 List를 반환한다.")
     @ApiResponse(responseCode = "200", description = "레피시 추천 리스트 반환한다.\n"
-        + "추천 레시피 리스트 반환 실패 시 fail 을 반환한다.\n"
-        + "token 정보와 userEmail 일치하지 않다면 unauthorized 를 반환한다.")
-    public ResponseEntity<?> suggestedRecipes(@RequestHeader String tokenWithPrefix, @RequestBody UserVO userEmail){
+        + "추천 레시피 리스트 반환 실패 시 fail 을 반환한다.\n")
+    public ResponseEntity<?> suggestedRecipes(@RequestHeader String tokenWithPrefix){
         try{
-            if( jwtTokenProvider.validateToken(tokenWithPrefix.substring(7), userEmail.toString()) ) {
-                return new ResponseEntity<>(recipeService.suggestedRecipes(userEmail.toString()), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("unauthorized", HttpStatus.OK);
-            }
+            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
+            return new ResponseEntity<>(recipeService.suggestedRecipes(userEmail), HttpStatus.OK);
         } catch (Exception e ){
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
