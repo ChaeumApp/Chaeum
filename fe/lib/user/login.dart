@@ -19,8 +19,11 @@ class _LogInState extends State<LogIn> {
   login() async {
     try {
       Response response = await dio.post('http://10.0.2.2:8080/user/signin',
-          data: {'userEmail': '$controller', 'userPwd': '$controller2'});
-      print(response.data);
+          data: {
+            'userEmail': controller.text.toString(),
+            'userPwd': controller2.text.toString()
+          });
+      return response.data;
     } catch (e) {
       print(e);
     }
@@ -122,6 +125,9 @@ class _LogInState extends State<LogIn> {
                                   child: ButtonTheme(
                                       child: TextButton(
                                           onPressed: () async {
+                                            print(controller.text);
+                                            print(controller2.text);
+                                            print('여기와?');
                                             if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                                     .hasMatch(
                                                         controller.text) &&
@@ -130,6 +136,12 @@ class _LogInState extends State<LogIn> {
                                                         controller2.text)) {
                                               final response = await login();
                                               print(response);
+                                              final accessToken =
+                                                  response["accessToken"];
+                                              final refreshToken =
+                                                  response["refreshToken"];
+                                              print(accessToken);
+                                              print(refreshToken);
                                               // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
                                               //{"login" : "id id_value password password_value"}
                                               //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
@@ -139,7 +151,7 @@ class _LogInState extends State<LogIn> {
                                                   .write(
                                                       key: "login",
                                                       value:
-                                                          "accessToken idController.text} refreshToken passController.text}");
+                                                          "accessToken $accessToken refreshToken $refreshToken");
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -153,8 +165,10 @@ class _LogInState extends State<LogIn> {
                                                 !RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                                     .hasMatch(
                                                         controller2.text)) {
-                                              showSnackBar(context,
-                                                  Text('비밀번호를 확인해 주세요'));
+                                              showSnackBar(
+                                                  context,
+                                                  Text(
+                                                      '비밀번호를 특수문자,영어를 포함해 주세요'));
                                             } else if (!RegExp(
                                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                                     .hasMatch(
@@ -164,8 +178,8 @@ class _LogInState extends State<LogIn> {
                                               showSnackBar(context,
                                                   Text('아이디를 이메일 형식을 입력해주세요'));
                                             } else {
-                                              showSnackBar(
-                                                  context, Text('다시 확인해주세요'));
+                                              showSnackBar(context,
+                                                  Text('아이디 비밀번호를 확인해주세요'));
                                             }
                                           },
                                           style: ButtonStyle(
