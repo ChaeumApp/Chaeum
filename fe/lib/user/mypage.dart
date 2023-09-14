@@ -1,9 +1,22 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
-class MyPage extends StatelessWidget {
+import 'package:provider/provider.dart';
+import '../store/userstore.dart';
+
+class MyPage extends StatefulWidget {
   MyPage({super.key});
+
+  @override
+  State<MyPage> createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (context.watch<UserStore>().storage.read(key: "login") != '') {}
+  }
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
 
@@ -178,13 +191,28 @@ class MyPage extends StatelessWidget {
               ),
             ),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                '비밀번호 변경',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+              TextButton(
+                child: Text(
+                  '비밀번호 변경',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () {},
               ),
-              Text(
-                '회원 탈퇴',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+              TextButton(
+                child: Text(
+                  '회원 탈퇴',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () {},
+              ),
+              TextButton(
+                child: Text(
+                  '로그아웃',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () async {
+                  await context.watch<UserStore>().storage.delete(key: "login");
+                },
               ),
             ]),
           ],
