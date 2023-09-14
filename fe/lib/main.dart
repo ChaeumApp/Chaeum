@@ -41,8 +41,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  String? userInfo = "";
-
   @override
   void initState() {
     super.initState();
@@ -54,8 +52,8 @@ class _MainState extends State<Main> {
 
   _asyncMethod() async {
     print('시작');
-    userInfo = await context.watch<UserStore>().storage.read(key: 'login');
-    print('부르긴햇는데 없어 $userInfo');
+    var userInfo = await context.watch<UserStore>().storage.read(key: 'login');
+    await context.read<UserStore>().changeUserInfo(userInfo);
   }
 
   @override
