@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import './repeat/bottom.dart';
 //메인페이지
 import './main/mainbody.dart';
@@ -14,6 +13,7 @@ import './user/signup.dart';
 import './user/addinfo.dart';
 import './user/my_more.dart';
 //스토어
+import 'package:provider/provider.dart';
 import 'store/userstore.dart';
 
 void main() {
@@ -46,14 +46,16 @@ class _MainState extends State<Main> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
+      var userInfo = _asyncMethod();
+      print('111');
+      print(userInfo);
+      context.read<UserStore>().changeUserInfo(userInfo);
     });
   }
 
   _asyncMethod() async {
     print('시작');
-    var userInfo = await context.watch<UserStore>().storage.read(key: 'login');
-    await context.read<UserStore>().changeUserInfo(userInfo);
+    var ccc = await context.watch<UserStore>().storage.read(key: 'login');
   }
 
   @override

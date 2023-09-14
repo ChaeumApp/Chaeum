@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+import '../store/userstore.dart';
+
 class MyPage extends StatelessWidget {
   MyPage({super.key});
 
@@ -178,13 +181,28 @@ class MyPage extends StatelessWidget {
               ),
             ),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                '비밀번호 변경',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+              TextButton(
+                child: Text(
+                  '비밀번호 변경',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () {},
               ),
-              Text(
-                '회원 탈퇴',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+              TextButton(
+                child: Text(
+                  '회원 탈퇴',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () {},
+              ),
+              TextButton(
+                child: Text(
+                  '로그아웃',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () async {
+                  await context.watch<UserStore>().storage.delete(key: "login");
+                },
               ),
             ]),
           ],
