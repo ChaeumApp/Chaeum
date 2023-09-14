@@ -1,9 +1,12 @@
 package com.tls.recipe.service;
 
+import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
 import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.id.UserRecipeId;
 import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
+import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final UserRecipeLogRepository userRecipeLogRepository;
+    private final UserRecipeRepository userRecipeRepository;
 
     @Override
     public int updateRecipe() {
@@ -47,6 +51,27 @@ public class RecipeServiceImpl implements RecipeService {
                 userRecipeLogRepository.save(userRecipeLog);
                 return 1;
             }
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public int likeRecipe(String userEmail, int recipeId) {
+        try {
+            UserRecipeId userRecipeId = UserRecipeId.builder()
+                .userId(userRepository.findByUserEmail(userEmail).orElseThrow().getUserId())
+                .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow().getRecipeId())
+                .build();
+            if (userRecipeRepository.findByUserRecipeId(userRecipeId).isEmpty()) { // 즐겨찾기에 존재한다면
+                UserRecipe userRecipe = UserRecipe.builder()
+                    .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
+                    .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow()).build();
+                userRecipeRepository.save(userRecipe); // 즐겨찾기 목록에 등록
+            } else { // 이미 즐겨찾기 목록에 존재한다면
+                userRecipeRepository.deleteByUserRecipeId(userRecipeId);
+            }
+            return 1;
         } catch (Exception e) {
             return -1;
         }
