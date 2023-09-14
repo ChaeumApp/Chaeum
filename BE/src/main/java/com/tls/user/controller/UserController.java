@@ -3,11 +3,14 @@ package com.tls.user.controller;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
+import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
+import com.tls.user.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import javax.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signup")
@@ -49,6 +53,38 @@ public class UserController {
             return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    /*
+    @GetMapping("/signup/naver")
+    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
+        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpN(@RequestParam(name = "code") String code) {
+        try {
+            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @GetMapping("/signup/kakao")
+    @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
+        @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpK(@RequestParam(name = "code") String code) {
+        try {
+            return ResponseEntity.ok(oAuthService.signUp(code, "kakao"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+     */
 
     @PostMapping("/signin")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.")
@@ -221,4 +257,9 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "/{userid}")
+    @Operation(summary = "회원정보 조회 메서드", description = "회원 정보 조회를 위한 메서드")
+    public ResponseEntity<?> readProfile(@RequestBody UserVO userVO, ServletRequest request) {
+        return null;
+    }
 }
