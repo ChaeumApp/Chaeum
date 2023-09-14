@@ -262,16 +262,4 @@ public class UserController {
     public ResponseEntity<?> readProfile(@RequestBody UserVO userVO, ServletRequest request) {
         return null;
     }
-
-    @PutMapping(value = "/{userid}")
-    @Operation(summary = "회원정보 수정 메서드", description = "회원 정보 수정을 위한 메서드")
-    public ResponseEntity<?> updateProfile(@RequestBody UserVO userVO, ServletRequest request) {
-        return null;
-    }
-
-    @DeleteMapping(value = "/{userid}")
-    @Operation(summary = "회원 탈퇴 메서드", description = "회원 탈퇴를 위한 메서드")
-    public ResponseEntity<?> deleteProfile(@RequestBody UserVO userVO, ServletRequest request) {
-        return null;
-    }
 }
