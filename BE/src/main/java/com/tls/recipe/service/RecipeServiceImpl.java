@@ -2,6 +2,8 @@ package com.tls.recipe.service;
 
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.repository.RecipeRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +21,12 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Recipe viewRecipe(int recipeId) {
         return recipeRepository.findByRecipeId(recipeId).orElse(null);
+    }
+
+    @Override
+    public List<Recipe> suggestedRecipes(String userEmail) {
+        List<Recipe> tmp = new ArrayList<>();
+        tmp.add(new Recipe(0, "recipe name", "recipe link", "recipe thumbnail"));
+        return tmp;
     }
 }
