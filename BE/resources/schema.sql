@@ -195,6 +195,7 @@ ALTER TABLE `saved_item_tb`
 
 ALTER TABLE `recipe_ingredient_tb`
     ADD CONSTRAINT `PK_RECIPE_INGREDIENT_TB` PRIMARY KEY (
+                                                          `ingr_id`,
                                                           `recipe_id`
         );
 
