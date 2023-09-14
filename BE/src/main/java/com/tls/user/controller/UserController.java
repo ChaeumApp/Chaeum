@@ -215,6 +215,26 @@ public class UserController {
         return getResponseEntity(resultCode);
     }
 
+    @PostMapping("/auth/checktoken")
+    @Operation(summary = "토큰 유효성 검사 메서드", description = "토큰 정보를 주면 유효성을 검사한다.", tags = "유저 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "토큰 검증에 성공하면 success 를 반환한다.\n"
+            + "토큰이 유효하지 않을 경우 unauthorized 를 반환한다.\n"
+            + "서버 오류 발생 시 fail 을 반환한다.")
+    })
+    public ResponseEntity<?> checkToken(@RequestHeader("Authorization") String tokenWithPrefix) {
+        log.info("checkToken call");
+        try {
+            if (jwtTokenProvider.validateToken(tokenWithPrefix.substring(7))) {
+                return getResponseEntity(1);
+            } else {
+                return getResponseEntity(0);
+            }
+        } catch (Exception e) {
+            return getResponseEntity(-1);
+        }
+    }
+
     @DeleteMapping
     @Operation(summary = "회원탈퇴 메서드", description = "회원 탈퇴를 위한 메서드", tags = "유저 API")
     @ApiResponses(value = {
