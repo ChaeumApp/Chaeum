@@ -10,4 +10,6 @@ public interface RecipeService {
     Recipe viewRecipe(int recipeId);
 
     List<Recipe> suggestedRecipes(String userEmail);
+
+    int selectRecipe(String userEmail, int recipeId);
 }
