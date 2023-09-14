@@ -36,9 +36,12 @@ class _RecipeState extends State<Recipe> {
                 child: Column(
                   children: [
                     InkWell(
-                      // onTap: () {
-                      //   Navigator.pushNamed(context,"Recipedetail");
-                      // },
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Recipedetail()));
+                      },
                       child: Container(
                         margin: EdgeInsets.fromLTRB(10, 10, 10, 4),
                         child: ClipRRect(
