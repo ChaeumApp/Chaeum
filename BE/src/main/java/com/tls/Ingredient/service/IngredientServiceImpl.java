@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class IngredientServiceImpl implements IngredientService {
 
     @Override
-    public IngredientDto getIngredients() {
+    public List<IngredientDto> getIngredients() {
         return null;
     }
 
