@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialsApp());
-}
-
 // class MaterialsApp extends StatelessWidget {
 //   const MaterialsApp({super.key});
 
@@ -142,18 +138,18 @@ void main() {
 //   }
 // }
 
-class MaterialsApp extends StatelessWidget {
-  const MaterialsApp({Key? key}) : super(key: key);
+// class MaterialsApp extends StatelessWidget {
+//   const MaterialsApp({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Materials(),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Materials(),
+//     );
+//   }
+// }
 
-class Materials extends StatelessWidget {
+class Foods extends StatelessWidget {
   final List<String> ingredients = [
     '계란 3개',
     '우유 200ml',
@@ -163,7 +159,7 @@ class Materials extends StatelessWidget {
     '크림치즈 4숟가락',
   ];
 
-  Materials({super.key});
+  Foods({super.key});
 
   @override
   Widget build(BuildContext context) {

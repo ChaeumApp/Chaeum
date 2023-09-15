@@ -5,13 +5,9 @@ import './repeat/bottom.dart';
 import './main/mainbody.dart';
 import './main/splash.dart';
 import './category/ingrecate.dart';
-<<<<<<< HEAD
 import './category/recipecate.dart';
-import './search/searchpage.dart'; //유저
-=======
 import './search/searchpage.dart';
 //유저
->>>>>>> 9c170422e0d9afebdbfa8632152f3773a4b06ea7
 import './user/mypage.dart';
 import './user/login.dart';
 import './user/signup.dart';
