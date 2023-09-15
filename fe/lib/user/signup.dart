@@ -19,6 +19,7 @@ class _SignUpState extends State<SignUp> {
   bool passwordCheck = false;
   bool samepasswordCheck = false;
 
+  String? emailError;
   String emailMessage = '이메일 형식으로 입력해주세요';
   String passwordMessage = '비밀번호는 특수문자, 숫자, 영어가 필수로 1개씩 있어야 합니다.';
   String samepasswordMessage = '비밀번호와 다릅니다.';
@@ -67,27 +68,46 @@ class _SignUpState extends State<SignUp> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 50,
+                                height: 75,
                                 child: TextField(
+                                  onChanged: (value) {
+                                    if (!RegExp(
+                                            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                        .hasMatch(value)) {
+                                      setState(() {
+                                        emailError = '올바른 이메일 형식이 아닙니다.';
+                                      });
+                                    } else {
+                                      setState(() {
+                                        emailError = null; // 에러 없음
+                                      });
+                                    }
+                                  },
                                   controller: controller,
                                   autofocus: true,
                                   decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Color(0xffA1CBA1))),
-                                      prefixIconColor: Color(0xffA1CBA1),
-                                      prefixIcon: Icon(
-                                        Icons.alternate_email_rounded,
-                                      ),
-                                      suffixIcon:
-                                          Icon(Icons.priority_high_rounded),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide()),
-                                      labelText: '이메일',
-                                      focusColor: Color(0xffA1CBA1)),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 14.0, horizontal: 10.0),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Color(0xffA1CBA1))),
+                                    prefixIconColor: Color(0xffA1CBA1),
+                                    prefixIcon: Icon(
+                                      Icons.alternate_email_rounded,
+                                    ),
+                                    suffixIcon: Icon(
+                                        RegExp(r"^[a-zzA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                .hasMatch(controller.text)
+                                            ? Icons.check_circle_rounded
+                                            : Icons.priority_high_rounded),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide()),
+                                    labelText: '이메일',
+                                    errorText: emailError,
+                                    errorStyle: TextStyle(),
+                                    focusColor: Color(0xffA1CBA1),
+                                  ),
                                   keyboardType: TextInputType.emailAddress,
                                 ),
                               ),
@@ -97,7 +117,7 @@ class _SignUpState extends State<SignUp> {
                                   controller: controller2,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
+                                          vertical: 14.0, horizontal: 10.0),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -117,7 +137,7 @@ class _SignUpState extends State<SignUp> {
                                   controller: controller3,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
+                                          vertical: 14.0, horizontal: 10.0),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
