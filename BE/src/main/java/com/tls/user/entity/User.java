@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private String userGender;
 
     @Column(name = "user_activated", nullable = false)
-    private boolean userActivated;
+    private Boolean userActivated;
 
     @ManyToOne
     @JoinColumn(name = "vegan_id")

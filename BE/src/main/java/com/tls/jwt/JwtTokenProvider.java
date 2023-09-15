@@ -99,6 +99,11 @@ public class JwtTokenProvider {
 //        return false;
     }
 
+    public boolean validateToken(String accessToken, String userEmail){
+        Claims claims = parseClaims(accessToken);
+        return claims.get("userEmail").toString().equals(userEmail);
+    }
+
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken)

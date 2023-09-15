@@ -4,12 +4,12 @@ USE chaeum;
 
 CREATE TABLE `user_tb`
 (
-    `user_id`        INT          NOT NULL,
-    `user_email`     varchar(50)  NOT NULL,
+    `user_id`        INT          NOT NULL primary key auto_increment,
+    `user_email`     varchar(50)  NULL,
     `user_pwd`       varchar(100) NOT NULL,
     `user_birthday`  date         NULL,
     `user_gender`    char(5)      NULL,
-    `user_activated` boolean      NOT NULL DEFAULT False,
+    `user_activated` boolean      NOT NULL DEFAULT true,
     `vegan_id`       INT          NOT NULL
 );
 
@@ -32,16 +32,16 @@ CREATE TABLE `item_tb`
 
 CREATE TABLE `user_allergy_tb`
 (
-    `user_id` INT NOT NULL,
-    `ingr_id` INT NOT NULL
+    `user_id` INT      NOT NULL,
+    `algy_id` SMALLINT NOT NULL
 );
 
 CREATE TABLE `recipe_tb`
 (
-    `recipe_id`       INT          NOT NULL,
-    `recipe_name`     varchar(30)  NOT NULL,
-    `recipe_contents` varchar(500) NOT NULL,
-    `recipe_link`     varchar(100) NULL
+    `recipe_id`        INT          NOT NULL,
+    `recipe_name`      varchar(30)  NOT NULL,
+    `recipe_link`      varchar(100) NULL,
+    `recipe_thumbnail` varchar(200) NULL
 );
 
 CREATE TABLE `item_preference_tb`
@@ -79,8 +79,8 @@ CREATE TABLE `saved_item_tb`
 
 CREATE TABLE `recipe_ingredient_tb`
 (
-    `recipe_id` INT    NOT NULL,
-    `item_id`   BIGINT NOT NULL
+    `recipe_id` INT NOT NULL,
+    `ingr_id`   INT NOT NULL
 );
 
 CREATE TABLE `category_tb`
@@ -117,10 +117,31 @@ CREATE TABLE `ingredient_preference_tb`
     `pref_rating` DOUBLE NULL
 );
 
-ALTER TABLE `user_tb`
-    ADD CONSTRAINT `PK_USER_TB` PRIMARY KEY (
-                                             `user_id`
-        );
+CREATE TABLE `allergy_tb`
+(
+    `algy_id`   SMALLINT    NOT NULL,
+    `algy_name` varchar(30) NOT NULL
+);
+
+CREATE TABLE `allergy_ingredient_tb`
+(
+    `algy_id` SMALLINT NOT NULL,
+    `ingr_id` INT      NOT NULL
+);
+
+CREATE TABLE `recipe_process_tb`
+(
+    `recipe_proc_id`      SMALLINT    NOT NULL,
+    `recipe_id`           INT         NOT NULL,
+    `recipe_proc_content` VARCHAR(80) NOT NULL
+);
+
+CREATE TABLE `recipe_select_log_tb`
+(
+    `user_id`            INT       NOT NULL,
+    `recipe_id`          INT       NOT NULL,
+    `recipe_select_time` TIMESTAMP NOT NULL
+);
 
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
@@ -135,7 +156,7 @@ ALTER TABLE `item_tb`
 ALTER TABLE `user_allergy_tb`
     ADD CONSTRAINT `PK_USER_ALLERGY_TB` PRIMARY KEY (
                                                      `user_id`,
-                                                     `ingr_id`
+                                                     `algy_id`
         );
 
 ALTER TABLE `recipe_tb`
@@ -174,8 +195,8 @@ ALTER TABLE `saved_item_tb`
 
 ALTER TABLE `recipe_ingredient_tb`
     ADD CONSTRAINT `PK_RECIPE_INGREDIENT_TB` PRIMARY KEY (
-                                                          `recipe_id`,
-                                                          `item_id`
+                                                          `ingr_id`,
+                                                          `recipe_id`
         );
 
 ALTER TABLE `category_tb`
@@ -205,6 +226,29 @@ ALTER TABLE `ingredient_preference_tb`
                                                               `ingr_id`
         );
 
+ALTER TABLE `allergy_tb`
+    ADD CONSTRAINT `PK_ALLERGY_TB` PRIMARY KEY (
+                                                `algy_id`
+        );
+
+ALTER TABLE `allergy_ingredient_tb`
+    ADD CONSTRAINT `PK_ALLERGY_INGREDIENT_TB` PRIMARY KEY (
+                                                           `algy_id`,
+                                                           `ingr_id`
+        );
+
+ALTER TABLE `recipe_process_tb`
+    ADD CONSTRAINT `PK_RECIPE_PROCESS_TB` PRIMARY KEY (
+                                                       `recipe_proc_id`,
+                                                       `recipe_id`
+        );
+
+ALTER TABLE `recipe_select_log_tb`
+    ADD CONSTRAINT `PK_RECIPE_SELECT_LOG_TB` PRIMARY KEY (
+                                                          `user_id`,
+                                                          `recipe_id`
+        );
+
 ALTER TABLE `user_allergy_tb`
     ADD CONSTRAINT `FK_user_tb_TO_user_allergy_tb_1` FOREIGN KEY (
                                                                   `user_id`
@@ -214,11 +258,11 @@ ALTER TABLE `user_allergy_tb`
             );
 
 ALTER TABLE `user_allergy_tb`
-    ADD CONSTRAINT `FK_ingredient_tb_TO_user_allergy_tb_1` FOREIGN KEY (
-                                                                        `ingr_id`
+    ADD CONSTRAINT `FK_allergy_tb_TO_user_allergy_tb_1` FOREIGN KEY (
+                                                                     `algy_id`
         )
-        REFERENCES `ingredient_tb` (
-                                    `ingr_id`
+        REFERENCES `allergy_tb` (
+                                 `algy_id`
             );
 
 ALTER TABLE `item_preference_tb`
@@ -301,14 +345,6 @@ ALTER TABLE `recipe_ingredient_tb`
                                 `recipe_id`
             );
 
-ALTER TABLE `recipe_ingredient_tb`
-    ADD CONSTRAINT `FK_item_tb_TO_recipe_ingredient_tb_1` FOREIGN KEY (
-                                                                       `item_id`
-        )
-        REFERENCES `item_tb` (
-                              `item_id`
-            );
-
 ALTER TABLE `saved_ingredient_tb`
     ADD CONSTRAINT `FK_user_tb_TO_saved_ingredient_tb_1` FOREIGN KEY (
                                                                       `user_id`
@@ -340,3 +376,55 @@ ALTER TABLE `ingredient_preference_tb`
         REFERENCES `ingredient_tb` (
                                     `ingr_id`
             );
+
+ALTER TABLE `allergy_ingredient_tb`
+    ADD CONSTRAINT `FK_allergy_tb_TO_allergy_ingredient_tb_1` FOREIGN KEY (
+                                                                           `algy_id`
+        )
+        REFERENCES `allergy_tb` (
+                                 `algy_id`
+            );
+
+ALTER TABLE `allergy_ingredient_tb`
+    ADD CONSTRAINT `FK_ingredient_tb_TO_allergy_ingredient_tb_1` FOREIGN KEY (
+                                                                              `ingr_id`
+        )
+        REFERENCES `ingredient_tb` (
+                                    `ingr_id`
+            );
+
+ALTER TABLE `recipe_process_tb`
+    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_process_tb_1` FOREIGN KEY (
+                                                                      `recipe_id`
+        )
+        REFERENCES `recipe_tb` (
+                                `recipe_id`
+            );
+
+ALTER TABLE `recipe_select_log_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_recipe_select_log_tb_1` FOREIGN KEY (
+                                                                       `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `recipe_select_log_tb`
+    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_select_log_tb_1` FOREIGN KEY (
+                                                                         `recipe_id`
+        )
+        REFERENCES `recipe_tb` (
+                                `recipe_id`
+            );
+
+
+
+insert into vegan_tb
+values (0, "hypeboy"),
+       (1, "vegan"),
+       (2, "lacto"),
+       (3, "ovo"),
+       (4, "lacto-ovo"),
+       (5, "pesco"),
+       (6, "polo"),
+       (7, "flexi");

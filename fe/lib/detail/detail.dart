@@ -214,6 +214,7 @@ import 'package:flutter/material.dart';
 import './recomproduct.dart';
 import './profile.dart';
 import './priceinfo.dart';
+import './detailrecipe.dart';
 
 class Detail extends StatelessWidget {
   Detail({super.key, this.category});
@@ -235,8 +236,8 @@ class Detail extends StatelessWidget {
                 SliverAppBar(
                   backgroundColor: Colors.white,
                   iconTheme: IconThemeData(color: Colors.black),
-                  collapsedHeight: 312,
-                  expandedHeight: 312,
+                  collapsedHeight: 325,
+                  expandedHeight: 325,
                   flexibleSpace: ProfileView(category: category),
                 ),
                 SliverPersistentHeader(
@@ -246,6 +247,7 @@ class Detail extends StatelessWidget {
                       labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w700,
+                        fontSize: 16
                       ),
                       indicatorColor: Color(0xff4C8C4C),
                       indicatorSize: TabBarIndicatorSize.label,
@@ -262,9 +264,7 @@ class Detail extends StatelessWidget {
             body: TabBarView(children: [
               RecommendProduct(),
               PriceInfo(),
-              Container(
-                color: Colors.black,
-              ),
+              DetailRecipe(),
             ]),
           ),
         ),
@@ -282,7 +282,7 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      // color: Colors.white,
+      color: Colors.grey[50],
       child: tabBar,
     );
   }
