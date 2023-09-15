@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface IngredientService {
 
-    public IngredientDto getIngredients();
+    List<IngredientDto> getIngredients();
 
-    public List<IngredientDto> getIngredients(CategoryVO categoryVO);
+    List<IngredientDto> getIngredients(CategoryVO categoryVO);
 
-    public IngredientDto getIngredient(IngredientVO ingredientVO);
+    IngredientDto getIngredient(IngredientVO ingredientVO);
 
-    public int selectIngredient(UserIngrVO userIngrVO);
+    int selectIngredient(UserIngrVO userIngrVO);
 
-    public int dislikeIngredient(IngredientVO ingredientVO);
+    int dislikeIngredient(IngredientVO ingredientVO);
 
-    public int favoriteIngredient(UserIngrVO userIngrVO);
+    int favoriteIngredient(UserIngrVO userIngrVO);
 }
