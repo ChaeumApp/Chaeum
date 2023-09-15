@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class IngredientController {
 
     private final IngredientService ingredientService;
 
-    @PostMapping
+    @GetMapping
     @Operation(summary = "전체 소분류를 조회하는 메서드", description = "저장된 전체 소분류를 조회합니다.", tags = "소분류 API")
     public ResponseEntity<?> getIngredients() {
         log.info("getIngredients call :: ");
@@ -37,7 +38,7 @@ public class IngredientController {
         }
     }
 
-    @PostMapping
+    @GetMapping("category")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
     public ResponseEntity<?> getIngredientsByCatAndSubCat(CategoryVO categoryVO) {
@@ -50,13 +51,25 @@ public class IngredientController {
         }
     }
 
-    @PostMapping("/detail")
-    @Operation(summary = "소분류를 조회하는 메서드", description = "소분류 ID로 해당 소분류를 조회합니다.")
+    @GetMapping("/detail")
+    @Operation(summary = "소분류를 조회하는 메서드", description = "소분류 ID로 해당 소분류를 조회합니다.", tags = "소분류 API")
     public ResponseEntity<?> getIngredient(IngredientVO ingredientVO) {
         log.info("getIngredient call :: ");
         IngredientDto ingredientDto = ingredientService.getIngredient(ingredientVO);
         if (ingredientDto != null) {
             return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/best")
+    @Operation(summary = "오늘의 최저가 소분류 조회하는 메서드", description = "오늘의 최저가 소분류를 조회합니다", tags = "소분류 API")
+    public ResponseEntity<?> getBestIngredients() {
+        log.info("getTodaysBestIngredients call :: ");
+        List<IngredientDto> ingredientDtoList = ingredientService.getBestIngredients();
+        if (ingredientDtoList != null) {
+            return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
