@@ -205,7 +205,7 @@ class _MyPageState extends State<MyPage> {
                 ),
                 onPressed: () async {
                   await widget.storage.delete(key: "login");
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => Main()),
