@@ -8,6 +8,9 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
+  final searchController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,6 +26,10 @@ class _SearchState extends State<Search> {
           Flexible(
             flex: 9,
             child: TextField(
+              controller: searchController,
+            onSubmitted: (value){
+
+            },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),
               hintText: '검색어를 입력하세요.',
