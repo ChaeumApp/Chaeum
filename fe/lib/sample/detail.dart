@@ -9,13 +9,16 @@ class DetailSample extends StatefulWidget {
 }
 
 class _DetailSampleState extends State<DetailSample> {
+
+
   Dio dio = Dio(BaseOptions(
     baseUrl: 'http://10.0.2.2:8080',
     // 토큰 넣는거 필요하면
     // headers: {'Authorization': 'Bearer Token'},
   ));
 
-// 즐겨찾기
+
+  // 즐겨찾기
   Future<void> favorite(email) async {
     try {
       Response response =
@@ -74,13 +77,38 @@ class _DetailSampleState extends State<DetailSample> {
   // 소분류 레시피
   var recipeList = [];
 
-  Future<void> getRecipeList(email, ingrId) async {
+  Future<void> getRecipeList(ingrId) async {
     try {
-      Response response = await dio.post('/ingr/detail/recipe',
-          data: {'userEmail': email, 'ingrId': ingrId});
+      Response response = await dio.post('/recipe/$ingrId');
       setState(() {
         recipeList = response.data;
       });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // 상품 선택
+  Future<void> clickItem(email, itemId) async {
+    try {
+      Response response = await dio.post('/item/selected',
+          data: {'userEmail': email, 'itemId': itemId});
+      print(response.data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+  // 레시피 선택
+  Future<void> clickRecipe(email, recipeId) async {
+    try {
+      Response response = await dio.get('/recipe/selected/$recipeId',
+      queryParameters: {
+        'recipeId' : recipeId
+      });
+          // 헤더의 토큰 활성화
+      print(response.data);
     } catch (e) {
       print(e);
     }

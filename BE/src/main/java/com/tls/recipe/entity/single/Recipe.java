@@ -31,4 +31,7 @@ public class Recipe {
 
     @Column(name = "recipe_link")
     private String recipeLink;
+
+    @Column(name = "recipe_thumbnail")
+    private String recipeThumbnail;
 }
