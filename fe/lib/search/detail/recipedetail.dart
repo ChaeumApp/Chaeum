@@ -333,10 +333,17 @@
 
 import 'package:flutter/material.dart';
 import './youtube.dart';
-import './materials.dart';
 
 class Recipedetail extends StatelessWidget {
-  const Recipedetail({super.key});
+  Recipedetail({super.key});
+  final List<String> ingredients = [
+    '계란 3개',
+    '우유 200ml',
+    '소금 약간',
+    '피자치즈 100g',
+    '베이컨 2줄',
+    '크림치즈 4숟가락',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -369,12 +376,10 @@ class Recipedetail extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 [
                   Container(child: Recipeyoutube()),
-
                   ListTile(
                     title: Text('베이컨 치즈 토스트 레시피(2인분)'),
                     trailing: Icon(Icons.favorite_border),
                   ),
-
                   Row(
                     children: [
                       Expanded(
@@ -384,15 +389,49 @@ class Recipedetail extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Materials()
+                      Expanded(
+                        child: Wrap(
+                          direction: Axis.horizontal,
+                          runSpacing: 1,
+                          spacing: 1,
+                          children: ingredients.map((text) {
+                            final textLength = text.length;
+                            return Padding(
+                              // padding: const EdgeInsets.all(5.0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(5, 0.5, 5, 0.5),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      textLength * 25.0, // 최대 너비를 텍스트 길이에 따라 계산
+                                ),
+                                child: TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Color(0xffA1CBA1),
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      side: BorderSide(
+                                        color: Color(0xff4EC64C),
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    text,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      )
                     ],
                   ),
-                  // SizedBox(
-                  //   height: 42,
-                  // ),
-                  // SizedBox(
-                  //   height: 42,
-                  // ),
                   Container(
                     height: 50,
                     margin: EdgeInsets.fromLTRB(10, 10, 0, 5),
