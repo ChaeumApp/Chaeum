@@ -1,3 +1,6 @@
+// 일단 안쓰는 파일
+
+
 import 'package:flutter/material.dart';
 
 class DetailTab extends StatelessWidget {

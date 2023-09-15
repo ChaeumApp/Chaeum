@@ -22,4 +22,6 @@ public interface UserService {
     int checkEmailAuthCode(String userEmail, int code);
 
     int deleteUser(String userEmail);
+
+    int readProfile(String userEmail);
 }
