@@ -8,6 +8,7 @@ import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.repository.UserRepository;
+import com.tls.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -59,17 +60,15 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public int likeRecipe(String userEmail, int recipeId) {
         try {
-            UserRecipeId userRecipeId = UserRecipeId.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow().getUserId())
-                .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow().getRecipeId())
-                .build();
-            if (userRecipeRepository.findByUserRecipeId(userRecipeId).isEmpty()) { // 즐겨찾기에 존재한다면
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            if (userRecipeRepository.findByUserIdAndRecipeId(user, recipe).isEmpty()) { // 즐겨찾기에 존재한다면
                 UserRecipe userRecipe = UserRecipe.builder()
                     .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
                     .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow()).build();
                 userRecipeRepository.save(userRecipe); // 즐겨찾기 목록에 등록
             } else { // 이미 즐겨찾기 목록에 존재한다면
-                userRecipeRepository.deleteByUserRecipeId(userRecipeId);
+                userRecipeRepository.deleteByUserIdAndRecipeId(user, recipe);
             }
             return 1;
         } catch (Exception e) {
