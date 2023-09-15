@@ -4,7 +4,6 @@ import com.tls.Ingredient.dto.IngredientDto;
 import com.tls.Ingredient.service.IngredientService;
 import com.tls.Ingredient.vo.IngredientVO;
 import com.tls.Ingredient.vo.UserIngrVO;
-import com.tls.category.vo.CategoryVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -41,9 +41,10 @@ public class IngredientController {
     @GetMapping("category")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredientsByCatAndSubCat(CategoryVO categoryVO) {
+    public ResponseEntity<?> getIngredientsByCatAndSubCat(
+        @RequestParam int catId, @RequestParam(required = false) int subCatId) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(categoryVO);
+        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId, subCatId);
         if (ingredientDtoList != null) {
             return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
         } else {
@@ -51,11 +52,11 @@ public class IngredientController {
         }
     }
 
-    @GetMapping("/detail")
+    @GetMapping("/detail/{ingrId}")
     @Operation(summary = "소분류를 조회하는 메서드", description = "소분류 ID로 해당 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredient(IngredientVO ingredientVO) {
+    public ResponseEntity<?> getIngredient(int ingrId) {
         log.info("getIngredient call :: ");
-        IngredientDto ingredientDto = ingredientService.getIngredient(ingredientVO);
+        IngredientDto ingredientDto = ingredientService.getIngredient(ingrId);
         if (ingredientDto != null) {
             return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
         } else {
