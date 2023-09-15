@@ -35,4 +35,3 @@ class _CategorySampleState extends State<CategorySample> {
     return const Placeholder();
   }
 }
-
