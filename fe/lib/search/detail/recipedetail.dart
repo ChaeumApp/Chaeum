@@ -363,6 +363,7 @@ class Recipedetail extends StatelessWidget {
               toolbarHeight: 55,
               title: Text('베이컨 치즈 토스트 레시피'),
               centerTitle: true,
+              pinned: false,
               elevation: 0,
               // leading: IconButton(
               //   icon: Icon(Icons.keyboard_backspace_rounded),
@@ -370,7 +371,6 @@ class Recipedetail extends StatelessWidget {
               //     print('menu button is clicked');
               //   },
               // ),
-              pinned: true,
             ),
             SliverList(
               delegate: SliverChildListDelegate(
