@@ -142,6 +142,8 @@ class _LogInState extends State<LogIn> {
                                                   response["accessToken"];
                                               final refreshToken =
                                                   response["refreshToken"];
+                                              print('여기는 로그인 버튼');
+                                              print(widget.storage);
                                               // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
                                               //{"login" : "id id_value password password_value"}
                                               //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
@@ -149,7 +151,7 @@ class _LogInState extends State<LogIn> {
                                                   key: "login",
                                                   value:
                                                       "accessToken $accessToken refreshToken $refreshToken");
-                                              Navigator.pushReplacement(
+                                              Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (BuildContext
