@@ -42,20 +42,6 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> {
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
-  }
-
-  _asyncMethod() async {
-    print('시작');
-    await context.watch<UserStore>().storage.read(key: 'login');
-  }
-
-  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
         initialIndex: 2,
