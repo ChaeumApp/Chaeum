@@ -5,10 +5,11 @@ import '../user/mypage.dart';
 import 'package:dio/dio.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({super.key});
+  const LogIn({super.key, this.storage});
 
   @override
   State<LogIn> createState() => _LogInState();
+  final storage;
 }
 
 class _LogInState extends State<LogIn> {
@@ -23,6 +24,7 @@ class _LogInState extends State<LogIn> {
             'userEmail': controller.text.toString(),
             'userPwd': controller2.text.toString()
           });
+      print('여기문제없어');
       return response.data;
     } catch (e) {
       print(e);
@@ -145,13 +147,10 @@ class _LogInState extends State<LogIn> {
                                               // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
                                               //{"login" : "id id_value password password_value"}
                                               //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
-                                              await context
-                                                  .watch<UserStore>()
-                                                  .storage
-                                                  .write(
-                                                      key: "login",
-                                                      value:
-                                                          "accessToken $accessToken refreshToken $refreshToken");
+                                              await widget.storage.write(
+                                                  key: "login",
+                                                  value:
+                                                      "accessToken $accessToken refreshToken $refreshToken");
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
