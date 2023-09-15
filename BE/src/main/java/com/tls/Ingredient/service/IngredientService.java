@@ -12,6 +12,8 @@ public interface IngredientService {
 
     List<IngredientDto> getIngredients(CategoryVO categoryVO);
 
+    List<IngredientDto> getBestIngredients();
+
     IngredientDto getIngredient(IngredientVO ingredientVO);
 
     int selectIngredient(UserIngrVO userIngrVO);

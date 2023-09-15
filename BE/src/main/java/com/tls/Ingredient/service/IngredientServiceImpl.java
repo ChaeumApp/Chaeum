@@ -22,6 +22,8 @@ public class IngredientServiceImpl implements IngredientService {
         return null;
     }
 
+    public List<IngredientDto> getBestIngredients() { return null; }
+
     @Override
     public IngredientDto getIngredient(IngredientVO ingredientVO) {
         return null;
