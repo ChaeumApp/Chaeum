@@ -18,14 +18,14 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getIngredients(CategoryVO categoryVO) {
+    public List<IngredientDto> getIngredients(int catId, int subCatId) {
         return null;
     }
 
     public List<IngredientDto> getBestIngredients() { return null; }
 
     @Override
-    public IngredientDto getIngredient(IngredientVO ingredientVO) {
+    public IngredientDto getIngredient(int ingrId) {
         return null;
     }
 
