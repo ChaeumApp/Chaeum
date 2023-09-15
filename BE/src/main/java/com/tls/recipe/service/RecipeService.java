@@ -14,4 +14,6 @@ public interface RecipeService {
     int selectRecipe(String userEmail, int recipeId);
 
     int likeRecipe(String userEmail, int recipeId);
+
+    List<Recipe> findByIngrName(String ingrName);
 }
