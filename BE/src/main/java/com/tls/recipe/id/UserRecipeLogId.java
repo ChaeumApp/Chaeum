@@ -2,10 +2,8 @@ package com.tls.recipe.id;
 
 import java.io.Serializable;
 import java.util.Objects;
-import lombok.Builder;
 
-@Builder
-public class UserRecipeId implements Serializable {
+public class UserRecipeLogId implements Serializable {
 
     private int userId;
     private int recipeId;
@@ -18,7 +16,7 @@ public class UserRecipeId implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UserRecipeId that = (UserRecipeId) o;
+        UserRecipeLogId that = (UserRecipeLogId) o;
         return Objects.equals(userId, that.userId) &&
             Objects.equals(recipeId, that.recipeId);
     }
@@ -27,4 +25,5 @@ public class UserRecipeId implements Serializable {
     public int hashCode() {
         return Objects.hash(userId, recipeId);
     }
+
 }
