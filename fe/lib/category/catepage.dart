@@ -283,7 +283,7 @@ class CatePage extends StatelessWidget {
               // ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
@@ -302,7 +302,7 @@ class CatePage extends StatelessWidget {
                         fontSize: 15,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    // SizedBox(height: 2),
                     ItemsCatePage()
                   ],
                 ),
