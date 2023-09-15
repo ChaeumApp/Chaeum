@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../user/mypage.dart';
 
@@ -11,6 +13,15 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
+  TextEditingController controller3 = TextEditingController();
+
+  bool emailCheck = false;
+  bool passwordCheck = false;
+  bool samepasswordCheck = false;
+
+  String emailMessage = '이메일 형식으로 입력해주세요';
+  String passwordMessage = '비밀번호는 특수문자, 숫자, 영어가 필수로 1개씩 있어야 합니다.';
+  String samepasswordMessage = '비밀번호와 다릅니다.';
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +31,23 @@ class _SignUpState extends State<SignUp> {
       },
       child: Scaffold(
         appBar: AppBar(
-            title: Text(
-              '회원가입',
-              style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            toolbarHeight: 65),
+          title: Text(
+            '회원가입',
+            style: TextStyle(
+                fontSize: 25, color: Colors.black, fontWeight: FontWeight.w700),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.grey[50],
+          centerTitle: true,
+          toolbarHeight: 65,
+          leading: IconButton(
+            color: Colors.black,
+            icon: Icon(Icons.keyboard_backspace_rounded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         // email, password 입력하는 부분을 제외한 화면을 탭하면, 키보드 사라지게 GestureDetector 사용
         body: Center(
           child: SingleChildScrollView(
@@ -50,7 +67,7 @@ class _SignUpState extends State<SignUp> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 60,
+                                height: 50,
                                 child: TextField(
                                   controller: controller,
                                   autofocus: true,
@@ -65,6 +82,8 @@ class _SignUpState extends State<SignUp> {
                                       prefixIcon: Icon(
                                         Icons.alternate_email_rounded,
                                       ),
+                                      suffixIcon:
+                                          Icon(Icons.priority_high_rounded),
                                       border: OutlineInputBorder(
                                           borderSide: BorderSide()),
                                       labelText: '이메일',
@@ -73,7 +92,7 @@ class _SignUpState extends State<SignUp> {
                                 ),
                               ),
                               SizedBox(
-                                height: 60,
+                                height: 50,
                                 child: TextField(
                                   controller: controller2,
                                   decoration: InputDecoration(
@@ -93,9 +112,9 @@ class _SignUpState extends State<SignUp> {
                                 ),
                               ),
                               SizedBox(
-                                height: 60,
+                                height: 50,
                                 child: TextField(
-                                  controller: controller2,
+                                  controller: controller3,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
                                           vertical: 16.0, horizontal: 10.0),
@@ -118,7 +137,7 @@ class _SignUpState extends State<SignUp> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             if (controller.text ==
                                                     'mei@hello.com' &&
                                                 controller2.text == '1234') {
