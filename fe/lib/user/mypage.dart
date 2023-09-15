@@ -1,46 +1,25 @@
+import 'package:fe/main.dart';
 import 'package:fe/user/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyPage extends StatefulWidget {
-  MyPage({super.key});
+  MyPage({super.key, this.storage});
 
+  final storage;
   @override
   State<MyPage> createState() => _MyPageState();
 }
 
 class _MyPageState extends State<MyPage> {
-  String? userInfo; //user의 정보를 저장하기 위한 변수
+  List<String> foodlist = ['bakery.png', 'cabbage.png'];
 
-  static final storage =
-      FlutterSecureStorage(); //flutter_secure_storage 사용을 위한 초기화 작업
   @override
   void initState() {
     super.initState();
-
-    //비동기로 flutter secure storage 정보를 불러오는 작업.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
   }
-
-  _asyncMethod() async {
-    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
-    //(데이터가 없을때는 null을 반환을 합니다.)
-    userInfo = await storage.read(key: "login");
-    print(userInfo);
-
-    //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
-    if (userInfo != null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LogIn(storage: storage)));
-    }
-  }
-
-  List<String> foodlist = ['bakery.png', 'cabbage.png'];
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +30,6 @@ class _MyPageState extends State<MyPage> {
         title: Text('마이페이지'),
         centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace_rounded),
-          onPressed: () {
-            print('menu butten is clicked');
-          },
-        ),
       ),
       body: Container(
         padding: EdgeInsets.all(30),
@@ -117,7 +90,7 @@ class _MyPageState extends State<MyPage> {
                 children: [
                   SizedBox(
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
                       child: Text(
                         'My채움',
                         style: TextStyle(
@@ -160,7 +133,7 @@ class _MyPageState extends State<MyPage> {
                                   List<Widget>.generate(foodlist.length, (idx) {
                                 return Container(
                                   color: Colors.amber,
-                                  padding: const EdgeInsets.all(40),
+                                  padding: const EdgeInsets.all(30),
                                   margin: const EdgeInsets.all(8),
                                   child: Image.asset(
                                     'assets/images/main/${foodlist[idx]}',
@@ -170,24 +143,28 @@ class _MyPageState extends State<MyPage> {
                                 );
                               }).toList()),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(children: [
-                              Text(
-                                '식재료 ',
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                '(${'3'}건)',
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w600),
-                              ),
-                            ]),
-                            Text('더보기')
-                          ],
+                        SizedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(children: [
+                                Text(
+                                  '식재료 ',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  '(${'3'}건)',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ]),
+                              Text('더보기')
+                            ],
+                          ),
                         ),
                         Expanded(
                           child: GridView.count(
@@ -212,7 +189,7 @@ class _MyPageState extends State<MyPage> {
                 ],
               ),
             ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               TextButton(
                 child: Text(
                   '비밀번호 변경',
@@ -220,21 +197,28 @@ class _MyPageState extends State<MyPage> {
                 ),
                 onPressed: () {},
               ),
-              TextButton(
-                child: Text(
-                  '회원 탈퇴',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                ),
-                onPressed: () {},
-              ),
+              Text('|'),
               TextButton(
                 child: Text(
                   '로그아웃',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
                 onPressed: () async {
-                  await storage.delete(key: "login");
+                  await widget.storage.delete(key: "login");
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => Main()),
+                  );
                 },
+              ),
+              Text('|'),
+              TextButton(
+                child: Text(
+                  '회원 탈퇴',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                onPressed: () {},
               ),
             ]),
           ],
