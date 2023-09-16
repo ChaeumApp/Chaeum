@@ -1,5 +1,10 @@
+import 'package:fe/api/firebaseapi.dart';
+import 'package:fe/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //메인페이지
 import './main/mainbody.dart';
@@ -16,7 +21,22 @@ import './user/my_more.dart';
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
 
-void main() {
+
+
+
+
+
+
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  initializeNotification();
+
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -41,6 +61,22 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+
+  var messageString = "";
+
+
+  @override
+  void initState() {
+    getMyDeviceToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      foregroundMessage(message);
+        // setState(() {
+        //  messageString = message.notification!.body!;
+        //  print("Foreground 메시지 수신: $messageString");
+        // });
+    });
+    super.initState();
+  }
 
 
   @override
