@@ -1,3 +1,5 @@
+import 'package:fe/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './repeat/bottom.dart';
@@ -16,7 +18,12 @@ import './user/my_more.dart';
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
