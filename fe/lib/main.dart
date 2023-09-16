@@ -1,7 +1,10 @@
+import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //메인페이지
 import './main/mainbody.dart';
@@ -18,11 +21,13 @@ import './user/my_more.dart';
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  initializeNotification();
 
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +53,37 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+
+  var messageString = "";
+  @override
+  void initState() {
+    getMyDeviceToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      RemoteNotification? notification = message.notification;
+
+      if (notification != null) {
+        FlutterLocalNotificationsPlugin().show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'high_importance_notification',
+              importance: Importance.max,
+            ),
+          ),
+        );
+        setState(() {
+          messageString = message.notification!.body!;
+          print("Foreground 메시지 수신: $messageString");
+        });
+      }
+    });
+    super.initState();
+  }
+
+
 
 
   @override
