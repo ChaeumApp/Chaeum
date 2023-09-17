@@ -1,13 +1,23 @@
 import 'package:dio/dio.dart';
+import 'package:fe/detail/detail.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("백그라운드 메시지 처리.. ${message.notification!.body!}");
+
+// 백그라운드 메세지
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // print("백그라운드 메시지 처리.. ${message.notification!.body!}");
 }
 
-void initializeNotification() async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+@pragma('vm:entry-point')
+void backgroundHandler(NotificationResponse details) {
+  print('뭔데');
+}
+
+
+void initializeNotification(context) async {
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await flutterLocalNotificationsPlugin
@@ -19,13 +29,34 @@ void initializeNotification() async {
 
   await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
     android: AndroidInitializationSettings("@mipmap/ic_launcher"),
-  ));
+  ),
+  // foreground일 때 알림 눌렀을 때
+  onDidReceiveNotificationResponse: (NotificationResponse details) async {
+    // print('데이터는 ${details.payload}');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Detail(category: details.payload)));
+  },
+  onDidReceiveBackgroundNotificationResponse: backgroundHandler);
+
 
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
   );
+
+  RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+  if (message != null){
+    // print('${message.data['name']}');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Detail(category: message.data['name'])));
+  }
 }
 
 void getMyDeviceToken() async {
@@ -51,9 +82,13 @@ void foregroundMessage(RemoteMessage message) {
           importance: Importance.max,
         ),
       ),
+      // local notification에 메세지 전달은 이걸로
+      payload: message.data['name']
     );
   }
 }
+
+
 
 
 // Future<void> sendNotificationToDevice({
