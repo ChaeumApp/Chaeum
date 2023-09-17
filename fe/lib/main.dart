@@ -23,19 +23,12 @@ import 'store/userstore.dart';
 
 
 
-
-
-
-
-
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  initializeNotification();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,19 +55,13 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> {
 
-  var messageString = "";
-
-
   @override
   void initState() {
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
-        // setState(() {
-        //  messageString = message.notification!.body!;
-        //  print("Foreground 메시지 수신: $messageString");
-        // });
     });
+    initializeNotification(context);
     super.initState();
   }
 
