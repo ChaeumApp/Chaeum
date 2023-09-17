@@ -133,7 +133,7 @@ CREATE TABLE `recipe_process_tb`
 (
     `recipe_proc_id`      SMALLINT    NOT NULL,
     `recipe_id`           INT         NOT NULL,
-    `recipe_proc_content` VARCHAR(80) NOT NULL
+    `recipe_proc_content` VARCHAR(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `recipe_select_log_tb`
