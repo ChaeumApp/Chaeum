@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './popular_product.dart';
-// import './catepage.dart';
+import './catepage.dart';
 
 void main() {
   runApp(Ingrecate());
@@ -32,10 +32,10 @@ class Ingrecate extends StatelessWidget {
                   leading: Image.asset('assets/images/category/fr.png'),
                   title: Text('과일'),
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => CatePage()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CatePage()),
+                    );
                   },
                   trailing: Icon(Icons.keyboard_arrow_down),
                 ),
