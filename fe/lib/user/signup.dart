@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import '../user/mypage.dart';
+import './userapi.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -14,15 +13,22 @@ class _SignUpState extends State<SignUp> {
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
   TextEditingController controller3 = TextEditingController();
+  TextEditingController controller4 = TextEditingController();
 
   bool emailCheck = false;
+  bool emailCodeCheck = false;
   bool passwordCheck = false;
   bool samepasswordCheck = false;
+  bool emailCheckButton = false;
 
   String? emailError;
+  String? passwordError;
+  String? samepasswordError;
   String emailMessage = '이메일 형식으로 입력해주세요';
-  String passwordMessage = '비밀번호는 특수문자, 숫자, 영어가 필수로 1개씩 있어야 합니다.';
+  String passwordMessage = '특수문자, 숫자, 영어가 필수로 1개씩 있어야 합니다.';
   String samepasswordMessage = '비밀번호와 다릅니다.';
+
+  final UserApi userapi = UserApi();
 
   @override
   Widget build(BuildContext context) {
@@ -68,56 +74,251 @@ class _SignUpState extends State<SignUp> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 75,
+                                height: 83,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        onChanged: (value) {
+                                          if (!RegExp(
+                                                  r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                              .hasMatch(value)) {
+                                            setState(() {
+                                              emailError = emailMessage;
+                                              emailCheck = false;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              emailError = null; // 에러 없음
+                                              emailCheck = true;
+                                            });
+                                          }
+                                        },
+                                        controller: controller,
+                                        autofocus: true,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 17.0, horizontal: 10.0),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 1.5,
+                                                  color: Color(0xffA1CBA1))),
+                                          prefixIconColor: Color(0xffA1CBA1),
+                                          prefixIcon: Icon(
+                                            Icons.alternate_email_rounded,
+                                          ),
+                                          suffixIcon: Icon(
+                                            RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                                    .hasMatch(controller.text)
+                                                ? Icons.check_circle_rounded
+                                                : Icons.priority_high_rounded,
+                                            color:
+                                                RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                                        .hasMatch(
+                                                            controller.text)
+                                                    ? Color(0xffA1CBA1)
+                                                    : Colors.red,
+                                          ),
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide()),
+                                          labelText: '이메일',
+                                          errorText: emailError,
+                                          errorStyle: TextStyle(height: 1),
+                                          focusColor: Color(0xffA1CBA1),
+                                        ),
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height: 53,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 0, 0, 0),
+                                          child: TextButton(
+                                            style: ButtonStyle(
+                                              backgroundColor: emailCheck
+                                                  ? MaterialStateProperty.all<
+                                                      Color>(Color(0xffA1CBA1))
+                                                  : MaterialStateProperty.all<
+                                                      Color>(Colors.grey),
+                                            ),
+                                            onPressed: emailCheck
+                                                ? () async {
+                                                    String? dupcheck =
+                                                        await userapi
+                                                            .duplicatecheck(
+                                                                controller.text
+                                                                    .toString());
+                                                    if (dupcheck.toString() ==
+                                                        'success') {
+                                                      String? emailsend =
+                                                          await userapi.sendEmail(
+                                                              controller.text
+                                                                  .toString());
+                                                      if (emailsend
+                                                              .toString() ==
+                                                          'success') {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                ((context) {
+                                                              return AlertDialog(
+                                                                actions: <Widget>[
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child: Text(
+                                                                          '닫기'))
+                                                                ],
+                                                                content:
+                                                                    SingleChildScrollView(
+                                                                  child: Text(
+                                                                      '입력하신 이메일을 확인하세요.'),
+                                                                ),
+                                                              );
+                                                            }));
+                                                        setState(() {
+                                                          emailCheckButton =
+                                                              true;
+                                                        });
+                                                      }
+                                                    } else {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: ((context) {
+                                                            return AlertDialog(
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                    child: Text(
+                                                                        '닫기'))
+                                                              ],
+                                                              content:
+                                                                  SingleChildScrollView(
+                                                                child: Text(
+                                                                    '이미 있는 ID입니다.'),
+                                                              ),
+                                                            );
+                                                          }));
+                                                    }
+                                                  }
+                                                : null,
+                                            child: Text(
+                                              '인증 하기',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              emailCheckButton
+                                  ? SizedBox(
+                                      height: 83,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: TextField(
+                                              controller: controller4,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 17.0,
+                                                        horizontal: 10.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            width: 1.5,
+                                                            color: Color(
+                                                                0xffA1CBA1))),
+                                                border: OutlineInputBorder(
+                                                    borderSide: BorderSide()),
+                                                labelText: '인증 번호',
+                                                focusColor: Color(0xffA1CBA1),
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.emailAddress,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                              height: 53,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 0, 0, 0),
+                                                child: TextButton(
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(Color(
+                                                                  0xffA1CBA1))),
+                                                  onPressed: () async {
+                                                    print(controller4.text);
+                                                    print(controller4
+                                                        .text.runtimeType);
+
+                                                    String? checkcode =
+                                                        await userapi.checkcode(
+                                                            controller.text
+                                                                .toString(),
+                                                            int.parse(
+                                                                controller4
+                                                                    .text));
+                                                    if (checkcode.toString() ==
+                                                        'seccess') {
+                                                      setState(() {
+                                                        emailCodeCheck = true;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    '인증 확인',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                    )
+                                  : SizedBox(),
+                              SizedBox(
+                                height: 83,
                                 child: TextField(
                                   onChanged: (value) {
                                     if (!RegExp(
-                                            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                                            r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                         .hasMatch(value)) {
                                       setState(() {
-                                        emailError = '올바른 이메일 형식이 아닙니다.';
+                                        passwordError = passwordMessage;
+                                        passwordCheck = false;
                                       });
                                     } else {
                                       setState(() {
-                                        emailError = null; // 에러 없음
+                                        passwordError = null; // 에러 없음
+                                        passwordCheck = true;
                                       });
                                     }
                                   },
-                                  controller: controller,
-                                  autofocus: true,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 14.0, horizontal: 10.0),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Color(0xffA1CBA1))),
-                                    prefixIconColor: Color(0xffA1CBA1),
-                                    prefixIcon: Icon(
-                                      Icons.alternate_email_rounded,
-                                    ),
-                                    suffixIcon: Icon(
-                                        RegExp(r"^[a-zzA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                .hasMatch(controller.text)
-                                            ? Icons.check_circle_rounded
-                                            : Icons.priority_high_rounded),
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide()),
-                                    labelText: '이메일',
-                                    errorText: emailError,
-                                    errorStyle: TextStyle(),
-                                    focusColor: Color(0xffA1CBA1),
-                                  ),
-                                  keyboardType: TextInputType.emailAddress,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 50,
-                                child: TextField(
+
                                   controller: controller2,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
-                                          vertical: 14.0, horizontal: 10.0),
+                                          vertical: 17.0, horizontal: 10.0),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -125,27 +326,66 @@ class _SignUpState extends State<SignUp> {
                                       prefixIconColor: Color(0xffA1CBA1),
                                       prefixIcon: Icon(Icons.vpn_key_outlined),
                                       border: OutlineInputBorder(),
+                                      suffixIcon: Icon(
+                                          RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                  .hasMatch(controller2.text)
+                                              ? Icons.check_circle_rounded
+                                              : Icons.priority_high_rounded,
+                                          color:
+                                              RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                      .hasMatch(
+                                                          controller2.text)
+                                                  ? Color(0xffA1CBA1)
+                                                  : Colors.red),
                                       labelText: '비밀번호',
+                                      errorText: passwordError,
+                                      errorStyle: TextStyle(height: 1),
                                       focusColor: Color(0xffA1CBA1)),
                                   keyboardType: TextInputType.visiblePassword,
                                   obscureText: true, // 비밀번호 안보이도록 하는 것
                                 ),
                               ),
                               SizedBox(
-                                height: 50,
+                                height: 83,
                                 child: TextField(
+                                  onChanged: (value) {
+                                    if (controller2.text != controller3.text) {
+                                      setState(() {
+                                        samepasswordError = samepasswordMessage;
+                                        samepasswordCheck = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        samepasswordError = null; // 에러 없음
+                                        samepasswordCheck = false;
+                                      });
+                                    }
+                                  },
                                   controller: controller3,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
-                                          vertical: 14.0, horizontal: 10.0),
+                                          vertical: 17.0, horizontal: 10.0),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
                                               color: Color(0xffA1CBA1))),
                                       prefixIconColor: Color(0xffA1CBA1),
                                       prefixIcon: Icon(Icons.key),
+                                      suffixIcon: Icon(
+                                        (controller2.text == controller3.text &&
+                                                controller3.text != '')
+                                            ? Icons.check_circle_rounded
+                                            : Icons.priority_high_rounded,
+                                        color: (controller2.text ==
+                                                    controller3.text &&
+                                                controller3.text != '')
+                                            ? Color(0xffA1CBA1)
+                                            : Colors.red,
+                                      ),
                                       border: OutlineInputBorder(),
                                       labelText: '비밀번호 확인',
+                                      errorText: samepasswordError,
+                                      errorStyle: TextStyle(height: 1),
                                       focusColor: Color(0xffA1CBA1)),
                                   keyboardType: TextInputType.visiblePassword,
                                   obscureText: true, // 비밀번호 안보이도록 하는 것

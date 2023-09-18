@@ -3,9 +3,9 @@ import 'package:fe/user/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../user/mypage.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main.dart';
+import './userapi.dart';
 
 class LogIn extends StatefulWidget {
   LogIn({super.key, this.storage});
@@ -16,24 +16,10 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  final UserApi userapi = UserApi();
+
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-
-  Dio dio = Dio();
-
-  login() async {
-    try {
-      Response response = await dio.post('http://10.0.2.2:8080/user/signin',
-          data: {
-            'userEmail': controller.text.toString(),
-            'userPwd': controller2.text.toString()
-          });
-      print('여기문제없어');
-      return response.data;
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +123,12 @@ class _LogInState extends State<LogIn> {
                                                 RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                                     .hasMatch(
                                                         controller2.text)) {
-                                              final response = await login();
+                                              final response =
+                                                  await userapi.login(
+                                                      controller.text
+                                                          .toString(),
+                                                      controller2.text
+                                                          .toString());
                                               final accessToken =
                                                   response["accessToken"];
                                               final refreshToken =
@@ -151,6 +142,10 @@ class _LogInState extends State<LogIn> {
                                                   key: "login",
                                                   value:
                                                       "accessToken $accessToken refreshToken $refreshToken");
+                                              await context
+                                                  .read<UserStore>()
+                                                  .changeUserInfo(
+                                                      controller.text);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -170,7 +165,7 @@ class _LogInState extends State<LogIn> {
                                                   Text(
                                                       '비밀번호를 특수문자,영어를 포함해 주세요'));
                                             } else if (!RegExp(
-                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                                        r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                                     .hasMatch(
                                                         controller.text) &&
                                                 RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")

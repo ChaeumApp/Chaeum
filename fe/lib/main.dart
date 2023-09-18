@@ -20,7 +20,6 @@ import './user/my_more.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
@@ -56,12 +55,14 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   static String? userInfo; //user의 정보를 저장하기 위한 변수;
   static final storage = FlutterSecureStorage();
-
   @override
   void initState() {
     super.initState();
-
-    //비동기로 flutter secure storage 정보를 불러오는 작업.
+    getMyDeviceToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      foregroundMessage(message);
+    });
+    initializeNotification(context);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _asyncMethod();
       setState(() {});
@@ -79,77 +80,28 @@ class _MainState extends State<Main> {
     print('시작2');
   }
 
-  int _selectedIndex = 2;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  final List<Widget> _widgetOptions = <Widget>[
-    Ingrecate(),
-    Center(child: Text('레시피')),
-    Mainb(),
-    SearchPage(),
-    if (userInfo == null) LogIn(storage: storage) else MyPage(storage: storage)
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
-        bottomNavigationBar: Container(
-          height: 70,
-          // padding: EdgeInsets.only(bottom: 2, top: 5),
-          decoration: BoxDecoration(
-              //   borderRadius: BorderRadius.only(
-              //   topLeft: Radius.circular(16),
-              //   topRight: Radius.circular(16)
-              // ),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 4,
-                    spreadRadius: 0.0,
-                    offset: const Offset(0, -0.5))
-              ]),
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              onTap: _onItemTapped,
-              currentIndex: _selectedIndex,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.kitchen), label: '식재료'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.menu_book), label: '레시피'),
-                BottomNavigationBarItem(
-                    icon: Image.asset('assets/images/repeat/bottom_logo.png',
-                        width: 30),
-                    label: "홈"),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.manage_search),
-                  label: '검색',
-                ),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.perm_identity), label: '내 정보'),
+    return DefaultTabController(
+        initialIndex: 2,
+        length: 5,
+        child: Scaffold(
+          body: SafeArea(
+            child: TabBarView(
+              children: [
+                Ingrecate(),
+                Center(child: Text('레시피')),
+                Mainb(),
+                SearchPage(),
+                userInfo == null
+                    ? LogIn(storage: storage)
+                    : MyPage(storage: storage)
+                // FavoriteMore(),
               ],
-              selectedItemColor: Color(0xffA3CCA3),
-              selectedLabelStyle:
-                  TextStyle(color: Color(0xffA3CCA3), fontSize: 12),
-              unselectedItemColor: Color(0xffCACACA),
-              unselectedLabelStyle: TextStyle(color: Color(0xffCACACA)),
             ),
           ),
+          extendBodyBehindAppBar: true,
+          bottomNavigationBar: Bottom(),
         ));
   }
 }
