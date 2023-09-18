@@ -12,10 +12,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadExcel {
 
-    public List<String[]> readExcel(String path, String filename) {
+    public List<String[]> readExcel(String filename) {
         List<String[]> result = new ArrayList<>();
         try {
-            FileInputStream file = new FileInputStream(path + filename);
+            FileInputStream file = new FileInputStream("src/main/resources/"+filename);
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             NumberFormat f = NumberFormat.getInstance();
             f.setGroupingUsed(false);    //지수로 안나오게 설정
