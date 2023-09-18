@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:async';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,8 +33,13 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // 상태바 색상 변경하는 코드
+
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid){
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+
+  // 상태바 색상 변경하는 코드
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.grey[50],
       statusBarIconBrightness: Brightness.dark));
