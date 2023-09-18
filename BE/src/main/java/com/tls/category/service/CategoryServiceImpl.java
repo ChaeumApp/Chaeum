@@ -49,26 +49,6 @@ public class CategoryServiceImpl implements CategoryService {
                 System.out.println(categoryWithSubCategoryDto.getCatName());
                 results.add(categoryWithSubCategoryDto);
             });
-
-//            List<CategoryWithSubCategoryDto> results = new ArrayList<>();
-//            for (Category category : categories) {
-//                Optional<SubCategory> subCategoryDtoList = subCategoryRepository.findBySubCatId(
-//                    category.getCatId());
-//                List<SubCategoryDto> subCategoryDtos = new ArrayList<>();
-//                subCategoryDtoList.ifPresent(subCategory -> {
-//                    SubCategoryDto subCategoryDto = SubCategoryDto.builder()
-//                        .subcatId(subCategory.getSubCatId())
-//                        .subcatName(subCategory.getSubCatName())
-//                        .build();
-//                    subCategoryDtos.add(subCategoryDto);
-//                });
-//                CategoryWithSubCategoryDto categoryWithSubCategoryDto = CategoryWithSubCategoryDto.builder()
-//                    .catName(category.getCatName())
-//                    .catId(category.getCatId())
-//                    .subCategoryDtoList(subCategoryDtos)
-//                    .build();
-//                results.add(categoryWithSubCategoryDto);
-//            }
             return results;
         } catch (Exception e) {
             return null;
