@@ -5,6 +5,7 @@ import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
 import com.tls.user.service.UserService;
 import com.tls.user.vo.UserIdVO;
+import com.tls.user.vo.UserPwdVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -147,21 +148,18 @@ public class UserController {
             + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
             + "업데이트에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> updateUser(@RequestBody UserDto userDto,
+    public ResponseEntity<?> updateUser(@RequestBody UserPwdVO userDto,
         @RequestHeader("Authorization") String tokenWithPrefix) {
-        log.info("findUserPwd call :: {}", userDto.getUserEmail());
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
             tokenWithPrefix.substring(7));
-        if (userDto.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-            int responseCode = userService.updateUser(userDto);
-            if (responseCode == 1) {
-                return new ResponseEntity<>("success", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("fail", HttpStatus.OK);
-            }
+        log.info("findUserPwd call :: {}", authentication.getName());
+        int responseCode = userService.updateUser(authentication.getName(), userDto);
+        if (responseCode == 1) {
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
-        return new ResponseEntity<>("unauthorized", HttpStatus.OK);
     }
 
     @PostMapping(value = "/find/pwd")
