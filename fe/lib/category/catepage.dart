@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import './cateitems.dart';
 
-// void main() {
-//   runApp(CatePage());
-// }
-
 // class CatePage extends StatelessWidget {
 //   CatePage({Key? key}) : super(key: key);
 
@@ -12,61 +8,99 @@ import './cateitems.dart';
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
 //       home: Scaffold(
-//         appBar: AppBar(
-//           backgroundColor: Color(0xffA1CBA1),
-//           toolbarHeight: 55,
-//           title: Text('과일'),
-//           centerTitle: true,
-//           elevation: 0,
-//           leading: IconButton(
-//             icon: Icon(Icons.keyboard_backspace_rounded),
-//             onPressed: () {
-//               print('menu butten is clicked');
-//             },
-//           ),
-//         ),
-//         body: SingleChildScrollView(
-//           physics: const BouncingScrollPhysics(),
-//           padding: const EdgeInsets.all(1),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
+//         body: CustomScrollView(
+//           slivers: <Widget>[
+//             SliverAppBar(
+//               backgroundColor: Color(0xffA1CBA1),
+//               toolbarHeight: 55,
+//               title: Text('과일'),
+//               centerTitle: true,
+//               elevation: 0,
+//               leading: IconButton(
+//                 icon: Icon(Icons.keyboard_backspace_rounded),
+//                 onPressed: () {
+//                   print('menu button is clicked');
+//                 },
 //               ),
-//               SizedBox(height: 30),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
-//                 child: Text(
-//                   "이런 재료들은 어때요?",
-//                   style: TextStyle(
-//                     fontSize: 17,
-//                     fontWeight: FontWeight.bold,
+//               pinned: true,
+//             ),
+//             SliverPadding(
+//               padding: EdgeInsets.symmetric(horizontal: 10),
+//               sliver: SliverList(
+//                 delegate: SliverChildListDelegate(
+//                   [
+//                     SizedBox(height: 30),
+//                     Text(
+//                       "이런 재료들은 어때요?",
+//                       style: TextStyle(
+//                         fontSize: 17,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     SizedBox(height: 8),
+//                     Text(
+//                       "총 156건",
+//                       style: TextStyle(
+//                         fontSize: 15,
+//                       ),
+//                     ),
+//                     ItemsCatePage(),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             SliverToBoxAdapter(
+//               child: Positioned(
+//                 left: 334,
+//                 top: 22,
+//                 child: SizedBox(
+//                   width: 16,
+//                   height: 405,
+//                   child: Stack(
+//                     children: [
+//                       Positioned(
+//                         left: 0,
+//                         top: 0,
+//                         child: Container(
+//                           width: 16,
+//                           height: 405,
+//                           decoration: ShapeDecoration(
+//                             color: Color(0xCCD7D7D7),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(8.50),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       Positioned(
+//                         left: 3,
+//                         top: 8.59,
+//                         child: SizedBox(
+//                           width: 9,
+//                           height: 389.05,
+//                           child: Text(
+//                             '&\nㄱ\n\nㄴ\n\nㄷ\n\nㄸ\n\nㄹ\n\nㅁ\n\nㅂ\n\nㅃ\n\nㅅ\n\nㅆ\n\nㅇ\n\nㅈ\n\nㅋ\n\nㅌ\n\nㅍ\n\nㅎ',
+//                             textAlign: TextAlign.center,
+//                             style: TextStyle(
+//                               color: Colors.black,
+//                               fontSize: 10,
+//                               fontFamily: 'Pretendard Variable',
+//                               fontWeight: FontWeight.w500,
+//                               height: 0,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
 //                   ),
 //                 ),
 //               ),
-//               SizedBox(height: 8),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
-//                 child: Text(
-//                   "총 156건",
-//                   style: TextStyle(
-//                     fontSize: 15,
-//                   ),
-//                 ),
-//               ),
-//               SizedBox(height: 2),
-//               ItemsCatePage()
-//             ],
-//           ),
+//             ),
+//           ],
 //         ),
 //       ),
 //     );
 //   }
-// }
-
-// void main() {
-//   runApp(CatePage());
 // }
 
 // class CatePage extends StatelessWidget {
@@ -80,50 +114,87 @@ import './cateitems.dart';
 //           slivers: <Widget>[
 //             SliverAppBar(
 //               backgroundColor: Color(0xffA1CBA1),
-//               expandedHeight: 200,
-//               floating: false,
-//               pinned: true,
-//               flexibleSpace: FlexibleSpaceBar(
-//                 title: Text('과일'),
-//                 centerTitle: true,
+//               toolbarHeight: 55,
+//               title: Text('과일'),
+//               centerTitle: true,
+//               elevation: 0,
+//               leading: IconButton(
+//                 icon: Icon(Icons.keyboard_backspace_rounded),
+//                 onPressed: () {
+//                   print('menu button is clicked');
+//                 },
 //               ),
+//               pinned: true,
 //             ),
-//             SliverToBoxAdapter(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Padding(
-//                     padding: EdgeInsets.symmetric(horizontal: 15),
-//                   ),
-//                   SizedBox(height: 30),
-//                   Padding(
-//                     padding: EdgeInsets.symmetric(horizontal: 15),
-//                     child: Text(
+//             SliverPadding(
+//               padding: EdgeInsets.symmetric(horizontal: 10),
+//               sliver: SliverList(
+//                 delegate: SliverChildListDelegate(
+//                   [
+//                     SizedBox(height: 30),
+//                     Text(
 //                       "이런 재료들은 어때요?",
 //                       style: TextStyle(
 //                         fontSize: 17,
 //                         fontWeight: FontWeight.bold,
 //                       ),
 //                     ),
-//                   ),
-//                   SizedBox(height: 8),
-//                   Padding(
-//                     padding: EdgeInsets.symmetric(horizontal: 15),
-//                     child: Text(
+//                     SizedBox(height: 8),
+//                     Text(
 //                       "총 156건",
 //                       style: TextStyle(
 //                         fontSize: 15,
 //                       ),
 //                     ),
-//                   ),
-//                   SizedBox(height: 2),
-//                 ],
+//                   ],
+//                 ),
 //               ),
 //             ),
-//             SliverList(
-//               delegate: SliverChildListDelegate([
-//                 ItemsCatePage(),
-//               ]),
+//             SliverToBoxAdapter(
+//               child: SizedBox(
+//                 width: 16,
+//                 height: 405,
+//                 child: Stack(
+//                   children: [
+//                     Positioned(
+//                       left: 0,
+//                       top: 0,
+//                       child: Container(
+//                         width: 16,
+//                         height: 405,
+//                         decoration: ShapeDecoration(
+//                           color: Color(0xCCD7D7D7),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(8.50),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     Positioned(
+//                       left: 3,
+//                       top: 8.59,
+//                       child: SizedBox(
+//                         width: 9,
+//                         height: 389.05,
+//                         child: Text(
+//                           '&\nㄱ\n\nㄴ\n\nㄷ\n\nㄸ\n\nㄹ\n\nㅁ\n\nㅂ\n\nㅃ\n\nㅅ\n\nㅆ\n\nㅇ\n\nㅈ\n\nㅋ\n\nㅌ\n\nㅍ\n\nㅎ',
+//                           textAlign: TextAlign.center,
+//                           style: TextStyle(
+//                             color: Colors.black,
+//                             fontSize: 10,
+//                             fontFamily: 'Pretendard Variable',
+//                             fontWeight: FontWeight.w500,
+//                             height: 0,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             SliverToBoxAdapter(
+//               child: ItemsCatePage(), // 아이템 목록 출력
 //             ),
 //           ],
 //         ),
@@ -132,10 +203,6 @@ import './cateitems.dart';
 //   }
 // }
 
-// void main() {
-//   runApp(CatePage());
-// }
-
 // class CatePage extends StatelessWidget {
 //   CatePage({Key? key}) : super(key: key);
 
@@ -143,111 +210,95 @@ import './cateitems.dart';
 //   Widget build(BuildContext context) {
 //     return MaterialApp(
 //       home: Scaffold(
-//         appBar: AppBar(
-//           backgroundColor: Color(0xffA1CBA1),
-//           toolbarHeight: 55,
-//           title: Text('과일'),
-//           centerTitle: true,
-//           elevation: 0,
-//           leading: IconButton(
-//             icon: Icon(Icons.keyboard_backspace_rounded),
-//             onPressed: () {
-//               print('menu butten is clicked');
-//             },
-//           ),
-//         ),
-//         body: SafeArea(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
+//         body: CustomScrollView(
+//           slivers: <Widget>[
+//             SliverAppBar(
+//               backgroundColor: Color(0xffA1CBA1),
+//               toolbarHeight: 55,
+//               title: Text('과일'),
+//               centerTitle: true,
+//               elevation: 0,
+//               leading: IconButton(
+//                 icon: Icon(Icons.keyboard_backspace_rounded),
+//                 onPressed: () {
+//                   print('menu button is clicked');
+//                 },
 //               ),
-//               SizedBox(height: 30),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
-//                 child: Text(
-//                   "이런 재료들은 어때요?",
-//                   style: TextStyle(
-//                     fontSize: 17,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ),
-//               SizedBox(height: 8),
-//               Padding(
-//                 padding: EdgeInsets.symmetric(horizontal: 15),
-//                 child: Text(
-//                   "총 156건",
-//                   style: TextStyle(
-//                     fontSize: 15,
-//                   ),
-//                 ),
-//               ),
-//               SizedBox(height: 2),
-//               ItemsCatePage()
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class CatePage extends StatelessWidget {
-//   CatePage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           backgroundColor: Color(0xffA1CBA1),
-//           toolbarHeight: 55,
-//           title: Text('과일'),
-//           centerTitle: true,
-//           elevation: 0,
-//           leading: IconButton(
-//             icon: Icon(Icons.keyboard_backspace_rounded),
-//             onPressed: () {
-//               print('menu button is clicked');
-//             },
-//           ),
-//         ),
-//         body: SafeArea(
-//           child: SingleChildScrollView(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Padding(
-//                   padding: EdgeInsets.symmetric(horizontal: 15),
-//                 ),
-//                 SizedBox(height: 30),
-//                 Padding(
-//                   padding: EdgeInsets.symmetric(horizontal: 15),
-//                   child: Text(
-//                     "이런 재료들은 어때요?",
-//                     style: TextStyle(
-//                       fontSize: 17,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//                 ),
-//                 SizedBox(height: 8),
-//                 Padding(
-//                   padding: EdgeInsets.symmetric(horizontal: 15),
-//                   child: Text(
-//                     "총 156건",
-//                     style: TextStyle(
-//                       fontSize: 15,
-//                     ),
-//                   ),
-//                 ),
-//                 SizedBox(height: 2),
-//                 ItemsCatePage(),
-//               ],
+//               pinned: true,
 //             ),
-//           ),
+//             SliverPadding(
+//               padding: EdgeInsets.symmetric(horizontal: 10),
+//               sliver: SliverList(
+//                 delegate: SliverChildListDelegate(
+//                   [
+//                     SizedBox(height: 30),
+//                     Text(
+//                       "이런 재료들은 어때요?",
+//                       style: TextStyle(
+//                         fontSize: 17,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     SizedBox(height: 8),
+//                     Text(
+//                       "총 156건",
+//                       style: TextStyle(
+//                         fontSize: 15,
+//                       ),
+//                     ),
+//                     ItemsCatePage(),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             SliverToBoxAdapter(
+//               child: Positioned(
+//                 left: 334,
+//                 top: 22,
+//                 child: SizedBox(
+//                   width: 16,
+//                   height: 405,
+//                   child: Stack(
+//                     children: [
+//                       Positioned(
+//                         left: 0,
+//                         top: 0,
+//                         child: Container(
+//                           width: 16,
+//                           height: 405,
+//                           decoration: ShapeDecoration(
+//                             color: Color(0xCCD7D7D7),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(8.50),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       Positioned(
+//                         left: 3,
+//                         top: 8.59,
+//                         child: SizedBox(
+//                           width: 9,
+//                           height: 389.05,
+//                           child: Text(
+//                             '&\nㄱ\n\nㄴ\n\nㄷ\n\nㄸ\n\nㄹ\n\nㅁ\n\nㅂ\n\nㅃ\n\nㅅ\n\nㅆ\n\nㅇ\n\nㅈ\n\nㅋ\n\nㅌ\n\nㅍ\n\nㅎ',
+//                             textAlign: TextAlign.center,
+//                             style: TextStyle(
+//                               color: Colors.black,
+//                               fontSize: 10,
+//                               fontFamily: 'Pretendard Variable',
+//                               fontWeight: FontWeight.w500,
+//                               height: 0,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
 //         ),
 //       ),
 //     );

@@ -772,30 +772,10 @@ class _ItemsCatePageState extends State<ItemsCatePage> {
                     ],
                   ),
                 ),
-                // PopupMenuButton<MenuType>(
-                //   onSelected: (MenuType result) {
-                //     final SnackBar = SnackBar(
-                //       content: Text("$result is selected"),
-                //     );
-                //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                //   },
-                //   itemBuilder: (BuildContext BuildContext) {
-                //     return [
-                //       for (final value in MenuType.values)
-                //         PopupMenuItem(
-                //           value: value,
-                //           child: Text(value.toString()),
-                //         )
-                //     ];
-                //   },
-                // )
               ],
             ),
           ),
       ],
     );
-    //       ),
-    //   ],
-    // )
   }
 }
