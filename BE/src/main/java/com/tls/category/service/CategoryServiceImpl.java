@@ -39,14 +39,11 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             List<CategoryWithSubCategoryDto> results = new ArrayList<>();
             getCategories().forEach(category -> {
-                System.out.println("---");
-                System.out.println(category.getCatName());
                 CategoryWithSubCategoryDto categoryWithSubCategoryDto = CategoryWithSubCategoryDto.builder()
                     .catId(category.getCatId())
                     .catName(category.getCatName())
                     .subCategoryDtoList(subCategoryRepository.findByCatId(category))
                     .build();
-                System.out.println(categoryWithSubCategoryDto.getCatName());
                 results.add(categoryWithSubCategoryDto);
             });
             return results;
