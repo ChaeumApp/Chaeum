@@ -129,19 +129,20 @@ class _LogInState extends State<LogIn> {
                                                           .toString(),
                                                       controller2.text
                                                           .toString());
-                                              final accessToken =
-                                                  response["accessToken"];
-                                              final refreshToken =
-                                                  response["refreshToken"];
+                                              if (response.data.toString() ==
+                                                  "success") {
+                                                final accessToken =
+                                                    response["accessToken"];
+                                                final refreshToken =
+                                                    response["refreshToken"];
+                                                await widget.storage.write(
+                                                    key: "login",
+                                                    value:
+                                                        "accessToken $accessToken refreshToken $refreshToken");
+                                              }
+
                                               print('여기는 로그인 버튼');
                                               print(widget.storage);
-                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
-                                              //{"login" : "id id_value password password_value"}
-                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
-                                              await widget.storage.write(
-                                                  key: "login",
-                                                  value:
-                                                      "accessToken $accessToken refreshToken $refreshToken");
                                               await context
                                                   .read<UserStore>()
                                                   .changeUserInfo(
@@ -153,6 +154,9 @@ class _LogInState extends State<LogIn> {
                                                             context) =>
                                                         Main()),
                                               );
+                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
+                                              //{"login" : "id id_value password password_value"}
+                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
                                             } else if (RegExp(
                                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                                     .hasMatch(
