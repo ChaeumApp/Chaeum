@@ -32,7 +32,7 @@ public class RecipeServiceImpl implements RecipeService {
     public int updateRecipe() {
         try {
             List<String[]> recipes = new ReadExcel().readExcel("recipe.xlsx");
-            recipeRepository.deleteAllInBatch();
+//            recipeRepository.deleteAllInBatch();
             int cnt = 0;
             for (String[] oneRecipe : recipes) {
                 Recipe recipe = Recipe.builder()
