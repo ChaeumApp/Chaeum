@@ -34,6 +34,7 @@ public class SecurityConfig {
             .authorizeRequests()
             .antMatchers("/v3/api-docs", "/swagger*/**").permitAll() // swagger 관련 permit all
             .antMatchers("/user/**").permitAll()
+            .antMatchers("/category/**").permitAll()
             .antMatchers("/", "/static/**", "/assets/**").permitAll()
             .antMatchers("/**").permitAll()
             .antMatchers("/favicon.ico").permitAll()

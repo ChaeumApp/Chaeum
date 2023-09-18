@@ -2,6 +2,7 @@ package com.tls.user.service;
 
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserDto;
+import com.tls.user.vo.UserPwdVO;
 
 public interface UserService {
 
@@ -13,7 +14,7 @@ public interface UserService {
 
     int checkEmail(String userEmail);
 
-    int updateUser(UserDto userDto);
+    int updateUser(String userEmail, UserPwdVO userDto);
 
     int findUserPwd(String userEmail, String userBirthday);
 

@@ -21,7 +21,7 @@ CREATE TABLE `vegan_tb`
 
 CREATE TABLE `item_tb`
 (
-    `item_id`        BIGINT       NOT NULL,
+    `item_id`        BIGINT       NOT NULL  primary key auto_increment,
     `item_name`      varchar(20)  NOT NULL,
     `item_image`     varchar(512) NULL,
     `item_price`     INT          NOT NULL,
@@ -85,13 +85,13 @@ CREATE TABLE `recipe_ingredient_tb`
 
 CREATE TABLE `category_tb`
 (
-    `cat_id`   TINYINT     NOT NULL,
+    `cat_id`   TINYINT     NOT NULL primary key auto_increment,
     `cat_name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `ingredient_tb`
 (
-    `ingr_id`   INT         NOT NULL,
+    `ingr_id`   INT         NOT NULL primary key auto_increment,
     `ingr_name` varchar(30) NOT NULL,
     `subcat_id` SMALLINT    NULL,
     `cat_id`    TINYINT     NOT NULL
@@ -99,7 +99,7 @@ CREATE TABLE `ingredient_tb`
 
 CREATE TABLE `subcat_tb`
 (
-    `subcat_id`   SMALLINT    NOT NULL,
+    `subcat_id`   SMALLINT    NOT NULL primary key auto_increment,
     `subcat_name` varchar(30) NOT NULL,
     `cat_id`      TINYINT     NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -119,7 +119,7 @@ CREATE TABLE `ingredient_preference_tb`
 
 CREATE TABLE `allergy_tb`
 (
-    `algy_id`   SMALLINT    NOT NULL,
+    `algy_id`   SMALLINT    NOT NULL primary key auto_increment,
     `algy_name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -148,10 +148,6 @@ ALTER TABLE `vegan_tb`
                                               `vegan_id`
         );
 
-ALTER TABLE `item_tb`
-    ADD CONSTRAINT `PK_ITEM_TB` PRIMARY KEY (
-                                             `item_id`
-        );
 
 ALTER TABLE `user_allergy_tb`
     ADD CONSTRAINT `PK_USER_ALLERGY_TB` PRIMARY KEY (
@@ -177,11 +173,6 @@ ALTER TABLE `saved_recipe_tb`
                                                      `recipe_id`
         );
 
-ALTER TABLE `ingredient_price_tb`
-    ADD CONSTRAINT `PK_INGREDIENT_PRICE_TB` PRIMARY KEY (
-                                                         `ingr_id`
-        );
-
 ALTER TABLE `saved_item_tb`
     ADD CONSTRAINT `PK_SAVED_ITEM_TB` PRIMARY KEY (
                                                    `user_id`,
@@ -194,21 +185,6 @@ ALTER TABLE `recipe_ingredient_tb`
                                                           `recipe_id`
         );
 
-ALTER TABLE `category_tb`
-    ADD CONSTRAINT `PK_CATEGORY_TB` PRIMARY KEY (
-                                                 `cat_id`
-        );
-
-ALTER TABLE `ingredient_tb`
-    ADD CONSTRAINT `PK_INGREDIENT_TB` PRIMARY KEY (
-                                                   `ingr_id`
-        );
-
-ALTER TABLE `subcat_tb`
-    ADD CONSTRAINT `PK_SUBCAT_TB` PRIMARY KEY (
-                                               `subcat_id`
-        );
-
 ALTER TABLE `saved_ingredient_tb`
     ADD CONSTRAINT `PK_SAVED_INGREDIENT_TB` PRIMARY KEY (
                                                          `user_id`,
@@ -219,11 +195,6 @@ ALTER TABLE `ingredient_preference_tb`
     ADD CONSTRAINT `PK_INGREDIENT_PREFERENCE_TB` PRIMARY KEY (
                                                               `user_id`,
                                                               `ingr_id`
-        );
-
-ALTER TABLE `allergy_tb`
-    ADD CONSTRAINT `PK_ALLERGY_TB` PRIMARY KEY (
-                                                `algy_id`
         );
 
 ALTER TABLE `allergy_ingredient_tb`
@@ -415,11 +386,23 @@ ALTER TABLE `recipe_select_log_tb`
 
 
 insert into vegan_tb
-values (0, "hypeboy"),
-       (1, "vegan"),
-       (2, "lacto"),
-       (3, "ovo"),
-       (4, "lacto-ovo"),
-       (5, "pesco"),
-       (6, "polo"),
-       (7, "flexi");
+values (0, 'hypeboy'),
+       (1, 'vegan'),
+       (2, 'lacto'),
+       (3, 'ovo'),
+       (4, 'lacto-ovo'),
+       (5, 'pesco'),
+       (6, 'polo'),
+       (7, 'flexi');
+
+insert into category_tb(`cat_name`)
+values ('과일'), ('채소'), ('곡류/견과'), ('정육/달걀'), ('수산물'), ('유제품'), ('김치'),
+       ('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+
+insert into subcat_tb
+values (1, '소고기', 4),
+       (2, '돼지고기', 4),
+       (3, '닭고기', 4),
+       (4, '오리고기', 4),
+       (5, '양고기', 4),
+       (6, '달걀', 4);
