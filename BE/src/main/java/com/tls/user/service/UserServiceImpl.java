@@ -10,12 +10,14 @@ import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
 import com.tls.user.util.RedisUtil;
+import com.tls.user.vo.UserPwdVO;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
                 .build();
             userRepository.save(user);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("signup fail");
             return 406;
         }
         return 200;
@@ -85,7 +88,7 @@ public class UserServiceImpl implements UserService {
             }
             return tokenDto;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("sign in failed :: password is wrong");
         }
 
         return null;
@@ -137,16 +140,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int updateUser(UserDto userDto) {
+    public int updateUser(String userEmail, UserPwdVO userDto) {
         try {
-            Optional<User> updateUser = userRepository.findByUserEmail(userDto.getUserEmail());
-            updateUser.ifPresent(selectUser -> {
-                if (userDto.getUserPwd() != null) {
-                    selectUser.updateUserPwd(passwordEncoder.encode(userDto.getUserPwd()));
-                }
-                userRepository.save(selectUser);
-            });
-            return 1;
+            User updateUser = userRepository.findByUserEmail(userEmail).orElseThrow();
+            if (passwordEncoder.matches(userDto.getCurpassword(), updateUser.getUserPwd())) {
+                updateUser.updateUserPwd(passwordEncoder.encode(userDto.getNextpassword()));
+                userRepository.save(updateUser);
+                return 1;
+            }
+            return -1;
         } catch (Exception e) {
             return -1;
         }
