@@ -117,29 +117,21 @@ class _LogInState extends State<LogIn> {
                                   child: ButtonTheme(
                                       child: TextButton(
                                           onPressed: () async {
-                                            if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(
-                                                        controller2.text)) {
-                                              final response =
-                                                  await userapi.login(
-                                                      controller.text
-                                                          .toString(),
-                                                      controller2.text
-                                                          .toString());
-                                              if (response.data.toString() ==
-                                                  "success") {
-                                                final accessToken =
-                                                    response["accessToken"];
-                                                final refreshToken =
-                                                    response["refreshToken"];
-                                                await widget.storage.write(
-                                                    key: "login",
-                                                    value:
-                                                        "accessToken $accessToken refreshToken $refreshToken");
-                                              }
+                                            final response =
+                                                await userapi.login(
+                                                    controller.text.toString(),
+                                                    controller2.text
+                                                        .toString());
+                                            if (response["accessToken"] !=
+                                                null) {
+                                              final accessToken =
+                                                  response["accessToken"];
+                                              final refreshToken =
+                                                  response["refreshToken"];
+                                              await widget.storage.write(
+                                                  key: "login",
+                                                  value:
+                                                      "accessToken $accessToken refreshToken $refreshToken");
 
                                               print('여기는 로그인 버튼');
                                               print(widget.storage);
@@ -157,25 +149,6 @@ class _LogInState extends State<LogIn> {
                                               // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
                                               //{"login" : "id id_value password password_value"}
                                               //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
-                                            } else if (RegExp(
-                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                !RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(
-                                                        controller2.text)) {
-                                              showSnackBar(
-                                                  context,
-                                                  Text(
-                                                      '비밀번호를 특수문자,영어를 포함해 주세요'));
-                                            } else if (!RegExp(
-                                                        r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(controller2.text)) {
-                                              showSnackBar(context,
-                                                  Text('아이디를 이메일 형식을 입력해주세요'));
                                             } else {
                                               showSnackBar(context,
                                                   Text('아이디 비밀번호를 확인해주세요'));
@@ -296,7 +269,7 @@ void showSnackBar(BuildContext context, Text text) {
 }
 
 // class NextPage extends StatelessWidget {
-//   const NextPage({Key key}) : super(key: key);
+//   const NextPage({Key key}) : super(key: key
 
 //   @override
 //   Widget build(BuildContext context) {
