@@ -59,12 +59,11 @@ void initializeNotification(context) async {
   }
 
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
-    print('데이터는 ${event.data}');
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) =>
-    //             Detail(category: message.data['name'])));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Detail(category: event.data['name'])));
   });
 }
 
