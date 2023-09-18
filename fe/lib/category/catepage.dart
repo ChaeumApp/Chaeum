@@ -56,7 +56,7 @@ class CatePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 2),
-              ItemsCatePage()
+              ItemsCatePage(),
             ],
           ),
         ),
