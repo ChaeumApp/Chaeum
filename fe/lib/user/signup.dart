@@ -1,3 +1,4 @@
+import 'package:fe/user/addinfo.dart';
 import 'package:flutter/material.dart';
 import '../user/mypage.dart';
 import './userapi.dart';
@@ -96,7 +97,8 @@ class _SignUpState extends State<SignUp> {
                                           }
                                         },
                                         controller: controller,
-                                        enabled: emailCheck ? false : true,
+                                        enabled:
+                                            emailCheckButton ? false : true,
                                         autofocus: true,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
@@ -139,6 +141,9 @@ class _SignUpState extends State<SignUp> {
                                               10, 0, 0, 0),
                                           child: TextButton(
                                             style: ButtonStyle(
+                                              minimumSize:
+                                                  MaterialStateProperty.all(
+                                                      Size(75, 0)),
                                               backgroundColor: emailCheck
                                                   ? MaterialStateProperty.all<
                                                       Color>(Color(0xffA1CBA1))
@@ -235,6 +240,8 @@ class _SignUpState extends State<SignUp> {
                                           Expanded(
                                             child: TextField(
                                               controller: controller4,
+                                              enabled:
+                                                  emailCodeCheck ? false : true,
                                               decoration: InputDecoration(
                                                 contentPadding:
                                                     EdgeInsets.symmetric(
@@ -263,34 +270,50 @@ class _SignUpState extends State<SignUp> {
                                                         10, 0, 0, 0),
                                                 child: TextButton(
                                                   style: ButtonStyle(
+                                                      minimumSize:
+                                                          MaterialStateProperty
+                                                              .all(Size(75, 0)),
                                                       backgroundColor:
                                                           MaterialStateProperty
                                                               .all<Color>(Color(
                                                                   0xffA1CBA1))),
-                                                  onPressed: () async {
-                                                    print(controller4.text);
-                                                    print(controller4
-                                                        .text.runtimeType);
+                                                  onPressed: emailCodeCheck
+                                                      ? null
+                                                      : () async {
+                                                          print(
+                                                              controller4.text);
+                                                          print(controller4.text
+                                                              .runtimeType);
 
-                                                    String? checkcode =
-                                                        await userapi.checkcode(
-                                                            controller.text
-                                                                .toString(),
-                                                            int.parse(
-                                                                controller4
-                                                                    .text));
-                                                    if (checkcode.toString() ==
-                                                        'seccess') {
-                                                      setState(() {
-                                                        emailCodeCheck = true;
-                                                      });
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    '인증 확인',
-                                                    style: TextStyle(
-                                                        color: Colors.black),
-                                                  ),
+                                                          String? checkcode =
+                                                              await userapi.checkcode(
+                                                                  controller
+                                                                      .text
+                                                                      .toString(),
+                                                                  int.parse(
+                                                                      controller4
+                                                                          .text));
+                                                          print(checkcode);
+                                                          if (checkcode
+                                                                  .toString() ==
+                                                              "success") {
+                                                            setState(() {
+                                                              emailCodeCheck =
+                                                                  true;
+                                                            });
+                                                          }
+                                                        },
+                                                  child: emailCodeCheck
+                                                      ? Icon(
+                                                          Icons.check,
+                                                          color: Colors.black,
+                                                        )
+                                                      : Text(
+                                                          '인증 확인',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
                                                 ),
                                               )),
                                         ],
@@ -358,7 +381,7 @@ class _SignUpState extends State<SignUp> {
                                     } else {
                                       setState(() {
                                         samepasswordError = null; // 에러 없음
-                                        samepasswordCheck = false;
+                                        samepasswordCheck = true;
                                       });
                                     }
                                   },
@@ -398,37 +421,31 @@ class _SignUpState extends State<SignUp> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: () async {
-                                            if (controller.text ==
-                                                    'mei@hello.com' &&
-                                                controller2.text == '1234') {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          MyPage()));
-                                            } else if (controller.text ==
-                                                    'mei@hello.com' &&
-                                                controller2.text != '1234') {
-                                              showSnackBar(context,
-                                                  Text('Wrong password'));
-                                            } else if (controller.text !=
-                                                    'mei@hello.com' &&
-                                                controller2.text == '1234') {
-                                              showSnackBar(
-                                                  context, Text('Wrong email'));
-                                            } else {
-                                              showSnackBar(
-                                                  context,
-                                                  Text(
-                                                      'Check your info again'));
-                                            }
-                                          },
+                                          onPressed: emailCheck &&
+                                                  emailCodeCheck &&
+                                                  passwordCheck &&
+                                                  samepasswordCheck
+                                              ? () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AddInfo(user: [
+                                                              controller.text,
+                                                              controller2.text
+                                                            ])),
+                                                  );
+                                                }
+                                              : null,
                                           style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStatePropertyAll(
-                                                      Color(0xffA1CBA1))),
+                                              backgroundColor: emailCheck &&
+                                                      emailCodeCheck &&
+                                                      passwordCheck &&
+                                                      samepasswordCheck
+                                                  ? MaterialStatePropertyAll(
+                                                      Color(0xffA1CBA1))
+                                                  : MaterialStatePropertyAll(
+                                                      Colors.grey)),
                                           child: SizedBox(
                                             height: 40,
                                             child: Row(

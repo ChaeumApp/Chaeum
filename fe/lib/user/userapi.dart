@@ -48,5 +48,16 @@ class UserApi {
     }
   }
 
+  //   Future<dynamic> signup(id, code) async {
+  //   try {
+  //     final response = await dio.post('$serverURL/user/auth/checkEmail/$code',
+  //         data: id, queryParameters: {'code': code});
+  //     print('코드 확인 여부 ${response.data}');
+  //     return response.data;
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
   // 다른 API 호출 메서드 추가
 }
