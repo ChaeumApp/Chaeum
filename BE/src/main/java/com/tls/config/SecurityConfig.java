@@ -35,6 +35,7 @@ public class SecurityConfig {
             .antMatchers("/v3/api-docs", "/swagger*/**").permitAll() // swagger 관련 permit all
             .antMatchers("/user/**").permitAll()
             .antMatchers("/", "/static/**", "/assets/**").permitAll()
+            .antMatchers("/**").permitAll()
             .antMatchers("/favicon.ico").permitAll()
             .antMatchers("/manifest.json").permitAll()
             .anyRequest().authenticated() // 이 밖의 모든 요청에 대해 인증을 필요로 한다는 설정
