@@ -1,5 +1,10 @@
+import 'package:fe/api/firebaseapi.dart';
+import 'package:fe/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //메인페이지
 import './main/mainbody.dart';
@@ -18,7 +23,13 @@ import 'store/userstore.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   // 상태바 색상 변경하는 코드
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

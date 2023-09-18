@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "상품 API", description = "상품 관련 API 입니다.")
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/item")
 public class ItemController {
 
     private final ItemService itemService;
