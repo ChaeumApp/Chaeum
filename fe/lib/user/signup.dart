@@ -96,6 +96,7 @@ class _SignUpState extends State<SignUp> {
                                           }
                                         },
                                         controller: controller,
+                                        enabled: emailCheck ? false : true,
                                         autofocus: true,
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.symmetric(
