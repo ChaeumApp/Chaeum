@@ -57,7 +57,18 @@ void initializeNotification(context) async {
             builder: (context) =>
                 Detail(category: message.data['name'])));
   }
+
+  FirebaseMessaging.onMessageOpenedApp.listen((event) {
+    print('데이터는 ${event.data}');
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) =>
+    //             Detail(category: message.data['name'])));
+  });
 }
+
+
 
 void getMyDeviceToken() async {
   final _firebaseMessaging = FirebaseMessaging.instance;
