@@ -1,3 +1,4 @@
+import 'package:fe/user/userapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -8,7 +9,8 @@ class AddInfo extends StatefulWidget {
 
   @override
   State<AddInfo> createState() => _AddInfoState();
-
+  String? birthday;
+  String? gender;
   List<String> veganList = ['비건1', '비건2', '비건3'];
   String selectedVegan = '비건1';
   List<String> allergieList = ['없음', '있음'];
@@ -37,6 +39,10 @@ class AddInfo extends StatefulWidget {
 }
 
 class _AddInfoState extends State<AddInfo> {
+  final UserApi userapi = UserApi();
+  TextEditingController controller = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +81,7 @@ class _AddInfoState extends State<AddInfo> {
                       flex: 5,
                       child: TextField(
                         maxLength: 6,
+                        controller: controller,
                         decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(width: 1.5),
@@ -90,7 +97,35 @@ class _AddInfoState extends State<AddInfo> {
                       fit: FlexFit.tight,
                       flex: 1,
                       child: TextField(
+                        onChanged: (context) {
+                          if (controller2.text.toString() == '1') {
+                            setState(() {
+                              widget.birthday =
+                                  '19${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
+                              widget.gender = 'm';
+                            });
+                          } else if (controller2.text.toString() == '2') {
+                            setState(() {
+                              widget.birthday =
+                                  '19${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
+                              widget.gender = 'f';
+                            });
+                          } else if (controller2.text.toString() == '3') {
+                            setState(() {
+                              widget.birthday =
+                                  '20${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
+                              widget.gender = 'm';
+                            });
+                          } else if (controller2.text.toString() == '4') {
+                            setState(() {
+                              widget.birthday =
+                                  '20${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
+                              widget.gender = 'f';
+                            });
+                          }
+                        },
                         maxLength: 1,
+                        controller: controller2,
                         decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(width: 1.5),
@@ -238,7 +273,16 @@ class _AddInfoState extends State<AddInfo> {
                 children: [
                   Flexible(
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          print(widget.user);
+                          final response = userapi.signup(
+                              widget.user[0],
+                              widget.user[1],
+                              widget.birthday,
+                              widget.gender,
+                              widget.selectedVegan,
+                              widget.selectedVegan);
+                        },
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll(Color(0xffA1CBA1))),
