@@ -85,7 +85,7 @@ CREATE TABLE `recipe_ingredient_tb`
 
 CREATE TABLE `category_tb`
 (
-    `cat_id`   TINYINT     NOT NULL,
+    `cat_id`   TINYINT     NOT NULL primary key auto_increment,
     `cat_name` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
