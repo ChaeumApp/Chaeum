@@ -10,11 +10,11 @@ public interface IngredientService {
 
     List<IngredientDto> getIngredients();
 
-    List<IngredientDto> getIngredients(CategoryVO categoryVO);
+    List<IngredientDto> getIngredients(int catId, int subcatId);
 
     List<IngredientDto> getBestIngredients();
 
-    IngredientDto getIngredient(IngredientVO ingredientVO);
+    IngredientDto getIngredient(int ingrId);
 
     int selectIngredient(UserIngrVO userIngrVO);
 

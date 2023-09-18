@@ -245,6 +245,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int readProfile(String userEmail) {
         // TODO: serviceCode 작성해야함.
+        // TODO: 좋아요한 식재료, 좋아요한 레시피
         try {
             // 좋아요 한 레시피, 좋아요 한 식재료 반환해줘야 한다.
             return (int) (Math.random() % 2);
