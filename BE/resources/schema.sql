@@ -386,15 +386,23 @@ ALTER TABLE `recipe_select_log_tb`
 
 
 insert into vegan_tb
-values (0, "hypeboy"),
-       (1, "vegan"),
-       (2, "lacto"),
-       (3, "ovo"),
-       (4, "lacto-ovo"),
-       (5, "pesco"),
-       (6, "polo"),
-       (7, "flexi");
+values (0, 'hypeboy'),
+       (1, 'vegan'),
+       (2, 'lacto'),
+       (3, 'ovo'),
+       (4, 'lacto-ovo'),
+       (5, 'pesco'),
+       (6, 'polo'),
+       (7, 'flexi');
 
 insert into category_tb(`cat_name`)
-values ('과일'), ('채소'), ('곡류/견과'), ('정육/계란'), ('수산물'), ('유제품'), ('김치'),
-('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+values ('과일'), ('채소'), ('곡류/견과'), ('정육/달걀'), ('수산물'), ('유제품'), ('김치'),
+       ('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+
+insert into subcat_tb
+values (1, '소고기', 4),
+       (2, '돼지고기', 4),
+       (3, '닭고기', 4),
+       (4, '오리고기', 4),
+       (5, '양고기', 4),
+       (6, '달걀', 4);
