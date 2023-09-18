@@ -10,6 +10,7 @@ import './repeat/bottom.dart';
 import './main/mainbody.dart';
 import './main/splash.dart';
 import './category/ingrecate.dart';
+import './category/recipecate.dart';
 import './search/searchpage.dart';
 //유저
 import './user/mypage.dart';
@@ -20,8 +21,6 @@ import './user/my_more.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +53,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-
   @override
   void initState() {
     getMyDeviceToken();
@@ -64,7 +62,6 @@ class _MainState extends State<Main> {
     initializeNotification(context);
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +73,7 @@ class _MainState extends State<Main> {
             child: TabBarView(
               children: [
                 Ingrecate(),
-                Center(child: Text('레시피')),
+                Recipecate(),
                 Mainb(),
                 SearchPage(),
                 MyPage()
@@ -89,4 +86,3 @@ class _MainState extends State<Main> {
         ));
   }
 }
-
