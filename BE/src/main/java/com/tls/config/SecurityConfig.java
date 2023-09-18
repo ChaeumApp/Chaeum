@@ -32,15 +32,14 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // sessiond 을 쓰지 않는다는 말
             .and()
             .authorizeRequests()
-            .antMatchers("/v3/api-docs", "/swagger*/**").permitAll() // swagger 관련 permit all
             .antMatchers("/user/**").permitAll()
             .antMatchers("/category/**").permitAll()
-            .antMatchers("/", "/static/**", "/assets/**").permitAll()
-            .antMatchers("/**").permitAll()
-            .antMatchers("/favicon.ico").permitAll()
-            .antMatchers("/manifest.json").permitAll()
+            .antMatchers("/item/**").permitAll()
+            .antMatchers("/ingr/**").permitAll()
+            .antMatchers("/recipe/**").permitAll()
             .anyRequest().authenticated() // 이 밖의 모든 요청에 대해 인증을 필요로 한다는 설정
-
+            .and()
+            .httpBasic()
             .and() // filter 설정하여
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, stringRedisTemplate),
                 UsernamePasswordAuthenticationFilter.class);
