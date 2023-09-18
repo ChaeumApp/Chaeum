@@ -31,9 +31,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public int updateRecipe() {
         try {
-            List<String[]> recipes = new ReadExcel().readExcel(
-                "D://ssafy//2학기//채움//S09P22C204//RecipeCrawling//", "recipe2.xlsx");
-            recipeRepository.deleteAllInBatch();
+            List<String[]> recipes = new ReadExcel().readExcel("recipe.xlsx");
+//            recipeRepository.deleteAllInBatch();
+            int cnt = 0;
             for (String[] oneRecipe : recipes) {
                 Recipe recipe = Recipe.builder()
                     .recipeName(oneRecipe[0])
@@ -53,6 +53,9 @@ public class RecipeServiceImpl implements RecipeService {
                     allLists.add(recipeProc);
                 }
                 recipeProcRepository.saveAll(allLists);
+                if (++cnt % 100 == 0) {
+                    log.info("total ~{} recipes are updated", cnt);
+                }
             }
             log.info("{} recipes are updated", recipes.size());
             return 1;
