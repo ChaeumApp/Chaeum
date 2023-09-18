@@ -1,18 +1,23 @@
 package com.tls.recipe.service;
 
+import com.tls.config.ReadExcel;
+import com.tls.recipe.entity.composite.RecipeProc;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
 import com.tls.recipe.entity.single.Recipe;
-import com.tls.recipe.id.UserRecipeId;
+import com.tls.recipe.repository.RecipeProcRepository;
 import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.repository.UserRepository;
+import com.tls.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipeService {
@@ -21,10 +26,41 @@ public class RecipeServiceImpl implements RecipeService {
     private final UserRepository userRepository;
     private final UserRecipeLogRepository userRecipeLogRepository;
     private final UserRecipeRepository userRecipeRepository;
+    private final RecipeProcRepository recipeProcRepository;
 
     @Override
     public int updateRecipe() {
-        return (int) (Math.random() % 2);
+        try {
+            List<String[]> recipes = new ReadExcel().readExcel(
+                "D://ssafy//2학기//채움//S09P22C204//RecipeCrawling//", "recipe2.xlsx");
+            recipeRepository.deleteAllInBatch();
+            for (String[] oneRecipe : recipes) {
+                Recipe recipe = Recipe.builder()
+                    .recipeName(oneRecipe[0])
+                    .recipeLink(oneRecipe[4])
+                    .recipeThumbnail(oneRecipe[3])
+                    .build();
+                recipeRepository.save(recipe);
+                String recipeProcess = oneRecipe[2].substring(1, oneRecipe[2].length() - 1);
+                List<RecipeProc> allLists = new ArrayList<>();
+                for (String process : recipeProcess.split("\', \'")) {
+                    process = process.replaceAll("'", "");
+                    RecipeProc recipeProc = RecipeProc.builder()
+                        .recipeId(recipe)
+                        .recipeProcId(process.charAt(0) - '0')
+                        .recipeProcContent(process.substring(3))
+                        .build();
+                    allLists.add(recipeProc);
+                }
+                recipeProcRepository.saveAll(allLists);
+            }
+            log.info("{} recipes are updated", recipes.size());
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("error occurred updating recipes");
+            return -1;
+        }
     }
 
     @Override
@@ -59,17 +95,16 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public int likeRecipe(String userEmail, int recipeId) {
         try {
-            UserRecipeId userRecipeId = UserRecipeId.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow().getUserId())
-                .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow().getRecipeId())
-                .build();
-            if (userRecipeRepository.findByUserRecipeId(userRecipeId).isEmpty()) { // 즐겨찾기에 존재한다면
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            if (userRecipeRepository.findByUserIdAndRecipeId(user, recipe)
+                .isEmpty()) { // 즐겨찾기에 존재한다면
                 UserRecipe userRecipe = UserRecipe.builder()
                     .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
                     .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow()).build();
                 userRecipeRepository.save(userRecipe); // 즐겨찾기 목록에 등록
             } else { // 이미 즐겨찾기 목록에 존재한다면
-                userRecipeRepository.deleteByUserRecipeId(userRecipeId);
+                userRecipeRepository.deleteByUserIdAndRecipeId(user, recipe);
             }
             return 1;
         } catch (Exception e) {

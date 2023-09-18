@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 
-/* class Bottom extends StatelessWidget {
-  const Bottom({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        onTap: (i){},
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '레시피'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '레시피'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '레시피'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '레시피'),
-        ],
-      selectedItemColor: Color(0xffA3CCA3),
-      selectedLabelStyle: TextStyle(color: Color(0xffA3CCA3), fontSize: 12),
-      unselectedItemColor: Color(0xffCACACA),
-      unselectedLabelStyle: TextStyle(color: Color(0xffCACACA)),
-    );
-    }
-} */
+// class Bottom extends StatelessWidget {
+//   const Bottom({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BottomNavigationBar(
+//       type: BottomNavigationBarType.fixed,
+//         showSelectedLabels: true,
+//         showUnselectedLabels: true,
+//         onTap: (i){},
+//         items: [
+//           BottomNavigationBarItem(icon: Icon(Icons.kitchen), label: '식재료'),
+//           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '레시피'),
+//           BottomNavigationBarItem(icon: Image.asset('assets/images/repeat/bottom_logo.png', width: 30), label: ""),
+//           BottomNavigationBarItem(icon: Icon(Icons.manage_search), label: '검색',),
+//           BottomNavigationBarItem(icon: Icon(Icons.perm_identity), label: '내 정보'),
+//         ],
+//       selectedItemColor: Color(0xffA3CCA3),
+//       selectedLabelStyle: TextStyle(color: Color(0xffA3CCA3), fontSize: 12),
+//       unselectedItemColor: Color(0xffCACACA),
+//       unselectedLabelStyle: TextStyle(color: Color(0xffCACACA)),
+//     );
+//     }
+// }
 
 class Bottom extends StatelessWidget {
   const Bottom({super.key});
