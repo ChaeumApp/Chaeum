@@ -1,5 +1,7 @@
 package com.tls.user.service;
 
+import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
@@ -13,6 +15,8 @@ import com.tls.user.vo.UserPwdVO;
 import com.tls.user.vo.UserSignUpVO;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final RedisUtil redisUtil;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+    private final UserAllergyRepository userAllergyRepository;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -47,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int signUp(UserSignUpVO userDto) {
         try {
+            // user 정보 먼저 저장한다.
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
                 .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
@@ -57,6 +63,16 @@ public class UserServiceImpl implements UserService {
                     veganRepository.findByVeganId(userDto.getVeganId()).get() : null)
                 .build();
             userRepository.save(user);
+            // user 가 가지고 있는 allergy 정보를 저장한다.
+            List<UserAllergy> userAllergyList = new ArrayList<>();
+            userDto.getAllergyList().forEach(allergy -> {
+                UserAllergy userAllergy = UserAllergy.builder()
+                    .userId(user)
+                    .algyId(allergy)
+                    .build();
+                userAllergyList.add(userAllergy);
+            });
+            userAllergyRepository.saveAll(userAllergyList);
         } catch (Exception e) {
             log.info("signup fail");
             return 406;

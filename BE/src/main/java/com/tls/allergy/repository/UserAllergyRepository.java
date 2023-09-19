@@ -2,12 +2,10 @@ package com.tls.allergy.repository;
 
 
 import com.tls.allergy.composite.UserAllergy;
-import java.util.Optional;
-import org.springframework.data.repository.Repository;
+import com.tls.allergy.id.UserAllergyId;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserAllergyRepository extends Repository<UserAllergy, String> {
+public interface UserAllergyRepository extends JpaRepository<UserAllergy, UserAllergyId> {
 
-    Optional<UserAllergy> findByUserId(String userId);
 
-    void save(UserAllergy userAllergy);
 }
