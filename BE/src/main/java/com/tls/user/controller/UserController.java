@@ -2,6 +2,7 @@ package com.tls.user.controller;
 
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
+import com.tls.user.dto.UserProfileDto;
 import com.tls.user.service.UserService;
 import com.tls.user.vo.UserEmailVO;
 import com.tls.user.vo.UserFindPwdVO;
@@ -279,8 +280,12 @@ public class UserController {
             Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
             if (userIdVO.toString().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-                return new ResponseEntity<>(userService.readProfile(userIdVO.getUserEmail()),
-                    HttpStatus.OK);
+                UserProfileDto userProfileDto = userService.readProfile(userIdVO.getUserEmail());
+                if (userProfileDto != null) {
+                    return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
+                } else {
+                    return getResponseEntity(-1);
+                }
             } else {
                 return getResponseEntity(0);
             }

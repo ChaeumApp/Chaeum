@@ -1,5 +1,7 @@
 package com.tls.user.service;
 
+import com.tls.Ingredient.entity.single.Ingredient;
+import com.tls.Ingredient.repository.UserIngrRepository;
 import com.tls.allergy.composite.UserAllergy;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
@@ -7,6 +9,9 @@ import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
+import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.repository.UserRecipeRepository;
+import com.tls.user.dto.UserProfileDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
@@ -45,6 +50,8 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
+    private final UserIngrRepository userIngrRepostiory;
+    private final UserRecipeRepository userRecipeRepository;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -261,14 +268,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int readProfile(String userEmail) {
+    public UserProfileDto readProfile(String userEmail) {
         // TODO: serviceCode 작성해야함.
         // TODO: 좋아요한 식재료, 좋아요한 레시피
         try {
-            // 좋아요 한 레시피, 좋아요 한 식재료 반환해줘야 한다.
-            return (int) (Math.random() % 2);
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            List<Ingredient> ingrList = new ArrayList<>();
+            List<Recipe> recipeList = new ArrayList<>();
+            if (userIngrRepostiory.findAllByUserId(user).isPresent()) {
+                userIngrRepostiory.findAllByUserId(user).get().forEach(
+                    userIngr -> { ingrList.add(userIngr.getIngrId()); }
+                );
+            }
+            if (userRecipeRepository.findAllByUserId(user).isPresent()) {
+                userRecipeRepository.findAllByUserId(user).get().forEach(
+                    userRecipe -> { recipeList.add(userRecipe.getRecipeId()); }
+                );
+            }
+            return new UserProfileDto(ingrList, recipeList);
         } catch (Exception e) {
-            return -1;
+            return null;
         }
     }
 }
