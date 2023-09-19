@@ -1,7 +1,7 @@
 package com.tls.recipe.controller;
 
 import com.tls.jwt.JwtTokenProvider;
-import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -57,12 +57,9 @@ public class RecipeController {
     @ApiResponse(responseCode = "200", description = "레시피 상세 조회 시 해당 레시피 정보를 반환한다.\n"
         + "해당 레시피 번호가 없을 경우 fail 을 반환한다.")
     public ResponseEntity<?> viewRecipe(@PathVariable("recipeId") int recipeId) {
-        Recipe recipe = recipeService.viewRecipe(recipeId);
-        if (recipe == null) {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(recipe, HttpStatus.OK);
-        }
+        log.info("{} recipe detail view", recipeId);
+        RecipeDto recipe = recipeService.viewRecipe(recipeId);
+        return new ResponseEntity<>(recipe, HttpStatus.OK);
     }
 
     @GetMapping("/selected/{recipeId}")
