@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class UserApi {
+class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 

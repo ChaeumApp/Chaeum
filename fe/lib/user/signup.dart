@@ -1,7 +1,7 @@
 import 'package:fe/user/addinfo.dart';
 import 'package:flutter/material.dart';
 import '../user/mypage.dart';
-import './userapi.dart';
+import 'pageapi.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -29,7 +29,7 @@ class _SignUpState extends State<SignUp> {
   String passwordMessage = '특수문자, 숫자, 영어가 필수로 1개씩 있어야 합니다.';
   String samepasswordMessage = '비밀번호와 다릅니다.';
 
-  final UserApi userapi = UserApi();
+  final PageApi pageapi = PageApi();
 
   @override
   Widget build(BuildContext context) {
@@ -154,14 +154,14 @@ class _SignUpState extends State<SignUp> {
                                             onPressed: emailCheck
                                                 ? () async {
                                                     String? dupcheck =
-                                                        await userapi
+                                                        await pageapi
                                                             .duplicatecheck(
                                                                 controller.text
                                                                     .toString());
                                                     if (dupcheck.toString() ==
                                                         'success') {
                                                       String? emailsend =
-                                                          await userapi.sendEmail(
+                                                          await pageapi.sendEmail(
                                                               controller.text
                                                                   .toString());
                                                       if (emailsend
@@ -288,7 +288,7 @@ class _SignUpState extends State<SignUp> {
                                                               .runtimeType);
 
                                                           String? checkcode =
-                                                              await userapi.checkcode(
+                                                              await pageapi.checkcode(
                                                                   controller
                                                                       .text
                                                                       .toString(),

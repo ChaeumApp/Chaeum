@@ -1,4 +1,4 @@
-import 'package:fe/user/userapi.dart';
+import 'package:fe/user/pageapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -48,7 +48,7 @@ class AddInfo extends StatefulWidget {
 }
 
 class _AddInfoState extends State<AddInfo> {
-  final UserApi userapi = UserApi();
+  final PageApi pageapi = PageApi();
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
 
@@ -384,7 +384,7 @@ class _AddInfoState extends State<AddInfo> {
                             print(widget.gender);
                             print(widget.selectedVegan);
 
-                            final response = userapi.signup(
+                            final response = pageapi.signup(
                                 widget.user[0],
                                 widget.user[1],
                                 widget.birthday,
