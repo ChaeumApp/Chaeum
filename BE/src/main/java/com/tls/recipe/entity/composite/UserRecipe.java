@@ -25,12 +25,12 @@ import lombok.NoArgsConstructor;
 public class UserRecipe {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User userId;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipe_id")
     private Recipe recipeId;
 }

@@ -279,7 +279,7 @@ public class UserController {
         try {
             Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
-            if (userIdVO.toString().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
+            if (userIdVO.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
                 UserProfileDto userProfileDto = userService.readProfile(userIdVO.getUserEmail());
                 if (userProfileDto != null) {
                     return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
