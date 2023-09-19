@@ -2,10 +2,12 @@ package com.tls.user.controller;
 
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
-import com.tls.user.dto.UserDto;
 import com.tls.user.service.UserService;
-import com.tls.user.vo.UserIdVO;
+import com.tls.user.vo.UserEmailVO;
+import com.tls.user.vo.UserFindPwdVO;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignUpVO;
+import com.tls.user.vo.UserSigninVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -42,7 +44,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "회원가입 성공하면 ok 를 반환한다.")
     })
-    public ResponseEntity<?> signUp(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> signUp(@RequestBody UserSignUpVO userDto) {
         log.info("signUp call:: {}", userDto);
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
@@ -89,7 +91,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> signIn(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> signIn(@RequestBody UserSigninVO userDto) {
         log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
         TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
         if (tokenDto != null) {
@@ -169,9 +171,10 @@ public class UserController {
             + "생일과 이메일이 일치하지 않으면 unauthorized 를 반환한다.\n"
             + "업데이트에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> findUserPwd(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
         log.info("findUserPwd call :: {}", userDto.getUserEmail());
-        int resultCode = userService.findUserPwd(userDto.getUserEmail(), userDto.getUserBirthday());
+        int resultCode = userService.findUserPwd(userDto.getUserEmail(),
+            userDto.getUserBirthday().toString());
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {
@@ -188,10 +191,10 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송에 성공하면 success 를 반환한다.\n"
             + "이메일 인증 코드 전송에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> sendEmailAuth(@RequestBody String userEmail) {
+    public ResponseEntity<?> sendEmailAuth(@RequestBody UserEmailVO userEmail) {
         log.info("sendEmailAuth call :: sending email to : {}", userEmail);
 
-        int resultCode = userService.sendEmailAuthCode(userEmail);
+        int resultCode = userService.sendEmailAuthCode(userEmail.getUserEmail());
         if (resultCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
@@ -206,10 +209,10 @@ public class UserController {
             + "이메일 인증 코드가 일치하지 않을 경우 unauthorized 를 반환한다.\n"
             + "서버 오류 발생 시 fail 을 반환한다.")
     })
-    public ResponseEntity<?> checkEmailAuth(@RequestBody String userEmail,
+    public ResponseEntity<?> checkEmailAuth(@RequestBody UserEmailVO userEmail,
         @PathVariable("code") int code) {
         log.info("checkEmailAuth call :: email : {} , code : {}", userEmail, code);
-        int resultCode = userService.checkEmailAuthCode(userEmail, code);
+        int resultCode = userService.checkEmailAuthCode(userEmail.getUserEmail(), code);
         return getResponseEntity(resultCode);
     }
 
@@ -241,13 +244,13 @@ public class UserController {
             + "서버 오류 발생 시 fail 을 반환한다.")
     })
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String tokenWithPrefix,
-        @RequestBody String userEmail) {
+        @RequestBody UserEmailVO userEmail) {
         log.info("deleteUser call :: {}", userEmail);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(
             tokenWithPrefix.substring(7));
-        if (userEmail.equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-            int resultCode = userService.deleteUser(userEmail);
+        if (userEmail.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
+            int resultCode = userService.deleteUser(userEmail.getUserEmail());
             if (resultCode == 1) { // 회원정보 삭제 성공했으면 로그아웃 처리 후 반환
                 String token = tokenWithPrefix.substring(7);
                 TokenDto tokenDto = new TokenDto();
@@ -268,7 +271,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "조회에 성공하면 좋아요한 레시피, 좋아요 한 식재료 를 반환한다.\n"
         + "조회에 실패하면 fail 을 반환한다.\n"
         + "요청한 Email 정보와 Header 의 토큰 정보가 일치하지 않으면 unauthorized 를 반환한다.")
-    public ResponseEntity<?> readProfile(@RequestBody UserIdVO userIdVO,
+    public ResponseEntity<?> readProfile(@RequestBody UserEmailVO userIdVO,
         @RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("회원정보 조회 call :: {}", userIdVO.toString());
 
@@ -276,7 +279,7 @@ public class UserController {
             Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
             if (userIdVO.toString().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-                return new ResponseEntity<>(userService.readProfile(userIdVO.toString()),
+                return new ResponseEntity<>(userService.readProfile(userIdVO.getUserEmail()),
                     HttpStatus.OK);
             } else {
                 return getResponseEntity(0);
