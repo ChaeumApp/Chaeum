@@ -50,7 +50,7 @@ dependencies:
   flutter_inappwebview: ^5.7.2+3
   url_launcher: ^6.1.14
   shimmer: ^3.0.0
-
+  kakao_flutter_sdk_user: ^1.5.0 # 카카오 로그인
 
 dev_dependencies:
   flutter_test:
@@ -85,7 +85,6 @@ flutter:
     - assets/images/category/
     - assets/images/login/
     - assets/images/detail/
-    - assets/images/recipe/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

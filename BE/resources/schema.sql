@@ -409,3 +409,23 @@ values (1, '소고기', 4),
 
 insert into user_tb(`user_email`, `user_pwd`, `user_birthday`, `user_gender`, `vegan_id`)
 values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6', '2000-01-01', 'M', 0);
+
+
+insert into allergy_tb
+values (1, '난류'),
+       (2, '우유'),
+       (3, '메밀'),
+       (4, '땅콩'),
+       (5, '대두'),
+       (6, '밀'),
+       (7, '고등어'),
+       (8, '게'),
+       (9, '새우'),
+       (10, '돼지고기'),
+       (11, '복숭아'),
+       (12, '토마토'),
+       (13, '호두'),
+       (14, '닭고기'),
+       (15, '쇠고기'),
+       (16, '오징어'),
+       (17, '조개류(굴, 전복, 홍합)');
