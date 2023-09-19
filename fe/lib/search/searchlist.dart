@@ -18,7 +18,7 @@ class _SearchListState extends State<SearchList> {
     return Container(
       margin: EdgeInsets.fromLTRB(15, 0, 20, 0),
       height: 30,
-      child: ListView.builder(
+      child: searchList.length > 0 ? ListView.builder(
         itemCount: searchList.length,
         scrollDirection: Axis.horizontal,
           itemBuilder: (context, index){
@@ -48,7 +48,7 @@ class _SearchListState extends State<SearchList> {
             ],
           ),
         );
-      }),
+      }) : Center(child: Text('최근 검색어가 없습니다.')),
     );
   }
 }
