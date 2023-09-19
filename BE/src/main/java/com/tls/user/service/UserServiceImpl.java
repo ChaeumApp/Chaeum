@@ -113,11 +113,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int signOut(TokenDto tokenDto) {
-        // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
-        if (!jwtTokenProvider.validateToken(tokenDto.getAccessToken())) {
-            return -1;
-        }
         try {
+            // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
+            if (!jwtTokenProvider.validateToken(tokenDto.getAccessToken())) {
+                return -1;
+            }
             // Access Token에서 User email을 가져온다
             Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenDto.getAccessToken());
