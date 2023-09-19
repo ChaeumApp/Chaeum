@@ -70,7 +70,9 @@ import './cateitems.dart';
 
 class CatePage extends StatelessWidget {
   CatePage({super.key, this.num, this.cate, this.subnum});
-  final num, cate, subnum;
+  final num;
+  final cate;
+  final subnum;
 
   @override
   Widget build(BuildContext context) {
