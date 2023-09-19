@@ -12,6 +12,7 @@ import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.entity.User;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +32,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public int updateRecipe() {
         try {
-            List<String[]> recipes = new ReadExcel().readExcel(
-                "D://ssafy//2학기//채움//S09P22C204//RecipeCrawling//", "recipe2.xlsx");
-            recipeRepository.deleteAllInBatch();
+            List<String[]> recipes = new ReadExcel().readExcel("recipe.xlsx");
+//            recipeRepository.deleteAllInBatch();
+            int cnt = 0;
             for (String[] oneRecipe : recipes) {
                 Recipe recipe = Recipe.builder()
                     .recipeName(oneRecipe[0])
@@ -53,6 +54,9 @@ public class RecipeServiceImpl implements RecipeService {
                     allLists.add(recipeProc);
                 }
                 recipeProcRepository.saveAll(allLists);
+                if (++cnt % 100 == 0) {
+                    log.info("total ~{} recipes are updated", cnt);
+                }
             }
             log.info("{} recipes are updated", recipes.size());
             return 1;
@@ -115,5 +119,12 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> findByIngrName(String ingrName) {
         return recipeRepository.findByRecipeNameLike(ingrName);
+    }
+
+    @Override
+    public List<Recipe> listAllRecipes() {
+        List<Recipe> results = recipeRepository.findAll();
+        Collections.shuffle(results);
+        return results;
     }
 }

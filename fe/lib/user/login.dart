@@ -1,35 +1,25 @@
 import 'package:fe/store/userstore.dart';
+import 'package:fe/user/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../user/mypage.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../main.dart';
+import 'pageapi.dart';
 
 class LogIn extends StatefulWidget {
-  const LogIn({super.key, this.storage});
+  LogIn({super.key, this.storage});
 
+  final storage;
   @override
   State<LogIn> createState() => _LogInState();
-  final storage;
 }
 
 class _LogInState extends State<LogIn> {
+  final PageApi pageapi = PageApi();
+
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-  Dio dio = Dio();
-
-  login() async {
-    try {
-      Response response = await dio.post('http://10.0.2.2:8080/user/signin',
-          data: {
-            'userEmail': controller.text.toString(),
-            'userPwd': controller2.text.toString()
-          });
-      print('여기문제없어');
-      return response.data;
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +37,7 @@ class _LogInState extends State<LogIn> {
                   fontWeight: FontWeight.w700),
             ),
             elevation: 0.0,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey[50],
             centerTitle: true,
             toolbarHeight: 65),
         // email, password 입력하는 부분을 제외한 화면을 탭하면, 키보드 사라지게 GestureDetector 사용
@@ -127,55 +117,38 @@ class _LogInState extends State<LogIn> {
                                   child: ButtonTheme(
                                       child: TextButton(
                                           onPressed: () async {
-                                            print(controller.text);
-                                            print(controller2.text);
-                                            print('여기와?');
-                                            if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(
-                                                        controller2.text)) {
-                                              final response = await login();
-                                              print(response);
+                                            final response =
+                                                await pageapi.login(
+                                                    controller.text.toString(),
+                                                    controller2.text
+                                                        .toString());
+                                            if (response["accessToken"] !=
+                                                null) {
                                               final accessToken =
                                                   response["accessToken"];
                                               final refreshToken =
                                                   response["refreshToken"];
-                                              print(accessToken);
-                                              print(refreshToken);
-                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
-                                              //{"login" : "id id_value password password_value"}
-                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
                                               await widget.storage.write(
                                                   key: "login",
                                                   value:
                                                       "accessToken $accessToken refreshToken $refreshToken");
+
+                                              print('여기는 로그인 버튼');
+                                              print(widget.storage);
+                                              await context
+                                                  .read<UserStore>()
+                                                  .changeUserInfo(
+                                                      controller.text);
                                               Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          MyPage()));
-                                            } else if (RegExp(
-                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                !RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(
-                                                        controller2.text)) {
-                                              showSnackBar(
-                                                  context,
-                                                  Text(
-                                                      '비밀번호를 특수문자,영어를 포함해 주세요'));
-                                            } else if (!RegExp(
-                                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                                    .hasMatch(
-                                                        controller.text) &&
-                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                    .hasMatch(controller2.text)) {
-                                              showSnackBar(context,
-                                                  Text('아이디를 이메일 형식을 입력해주세요'));
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        Main()),
+                                              );
+                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
+                                              //{"login" : "id id_value password password_value"}
+                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
                                             } else {
                                               showSnackBar(context,
                                                   Text('아이디 비밀번호를 확인해주세요'));
@@ -231,11 +204,14 @@ class _LogInState extends State<LogIn> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                            width: 55,
-                                            height: 55,
-                                            child: Image.asset(
-                                                'assets/images/login/kakaoLogo.png')),
+                                        child: ElevatedButton(
+                                          onPressed: () {},
+                                          child: SizedBox(
+                                              width: 55,
+                                              height: 55,
+                                              child: Image.asset(
+                                                  'assets/images/login/kakaoLogo.png')),
+                                        ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -253,12 +229,22 @@ class _LogInState extends State<LogIn> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text('아직 회원이 아니신가요?  '),
-                                      Text(
-                                        '회원가입',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          SignUp()),
+                                            );
+                                          },
+                                          child: Text(
+                                            '회원가입',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ))
                                     ],
                                   ),
                                 ]),
@@ -286,7 +272,7 @@ void showSnackBar(BuildContext context, Text text) {
 }
 
 // class NextPage extends StatelessWidget {
-//   const NextPage({Key key}) : super(key: key);
+//   const NextPage({Key key}) : super(key: key
 
 //   @override
 //   Widget build(BuildContext context) {

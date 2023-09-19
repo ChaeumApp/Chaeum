@@ -3,7 +3,7 @@ package com.tls.user.vo;
 import lombok.Data;
 
 @Data
-public class UserIdVO {
+public class UserEmailVO {
 
-    String userId;
+    String userEmail;
 }

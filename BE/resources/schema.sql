@@ -386,15 +386,46 @@ ALTER TABLE `recipe_select_log_tb`
 
 
 insert into vegan_tb
-values (0, "hypeboy"),
-       (1, "vegan"),
-       (2, "lacto"),
-       (3, "ovo"),
-       (4, "lacto-ovo"),
-       (5, "pesco"),
-       (6, "polo"),
-       (7, "flexi");
+values (0, 'hypeboy'),
+       (1, 'vegan'),
+       (2, 'lacto'),
+       (3, 'ovo'),
+       (4, 'lacto-ovo'),
+       (5, 'pesco'),
+       (6, 'polo'),
+       (7, 'flexi');
 
 insert into category_tb(`cat_name`)
-values ('과일'), ('채소'), ('곡류/견과'), ('정육/계란'), ('수산물'), ('유제품'), ('김치'),
-('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+values ('과일'), ('채소'), ('곡류/견과'), ('정육/달걀'), ('수산물'), ('유제품'), ('김치'),
+       ('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+
+insert into subcat_tb
+values (1, '소고기', 4),
+       (2, '돼지고기', 4),
+       (3, '닭고기', 4),
+       (4, '오리고기', 4),
+       (5, '양고기', 4),
+       (6, '달걀', 4);
+
+insert into user_tb(`user_email`, `user_pwd`, `user_birthday`, `user_gender`, `vegan_id`)
+values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6', '2000-01-01', 'M', 0);
+
+
+insert into allergy_tb
+values (1, '난류'),
+       (2, '우유'),
+       (3, '메밀'),
+       (4, '땅콩'),
+       (5, '대두'),
+       (6, '밀'),
+       (7, '고등어'),
+       (8, '게'),
+       (9, '새우'),
+       (10, '돼지고기'),
+       (11, '복숭아'),
+       (12, '토마토'),
+       (13, '호두'),
+       (14, '닭고기'),
+       (15, '쇠고기'),
+       (16, '오징어'),
+       (17, '조개류(굴, 전복, 홍합)');
