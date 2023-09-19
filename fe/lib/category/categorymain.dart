@@ -1,3 +1,4 @@
+import 'package:fe/ingredients/ingrmain.dart';
 import 'package:flutter/material.dart';
 
 class CategoryMain extends StatefulWidget {
@@ -32,46 +33,73 @@ class _CategoryMainState extends State<CategoryMain> {
       ),
       body: ListView(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: Colors.black54,
-                    width: 0.8)
-              )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/fr.png'),
-              title: Text('과일'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 1, subCatId : null, catName : '과일')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                      color: Colors.black54,
+                      width: 0.8)
+                )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/fr.png'),
+                title: Text('과일'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/vg.png'),
-              title: Text('채소'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 2, subCatId : null, catName: '채소')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/vg.png'),
+                title: Text('채소'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/pn.png'),
-              title: Text('곡류/견과'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 3, subCatId : null, catName: '곡류/견과')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/pn.png'),
+                title: Text('곡류/견과'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
           Container(
@@ -99,187 +127,313 @@ class _CategoryMainState extends State<CategoryMain> {
                   color: Colors.black,
                 ),),
               children: <Widget>[
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/cow.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('소고기'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 1, catName: '소고기')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/cow.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('소고기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/pig.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('돼지고기'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 2, catName: '돼지고기')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/pig.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('돼지고기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/chicken.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('닭고기'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 3, catName: '닭고기')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/chicken.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('닭고기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/duck.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('오리고기'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 4, catName: '오리고기')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/duck.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('오리고기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/sheep.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('양고기'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 5, catName: '양고기')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/sheep.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('양고기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
-                Container(
-                  color: Colors.grey[200],
-                  child: ListTile(
-                    leading: Image.asset('assets/images/category/eggs.png',
-                      width: 28,
-                      height: 28,),
-                    title: Text('달걀'),
-                    trailing: Icon(Icons.keyboard_arrow_right),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 6, catName: '달걀')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/eggs.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('달걀'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/fsh.png'),
-              title: Text('수산물'),
-              trailing: Icon(Icons.keyboard_arrow_right),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/dairy-products.png',
-                width: 25,
-                height: 25,),
-              title: Text('유제품'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 5, subCatId : null, catName: '수산물')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/fsh.png'),
+                title: Text('수산물'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/gch.png'),
-              title: Text('김치'),
-              trailing: Icon(Icons.keyboard_arrow_right),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/noodles.png',
-                width: 33,
-                height: 33,),
-              title: Text('면/파스타'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 6, subCatId : null, catName: '유제품')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/dairy-products.png',
+                  width: 25,
+                  height: 25,),
+                title: Text('유제품'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/can.png'),
-              title: Text('통조림'),
-              trailing: Icon(Icons.keyboard_arrow_right),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/sc.png'),
-              title: Text('가루/조미료'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 7, subCatId : null, catName: '김치')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/gch.png'),
+                title: Text('김치'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 8, subCatId : null, catName: '면/파스타')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/noodles.png',
+                  width: 33,
+                  height: 33,),
+                title: Text('면/파스타'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/oil.png',
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 9, subCatId : null, catName: '통조림')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/can.png'),
+                title: Text('통조림'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 10, subCatId : null, catName: '가루/조미료')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/sc.png'),
+                title: Text('가루/조미료'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 11, subCatId : null, catName: '오일/소스')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/oil.png',
+                  width: 28,
+                  height: 28,),
+                title: Text('오일/소스'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          IngrMain(catId : 12, subCatId : null, catName: '빵/잼')));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.black54,
+                          width: 0.8)
+                  )
+              ),
+              child: ListTile(
+                leading: Image.asset('assets/images/category/toast.png',
                 width: 28,
                 height: 28,),
-              title: Text('오일/소스'),
-              trailing: Icon(Icons.keyboard_arrow_right),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Colors.black54,
-                        width: 0.8)
-                )
-            ),
-            child: ListTile(
-              leading: Image.asset('assets/images/category/toast.png',
-              width: 28,
-              height: 28,),
-              title: Text('빵/잼'),
-              trailing: Icon(Icons.keyboard_arrow_right),
+                title: Text('빵/잼'),
+                trailing: Icon(Icons.keyboard_arrow_right),
+              ),
             ),
           ),
         ],
