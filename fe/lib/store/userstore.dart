@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class UserStore extends ChangeNotifier {
-  var Login = false;
+  String userId = '';
+
   changeUserInfo(userInfo) {
-    userInfo = userInfo;
+    userId = userInfo;
   }
 }
