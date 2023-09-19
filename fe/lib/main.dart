@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:fe/recipe/recipemain.dart';
+import 'package:fe/search/searchmain.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
@@ -35,8 +37,9 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
+  if (Platform.isAndroid){
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
   KakaoSdk.init(
@@ -103,9 +106,9 @@ class _MainState extends State<Main> {
             child: TabBarView(
               children: [
                 Ingrecate(),
-                Center(child: Text('레시피')),
+                RecipeMain(),
                 Mainb(),
-                SearchPage(),
+                SearchMain(),
                 userInfo == null
                     ? LogIn(storage: storage)
                     : MyPage(storage: storage)
@@ -118,3 +121,4 @@ class _MainState extends State<Main> {
         ));
   }
 }
+
