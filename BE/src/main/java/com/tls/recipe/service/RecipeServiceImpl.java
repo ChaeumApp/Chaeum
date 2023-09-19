@@ -12,6 +12,7 @@ import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.entity.User;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -122,6 +123,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<Recipe> listAllRecipes() {
-        return recipeRepository.findAll();
+        List<Recipe> results = recipeRepository.findAll();
+        Collections.shuffle(results);
+        return results;
     }
 }
