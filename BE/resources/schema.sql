@@ -89,8 +89,10 @@ CREATE TABLE `saved_item_tb`
 
 CREATE TABLE `recipe_ingredient_tb`
 (
-    `recipe_id`        INT          NOT NULL,
-    `recipe_ingr_name` varchar(100) NOT NULL
+    `recipe_ingr_pk`     BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `recipe_id`          INT          NOT NULL,
+    `recipe_ingr_name`   varchar(100) NOT NULL,
+    `recipe_ingr_amount` varchar(256) NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -195,10 +197,6 @@ ALTER TABLE `saved_item_tb`
                                                    `item_id`
         );
 
-ALTER TABLE `recipe_ingredient_tb`
-    ADD CONSTRAINT `PK_RECIPE_INGREDIENT_TB` PRIMARY KEY (
-                                                          `recipe_id`
-        );
 
 ALTER TABLE `recipe_ingredient_tb`
     ADD CONSTRAINT `FK_recipe_tb_TO_recipe_ingredient_tb_1` FOREIGN KEY (
@@ -207,6 +205,7 @@ ALTER TABLE `recipe_ingredient_tb`
         REFERENCES `recipe_tb` (
                                 `recipe_id`
             );
+
 
 ALTER TABLE `saved_ingredient_tb`
     ADD CONSTRAINT `PK_SAVED_INGREDIENT_TB` PRIMARY KEY (
