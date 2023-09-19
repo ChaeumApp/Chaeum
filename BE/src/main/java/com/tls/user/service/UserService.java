@@ -1,12 +1,12 @@
 package com.tls.user.service;
 
 import com.tls.jwt.TokenDto;
-import com.tls.user.dto.UserDto;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignUpVO;
 
 public interface UserService {
 
-    int signUp(UserDto userDto);
+    int signUp(UserSignUpVO userDto);
 
     TokenDto signIn(String userEmail, String userPwd);
 

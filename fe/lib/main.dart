@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
+//카카오로그인
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
@@ -25,8 +28,7 @@ import './user/my_more.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
-
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +42,10 @@ void main() async {
   if (Platform.isAndroid){
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
-
+  KakaoSdk.init(
+    nativeAppKey: 'f23e753ee765964826104dd2a8cf6e5d',
+    javaScriptAppKey: '60215ddd14cbe2e9467a8c3f2b06ac4d',
+  );
   // 상태바 색상 변경하는 코드
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.grey[50],
@@ -64,17 +69,32 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-
+  static String? userInfo; //user의 정보를 저장하기 위한 변수;
+  static final storage = FlutterSecureStorage();
   @override
   void initState() {
+    super.initState();
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
     });
     initializeNotification(context);
-    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _asyncMethod();
+      setState(() {});
+    });
   }
 
+  _asyncMethod() async {
+    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
+    //(데이터가 없을때는 null을 반환을 합니다.)
+
+    userInfo = await storage.read(key: "login");
+
+    print('제발 시작이니까 ');
+    print(userInfo);
+    print('시작2');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +109,9 @@ class _MainState extends State<Main> {
                 RecipeMain(),
                 Mainb(),
                 SearchMain(),
-                MyPage()
+                userInfo == null
+                    ? LogIn(storage: storage)
+                    : MyPage(storage: storage)
                 // FavoriteMore(),
               ],
             ),
