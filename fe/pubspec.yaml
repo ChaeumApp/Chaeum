@@ -49,6 +49,7 @@ dependencies:
   flutter_local_notifications: ^14.0.0+1
   flutter_inappwebview: ^5.7.2+3
   url_launcher: ^6.1.14
+  shimmer: ^3.0.0
   kakao_flutter_sdk_user: ^1.5.0 # 카카오 로그인
 
 dev_dependencies:
