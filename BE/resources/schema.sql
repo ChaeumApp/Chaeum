@@ -406,3 +406,6 @@ values (1, '소고기', 4),
        (4, '오리고기', 4),
        (5, '양고기', 4),
        (6, '달걀', 4);
+
+insert into user_tb(`user_email`, `user_pwd`, `user_birthday`, `user_gender`, `vegan_id`)
+values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6', '2000-01-01', 'M', 0);

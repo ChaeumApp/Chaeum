@@ -1,7 +1,18 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class MainBest extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import '../webview/webview.dart';
+
+class MainBest extends StatefulWidget {
   const MainBest({super.key});
+
+  @override
+  State<MainBest> createState() => _MainBestState();
+}
+
+class _MainBestState extends State<MainBest> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,62 +38,67 @@ class MainBest extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: 10,
             itemBuilder: (c, i) {
-              return Container(
-                width: 120,
-                height: 150,
-                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            'assets/images/temporary/${ranking[i]['image']}.jpg',
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                },
+                child: Container(
+                  width: 120,
+                  height: 150,
+                  margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Image.asset(
+                              'assets/images/temporary/${ranking[i]['image']}.jpg',
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: 25,
-                          height: 25,
-                          decoration: BoxDecoration(
-                              color: Color.fromRGBO(161, 203, 161, 0.8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 5.0,
-                                  spreadRadius: 0.0,
-                                  offset: Offset(3, 3),
-                                )
-                              ],
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5))),
-                          child: Center(
-                              child: Text(
-                            '${ranking[i]['rank']}',
+                          Container(
+                            width: 25,
+                            height: 25,
+                            decoration: BoxDecoration(
+                                color: Color.fromRGBO(161, 203, 161, 0.8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 5.0,
+                                    spreadRadius: 0.0,
+                                    offset: Offset(3, 3),
+                                  )
+                                ],
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(5),
+                                    bottomRight: Radius.circular(5))),
+                            child: Center(
+                                child: Text(
+                              '${ranking[i]['rank']}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            )),
+                          )
+                        ],
+                      ),
+                      Container(
+                          margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text(
+                            '${ranking[i]['title']!.length > 15 ? ranking[i]['title']?.substring(0, 15) : ranking[i]['title']}'
+                            '${ranking[i]['title']!.length > 15 ? "..." : ""}',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
                           )),
-                        )
-                      ],
-                    ),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                        child: Text(
-                          '${ranking[i]['title']!.length > 15 ? ranking[i]['title']?.substring(0, 15) : ranking[i]['title']}'
-                          '${ranking[i]['title']!.length > 15 ? "..." : ""}',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )),
-                  ],
+                    ],
+                  ),
                 ),
               );
             }),
