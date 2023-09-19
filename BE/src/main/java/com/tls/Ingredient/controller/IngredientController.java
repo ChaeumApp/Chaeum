@@ -4,6 +4,7 @@ import com.tls.Ingredient.dto.IngredientDto;
 import com.tls.Ingredient.service.IngredientService;
 import com.tls.Ingredient.vo.IngredientVO;
 import com.tls.Ingredient.vo.UserIngrVO;
+import com.tls.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -11,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ingr")
 public class IngredientController {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final IngredientService ingredientService;
 
     @GetMapping
@@ -102,11 +107,25 @@ public class IngredientController {
 
     @PostMapping("/favorite")
     @Operation(summary = "소분류 좋아요 반영 메서드", description = "사용자가 특정 식재료를 좋아요 설정한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> favoriteIngredient(UserIngrVO userIngrVO) {
+    public ResponseEntity<?> favoriteIngredient(@RequestBody IngredientVO ingredientVO,
+        @RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("favoriteIngredient call :: ");
-        int n = ingredientService.favoriteIngredient(userIngrVO);
-        if (n == 1) {
+        try {
+            Authentication authentication = jwtTokenProvider.getAuthentication(
+                tokenWithPrefix.substring(7));
+            int n = ingredientService.favoriteIngredient(authentication.getName(),
+                ingredientVO.getIngrId());
+            return getResponseEntity(n);
+        } catch (Exception e) {
+            return getResponseEntity(0);
+        }
+    }
+
+    private ResponseEntity<?> getResponseEntity(int resultCode) {
+        if (resultCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
+        } else if (resultCode == 0) {
+            return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
