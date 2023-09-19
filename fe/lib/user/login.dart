@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../user/mypage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main.dart';
-import './userapi.dart';
+import 'pageapi.dart';
 
 class LogIn extends StatefulWidget {
   LogIn({super.key, this.storage});
@@ -16,7 +16,7 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  final UserApi userapi = UserApi();
+  final PageApi pageapi = PageApi();
 
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
@@ -118,7 +118,7 @@ class _LogInState extends State<LogIn> {
                                       child: TextButton(
                                           onPressed: () async {
                                             final response =
-                                                await userapi.login(
+                                                await pageapi.login(
                                                     controller.text.toString(),
                                                     controller2.text
                                                         .toString());

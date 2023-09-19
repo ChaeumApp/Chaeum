@@ -1,5 +1,5 @@
 import 'package:fe/main.dart';
-import 'package:fe/user/userapi.dart';
+import 'package:fe/user/pageapi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -16,7 +16,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  final UserApi userapi = UserApi();
+  final PageApi pageapi = PageApi();
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
@@ -49,7 +49,7 @@ class _MyPageState extends State<MyPage> {
     print('이게 토큰');
     print(context.watch<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
-    final info = await userapi.getinfo(context.watch<UserStore>().userId,
+    final info = await pageapi.getinfo(context.watch<UserStore>().userId,
         token.toString().split(" ")[1].toString());
   }
 

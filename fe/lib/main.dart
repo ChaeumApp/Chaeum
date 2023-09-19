@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //카카오로그인
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
@@ -38,11 +39,9 @@ void main() async {
   if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
-
-  // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
-    nativeAppKey: '090d182e5dcb23885c9b3d2ae0812c7d',
-    javaScriptAppKey: '5fbd65dd5be22bd5f1ff75d50bda7a32',
+    nativeAppKey: 'f23e753ee765964826104dd2a8cf6e5d',
+    javaScriptAppKey: '60215ddd14cbe2e9467a8c3f2b06ac4d',
   );
   // 상태바 색상 변경하는 코드
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
