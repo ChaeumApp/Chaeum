@@ -4,7 +4,7 @@ import './product.dart';
 import './recipe.dart';
 
 class SearchPage extends StatelessWidget {
-  SearchPage({Key? key}) : super(key: key);
+  SearchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
