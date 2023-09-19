@@ -5,12 +5,12 @@ import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
-import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
 import com.tls.user.util.RedisUtil;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignUpVO;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
 import java.util.Optional;
@@ -45,12 +45,12 @@ public class UserServiceImpl implements UserService {
     private String secretKey;
 
     @Override
-    public int signUp(UserDto userDto) {
+    public int signUp(UserSignUpVO userDto) {
         try {
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
                 .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
-                .userBirthday(Date.valueOf(userDto.getUserBirthday()))
+                .userBirthday(userDto.getUserBirthday())
                 .userGender(userDto.getUserGender())
                 .userActivated(true)
                 .vegan(veganRepository.findByVeganId(userDto.getVeganId()).isPresent() ?
