@@ -92,7 +92,7 @@
 import 'package:flutter/material.dart';
 
 class ItemsCatePage extends StatefulWidget {
-  const ItemsCatePage({Key? key}) : super(key: key);
+  ItemsCatePage({super.key});
 
   @override
   State<ItemsCatePage> createState() => _ItemsCatePageState();
@@ -149,6 +149,9 @@ class _ItemsCatePageState extends State<ItemsCatePage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
                           foregroundColor:
                               alarmPressed ? Colors.white : Colors.black,
                           backgroundColor:

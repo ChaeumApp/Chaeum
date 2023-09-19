@@ -69,61 +69,60 @@ import 'package:flutter/material.dart';
 import './cateitems.dart';
 
 class CatePage extends StatelessWidget {
-  CatePage({Key? key}) : super(key: key);
+  CatePage({super.key, this.num, this.cate, this.subnum});
+  final num, cate, subnum;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: Color(0xffA1CBA1),
-              toolbarHeight: 55,
-              title: Text('과일'),
-              centerTitle: true,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(Icons.keyboard_backspace_rounded),
-                onPressed: () {
-                  print('menu button is clicked');
-                },
-              ),
-              // expandedHeight: 200,
-              pinned: true,
-              // flexibleSpace: FlexibleSpaceBar(
-              //   title: Text('과일'),
-              //   centerTitle: true,
-              // ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SizedBox(height: 30),
-                    Text(
-                      "이런 재료들은 어때요?",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            backgroundColor: Colors.grey[50],
+            toolbarHeight: 55,
+            title: Text(cate),
+            centerTitle: true,
+            elevation: 0,
+            // leading: IconButton(
+            //   icon: Icon(Icons.keyboard_backspace_rounded),
+            //   onPressed: () {
+            //     print('menu button is clicked');
+            //   },
+            // ),
+            // expandedHeight: 200,
+            pinned: true,
+            // flexibleSpace: FlexibleSpaceBar(
+            //   title: Text('과일'),
+            //   centerTitle: true,
+            // ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  SizedBox(height: 20),
+                  Text(
+                    "이런 재료들은 어때요?",
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      "총 156건",
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "총 156건",
+                    style: TextStyle(
+                      fontSize: 15,
                     ),
-                    // SizedBox(height: 2),
-                    ItemsCatePage()
-                  ],
-                ),
+                  ),
+                  // SizedBox(height: 2),
+                  ItemsCatePage()
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
