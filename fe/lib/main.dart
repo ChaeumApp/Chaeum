@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:fe/recipe/recipemain.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
@@ -84,7 +85,7 @@ class _MainState extends State<Main> {
             child: TabBarView(
               children: [
                 Ingrecate(),
-                Center(child: Text('레시피')),
+                RecipeMain(),
                 Mainb(),
                 SearchPage(),
                 MyPage()

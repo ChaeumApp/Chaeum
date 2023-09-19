@@ -49,6 +49,7 @@ dependencies:
   flutter_local_notifications: ^14.0.0+1
   flutter_inappwebview: ^5.7.2+3
   url_launcher: ^6.1.14
+  shimmer: ^3.0.0
 
 
 dev_dependencies:
@@ -84,6 +85,7 @@ flutter:
     - assets/images/category/
     - assets/images/login/
     - assets/images/detail/
+    - assets/images/recipe/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
