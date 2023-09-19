@@ -119,4 +119,9 @@ public class RecipeServiceImpl implements RecipeService {
     public List<Recipe> findByIngrName(String ingrName) {
         return recipeRepository.findByRecipeNameLike(ingrName);
     }
+
+    @Override
+    public List<Recipe> listAllRecipes() {
+        return recipeRepository.findAll();
+    }
 }
