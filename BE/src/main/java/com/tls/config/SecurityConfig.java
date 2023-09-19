@@ -37,6 +37,7 @@ public class SecurityConfig {
             .antMatchers("/item/**").permitAll()
             .antMatchers("/ingr/**").permitAll()
             .antMatchers("/recipe/**").permitAll()
+            .antMatchers("/src/**").permitAll()
             .anyRequest().authenticated() // 이 밖의 모든 요청에 대해 인증을 필요로 한다는 설정
             .and()
             .httpBasic()
