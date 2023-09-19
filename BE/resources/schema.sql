@@ -11,83 +11,95 @@ CREATE TABLE `user_tb`
     `user_gender`    char(5)      NULL,
     `user_activated` boolean      NOT NULL DEFAULT true,
     `vegan_id`       INT          NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `vegan_tb`
 (
     `vegan_id`   INT         NOT NULL,
     `vegan_name` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `item_tb`
 (
-    `item_id`        BIGINT       NOT NULL  primary key auto_increment,
+    `item_id`        BIGINT       NOT NULL primary key auto_increment,
     `item_name`      varchar(20)  NOT NULL,
     `item_image`     varchar(512) NULL,
     `item_price`     INT          NOT NULL,
     `item_store`     varchar(20)  NOT NULL,
     `item_storelink` varchar(512) NOT NULL,
     `ingr_id`        INT          NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `user_allergy_tb`
 (
     `user_id` INT      NOT NULL,
     `algy_id` SMALLINT NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `recipe_tb`
 (
     `recipe_id`        INT          NOT NULL primary key auto_increment,
-    `recipe_name`      varchar(200)  NOT NULL,
+    `recipe_name`      varchar(200) NOT NULL,
     `recipe_link`      varchar(100) NULL,
     `recipe_thumbnail` varchar(200) NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `item_preference_tb`
 (
     `item_id`     BIGINT NOT NULL,
     `user_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `recipe_preference_tb`
 (
     `recipe_id`   INT    NOT NULL,
     `user_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `saved_recipe_tb`
 (
     `user_id`   INT NOT NULL,
     `recipe_id` INT NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ingredient_price_tb`
 (
     `ingr_id` INT  NOT NULL,
     `date`    DATE NOT NULL,
     `price`   INT  NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `saved_item_tb`
 (
     `user_id` INT    NOT NULL,
     `item_id` BIGINT NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `recipe_ingredient_tb`
 (
-    `recipe_id` INT NOT NULL,
-    `ingr_id`   INT NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    `recipe_id`        INT          NOT NULL,
+    `recipe_ingr_name` varchar(100) NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `category_tb`
 (
     `cat_id`   TINYINT     NOT NULL primary key auto_increment,
     `cat_name` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `ingredient_tb`
 (
@@ -95,14 +107,16 @@ CREATE TABLE `ingredient_tb`
     `ingr_name` varchar(30) NOT NULL,
     `subcat_id` SMALLINT    NULL,
     `cat_id`    TINYINT     NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `subcat_tb`
 (
     `subcat_id`   SMALLINT    NOT NULL primary key auto_increment,
     `subcat_name` varchar(30) NOT NULL,
     `cat_id`      TINYINT     NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `saved_ingredient_tb`
 (
@@ -121,7 +135,8 @@ CREATE TABLE `allergy_tb`
 (
     `algy_id`   SMALLINT    NOT NULL primary key auto_increment,
     `algy_name` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `allergy_ingredient_tb`
 (
@@ -131,10 +146,11 @@ CREATE TABLE `allergy_ingredient_tb`
 
 CREATE TABLE `recipe_process_tb`
 (
-    `recipe_proc_id`      SMALLINT    NOT NULL,
-    `recipe_id`           INT         NOT NULL,
+    `recipe_proc_id`      SMALLINT     NOT NULL,
+    `recipe_id`           INT          NOT NULL,
     `recipe_proc_content` VARCHAR(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `recipe_select_log_tb`
 (
@@ -181,9 +197,16 @@ ALTER TABLE `saved_item_tb`
 
 ALTER TABLE `recipe_ingredient_tb`
     ADD CONSTRAINT `PK_RECIPE_INGREDIENT_TB` PRIMARY KEY (
-                                                          `ingr_id`,
                                                           `recipe_id`
         );
+
+ALTER TABLE `recipe_ingredient_tb`
+    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_ingredient_tb_1` FOREIGN KEY (
+                                                                         `recipe_id`
+        )
+        REFERENCES `recipe_tb` (
+                                `recipe_id`
+            );
 
 ALTER TABLE `saved_ingredient_tb`
     ADD CONSTRAINT `PK_SAVED_INGREDIENT_TB` PRIMARY KEY (
@@ -304,7 +327,7 @@ ALTER TABLE `saved_item_tb`
             );
 
 ALTER TABLE `recipe_ingredient_tb`
-    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_ingredient_tb_1` FOREIGN KEY (
+    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_ingredient_tb_2` FOREIGN KEY (
                                                                          `recipe_id`
         )
         REFERENCES `recipe_tb` (
@@ -396,8 +419,18 @@ values (0, 'hypeboy'),
        (7, 'flexi');
 
 insert into category_tb(`cat_name`)
-values ('과일'), ('채소'), ('곡류/견과'), ('정육/달걀'), ('수산물'), ('유제품'), ('김치'),
-       ('면/파스타'), ('통조림'), ('가루/조미료'), ('오일/소스'), ('빵/잼');
+values ('과일'),
+       ('채소'),
+       ('곡류/견과'),
+       ('정육/달걀'),
+       ('수산물'),
+       ('유제품'),
+       ('김치'),
+       ('면/파스타'),
+       ('통조림'),
+       ('가루/조미료'),
+       ('오일/소스'),
+       ('빵/잼');
 
 insert into subcat_tb
 values (1, '소고기', 4),
@@ -408,7 +441,8 @@ values (1, '소고기', 4),
        (6, '달걀', 4);
 
 insert into user_tb(`user_email`, `user_pwd`, `user_birthday`, `user_gender`, `vegan_id`)
-values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6', '2000-01-01', 'M', 0);
+values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6',
+        '2000-01-01', 'M', 0);
 
 
 insert into allergy_tb
