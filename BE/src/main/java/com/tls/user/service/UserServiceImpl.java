@@ -1,5 +1,6 @@
 package com.tls.user.service;
 
+import com.tls.Ingredient.entity.composite.UserIngr;
 import com.tls.Ingredient.entity.single.Ingredient;
 import com.tls.Ingredient.repository.UserIngrRepository;
 import com.tls.allergy.composite.UserAllergy;
@@ -9,6 +10,7 @@ import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
+import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.dto.UserProfileDto;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -276,14 +279,12 @@ public class UserServiceImpl implements UserService {
             List<Ingredient> ingrList = new ArrayList<>();
             List<Recipe> recipeList = new ArrayList<>();
             if (userIngrRepostiory.findAllByUserId(user).isPresent()) {
-                userIngrRepostiory.findAllByUserId(user).get().forEach(
-                    userIngr -> { ingrList.add(userIngr.getIngrId()); }
-                );
+                ingrList = userIngrRepostiory.findAllByUserId(user).get().stream()
+                    .map(UserIngr::getIngrId).collect(Collectors.toList());
             }
             if (userRecipeRepository.findAllByUserId(user).isPresent()) {
-                userRecipeRepository.findAllByUserId(user).get().forEach(
-                    userRecipe -> { recipeList.add(userRecipe.getRecipeId()); }
-                );
+                recipeList = userRecipeRepository.findAllByUserId(user).get().stream()
+                    .map(UserRecipe::getRecipeId).collect(Collectors.toList());
             }
             return new UserProfileDto(ingrList, recipeList);
         } catch (Exception e) {
