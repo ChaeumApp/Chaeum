@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
+//카카오로그인
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
@@ -32,12 +34,16 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid){
+  if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
 
+  // runApp() 호출 전 Flutter SDK 초기화
+  KakaoSdk.init(
+    nativeAppKey: '090d182e5dcb23885c9b3d2ae0812c7d',
+    javaScriptAppKey: '5fbd65dd5be22bd5f1ff75d50bda7a32',
+  );
   // 상태바 색상 변경하는 코드
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.grey[50],

@@ -204,11 +204,14 @@ class _LogInState extends State<LogIn> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                            width: 55,
-                                            height: 55,
-                                            child: Image.asset(
-                                                'assets/images/login/kakaoLogo.png')),
+                                        child: ElevatedButton(
+                                          onPressed: () {},
+                                          child: SizedBox(
+                                              width: 55,
+                                              height: 55,
+                                              child: Image.asset(
+                                                  'assets/images/login/kakaoLogo.png')),
+                                        ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
