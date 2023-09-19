@@ -7,6 +7,8 @@ import org.springframework.data.repository.Repository;
 
 public interface RecipeRepository extends Repository<Recipe, String> {
 
+    List<Recipe> findAll();
+
     Optional<Recipe> findByRecipeId(int recipeId);
 
     List<Recipe> findByRecipeNameLike(String recipeName);

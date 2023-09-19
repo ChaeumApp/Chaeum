@@ -1,12 +1,12 @@
 package com.tls.category.controller;
 
+import com.tls.category.dto.CategoryWithSubCategoryDto;
 import com.tls.category.entity.Category;
 import com.tls.category.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,30 +30,40 @@ public class CategoryController {
     @GetMapping
     @Operation(summary = "대분류 전체 조회 메서드", description = "전체 대분류를 조회하는 메서드입니다.", tags = "분류 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "대분류 전체 조회 성공하면 ok를 반환한다."),
-        @ApiResponse(responseCode = "406", description = "대분류 전체 조회 중 오류 발생 시 fail을 반환한다.")
+        @ApiResponse(responseCode = "200", description = "대분류 전체 조회 성공하면 ok를, 실패하면 fail을 반환한다.")
     })
     public ResponseEntity<?> getCategories() {
         List<Category> categories = categoryService.getCategories();
         if (categories != null) {
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
 
     @PostMapping
     @Operation(summary = "대분류 조회 메서드", description = "대분류를 ID로 조회하는 메서드입니다.", tags = "분류 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "대분류 조회 성공하면 ok를 반환한다."),
-        @ApiResponse(responseCode = "406", description = "대분류 조회 중 오류 발생 시 fail을 반환한다.")
+        @ApiResponse(responseCode = "200", description = "대분류 조회 성공하면 ok를, 실패하면 fail을 반환한다.")
     })
     public ResponseEntity<?> getCategory(@RequestBody int catId) {
         Category category = categoryService.getCategory(catId);
         if (category != null) {
             return new ResponseEntity<>(category, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/subcat")
+    @Operation(summary = "대분류 with 중분류 조회 메서드", description = "대분류를 중분류와 묶어서 조회하는 메서드입니다.", tags = "분류 API")
+    @ApiResponse(responseCode = "200", description = "조회 성공하면 List 를, 실패하면 fail 을 반환한다.")
+    public ResponseEntity<?> getCategoryWithSubCat() {
+        List<CategoryWithSubCategoryDto> results = categoryService.getCategoryWithSubCategory();
+        if (results != null) {
+            return new ResponseEntity<>(results, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
 }
