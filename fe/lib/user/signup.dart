@@ -81,6 +81,7 @@ class _SignUpState extends State<SignUp> {
                                   children: [
                                     Expanded(
                                       child: TextField(
+                                        cursorColor: Color(0xffA1CBA1),
                                         onChanged: (value) {
                                           if (!RegExp(
                                                   r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
@@ -240,6 +241,7 @@ class _SignUpState extends State<SignUp> {
                                           Expanded(
                                             child: TextField(
                                               controller: controller4,
+                                              cursorColor: Color(0xffA1CBA1),
                                               enabled:
                                                   emailCodeCheck ? false : true,
                                               decoration: InputDecoration(
@@ -323,6 +325,8 @@ class _SignUpState extends State<SignUp> {
                               SizedBox(
                                 height: 83,
                                 child: TextField(
+                                  cursorColor: Color(0xffA1CBA1),
+
                                   onChanged: (value) {
                                     if (!RegExp(
                                             r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
@@ -372,6 +376,8 @@ class _SignUpState extends State<SignUp> {
                               SizedBox(
                                 height: 83,
                                 child: TextField(
+                                  cursorColor: Color(0xffA1CBA1),
+
                                   onChanged: (value) {
                                     if (controller2.text != controller3.text) {
                                       setState(() {
@@ -386,6 +392,7 @@ class _SignUpState extends State<SignUp> {
                                     }
                                   },
                                   controller: controller3,
+
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
                                           vertical: 17.0, horizontal: 10.0),

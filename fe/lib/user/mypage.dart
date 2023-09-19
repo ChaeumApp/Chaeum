@@ -1,4 +1,5 @@
 import 'package:fe/main.dart';
+import 'package:fe/user/userapi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +16,8 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final UserApi userapi = UserApi();
+
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
@@ -39,6 +42,15 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     super.initState();
+    getuserinfo();
+  }
+
+  getuserinfo() async {
+    print('이게 토큰');
+    print(context.watch<UserStore>().userId);
+    final token = await widget.storage.read(key: 'login');
+    final info = await userapi.getinfo(context.watch<UserStore>().userId,
+        token.toString().split(" ")[1].toString());
   }
 
   @override

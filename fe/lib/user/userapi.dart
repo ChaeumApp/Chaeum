@@ -65,5 +65,42 @@ class UserApi {
     }
   }
 
+  Future<dynamic> getinfo(id, token) async {
+    print(token);
+    try {
+      final response = await dio.post('$serverURL/user/mypage',
+          data: {
+            'userEmail': id,
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('개인정보 조회 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> signout(token) async {
+    try {
+      final response = await dio.post('$serverURL/user/signout',
+          data: {},
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('개인정보 조회 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   // 다른 API 호출 메서드 추가
 }
