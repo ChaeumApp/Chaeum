@@ -38,9 +38,8 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid){
+  if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
   KakaoSdk.init(
@@ -122,4 +121,3 @@ class _MainState extends State<Main> {
         ));
   }
 }
-

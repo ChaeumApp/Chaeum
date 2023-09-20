@@ -385,8 +385,8 @@ class _AddInfoState extends State<AddInfo> {
                             print(widget.selectedVegan);
 
                             final response = pageapi.signup(
-                                widget.user[0],
-                                widget.user[1],
+                                widget.user['userEmail'],
+                                widget.user['userPwd'],
                                 widget.birthday,
                                 widget.gender,
                                 widget.selectedVegan,

@@ -428,22 +428,27 @@ class _SignUpState extends State<SignUp> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: emailCheck &&
-                                                  emailCodeCheck &&
-                                                  passwordCheck &&
-                                                  samepasswordCheck
-                                              ? () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            AddInfo(user: [
-                                                              controller.text,
-                                                              controller2.text
-                                                            ])),
-                                                  );
-                                                }
-                                              : null,
+                                          onPressed:
+                                              emailCheck &&
+                                                      emailCodeCheck &&
+                                                      passwordCheck &&
+                                                      samepasswordCheck
+                                                  ? () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    AddInfo(
+                                                                        user: {
+                                                                          'userEmail':
+                                                                              controller.text,
+                                                                          'userPwd':
+                                                                              controller2.text
+                                                                        })),
+                                                      );
+                                                    }
+                                                  : null,
                                           style: ButtonStyle(
                                               backgroundColor: emailCheck &&
                                                       emailCodeCheck &&
