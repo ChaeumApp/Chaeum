@@ -313,9 +313,11 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token = await UserApi
                                                         .instance
                                                         .loginWithKakaoAccount();
+                                                    print(token.accessToken);
                                                     final sociallogininfo =
                                                         await pageapi
-                                                            .kakaologin(token);
+                                                            .kakaologin(token
+                                                                .accessToken);
                                                     print(
                                                         'ggggg$sociallogininfo');
 

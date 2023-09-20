@@ -106,7 +106,8 @@ class PageApi {
 
   Future<dynamic> kakaologin(token) async {
     try {
-      final response = await dio.get('$serverURL/user/oAuth/kakao',
+      print('받은토큰$token');
+      final response = await dio.get('http://10.0.2.2:8080/user/oAuth/kakao',
           queryParameters: {'token': token});
       print('ㅋ카오 로그인 여부 ${response.data}');
       return response.data;
