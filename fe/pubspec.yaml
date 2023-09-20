@@ -52,6 +52,8 @@ dependencies:
   shimmer: ^3.0.0
   kakao_flutter_sdk_user: ^1.5.0 # 카카오 로그인
 
+  flutter_naver_login: ^1.6.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
