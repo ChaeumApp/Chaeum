@@ -46,7 +46,7 @@ class _CategoryMainState extends State<CategoryMain> {
                 border: Border(
                   bottom: BorderSide(
                       color: Colors.black54,
-                      width: 0.8)
+                      width: 0.6)
                 )
               ),
               child: ListTile(
@@ -69,7 +69,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -92,7 +92,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -107,7 +107,7 @@ class _CategoryMainState extends State<CategoryMain> {
                 border: Border(
                     bottom: BorderSide(
                         color: Colors.black54,
-                        width: 0.8)
+                        width: 0.6)
                 )
             ),
             child: ExpansionTile(
@@ -257,7 +257,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -280,7 +280,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -305,7 +305,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -328,7 +328,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -353,7 +353,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -376,7 +376,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -399,7 +399,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
@@ -424,7 +424,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.8)
+                          width: 0.6)
                   )
               ),
               child: ListTile(
