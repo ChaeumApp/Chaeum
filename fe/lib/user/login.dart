@@ -318,9 +318,6 @@ class _LogInState extends State<LogIn> {
                                                         await pageapi
                                                             .kakaologin(token
                                                                 .accessToken);
-                                                    print(
-                                                        'ggggg$sociallogininfo');
-
                                                     if (sociallogininfo
                                                         .containsKey(
                                                             'accessToken')) {
