@@ -2,21 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Similaryoutube extends StatefulWidget {
-  Similaryoutube({super.key});
+  Similaryoutube({super.key, this.recipeLink});
+  final recipeLink;
 
   @override
   State<Similaryoutube> createState() => _SimilaryoutubeState();
 }
 
 class _SimilaryoutubeState extends State<Similaryoutube> {
-  static String youtubeId = 'Ft2pL4Qq0xQ';
+  late final YoutubePlayerController _con;
 
-  final YoutubePlayerController _con = YoutubePlayerController(
-      initialVideoId: youtubeId,
+  @override
+  void initState() {
+    super.initState();
+
+    _con = YoutubePlayerController(
+      initialVideoId:
+          YoutubePlayer.convertUrlToId(widget.recipeLink).toString(),
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-      ));
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
