@@ -50,15 +50,15 @@ class PageApi {
     }
   }
 
-  Future<dynamic> signup(id, pwd, birth, gender, vegan, role) async {
+  Future<dynamic> signup(id, pwd, birth, gender, vegan, alergylist) async {
     try {
       final response = await dio.post('$serverURL/user/signup', data: {
         'userEmail': id,
         'userPwd': pwd,
         'userBirthDay': birth,
         'userGender': gender,
-        'veganId': vegan,
-        'allergyList': role
+        'veganId': int.parse(vegan),
+        'allergyList': alergylist
       });
       print('회원가입 여부 ${response.data}');
       return response.data;
@@ -87,27 +87,10 @@ class PageApi {
     }
   }
 
-  Future<dynamic> signout(token) async {
-    try {
-      final response = await dio.post('$serverURL/user/signout',
-          data: {},
-          options: Options(
-            headers: {
-              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
-              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
-            },
-          ));
-      print('개인정보 조회 ${response.data}');
-      return response.data;
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   Future<dynamic> kakaologin(token) async {
     try {
       print('받은토큰$token');
-      final response = await dio.get('http://10.0.2.2:8080/user/oAuth/kakao',
+      final response = await dio.get('$serverURL/user/oAuth/kakao',
           queryParameters: {'token': token});
       print('ㅋ카오 로그인 여부 ${response.data}');
       return response.data;
