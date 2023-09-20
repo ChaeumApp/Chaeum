@@ -74,7 +74,6 @@ class _MainState extends State<Main> {
   static final storage = FlutterSecureStorage();
   @override
   void initState() {
-    super.initState();
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
@@ -84,6 +83,7 @@ class _MainState extends State<Main> {
       await _asyncMethod();
       setState(() {});
     });
+    super.initState();
   }
 
   _asyncMethod() async {
