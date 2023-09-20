@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailRecipe extends StatefulWidget {
@@ -40,7 +41,14 @@ class _DetailRecipeState extends State<DetailRecipe> {
     return FutureBuilder(future: getDetailRecipe(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
+            return Center(child: SpinKitPulse(
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Image.asset('assets/images/repeat/bottom_logo.png',
+                      height: 40),
+                );
+              },
+            ));
           }
 
           else if (snapshot.hasError) {
