@@ -94,129 +94,116 @@
 //                   ),
 //                   trailing: Icon(Icons.favorite_border),
 //                 ),
-//                 Expanded(
-//                   child: SizedBox(
-//                     child: ListTile(
-//                       title: Text(
-//                         '재료',
-//                         style: TextStyle(
-//                           fontWeight: FontWeight.w700,
-//                         ),
+//                 SizedBox(
+//                   child: ListTile(
+//                     title: Text(
+//                       '재료',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.w700,
 //                       ),
 //                     ),
 //                   ),
 //                 ),
-//                 Expanded(
-//                   child: Wrap(
-//                     direction: Axis.horizontal,
-//                     runSpacing: 1,
-//                     spacing: 1,
-//                     children: ingredients.map((text) {
-//                       final textLength = text.length;
-//                       return Padding(
-//                         // padding: const EdgeInsets.all(5.0),
-//                         padding: const EdgeInsets.fromLTRB(20, 0.5, 2, 0.5),
-//                         child: ConstrainedBox(
-//                           constraints: BoxConstraints(
-//                             maxWidth: textLength * 25.0, // 최대 너비를 텍스트 길이에 따라 계산
-//                           ),
-//                           child: TextButton(
-//                             onPressed: () {},
-//                             style: TextButton.styleFrom(
-//                               foregroundColor: Color(0xffA1CBA1),
-//                               backgroundColor: Colors.white,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(15.0),
-//                                 side: BorderSide(
-//                                   color: Color(0xff4EC64C),
-//                                   width: 1.0,
-//                                 ),
-//                               ),
-//                             ),
-//                             child: Text(
-//                               text,
-//                               style: TextStyle(
-//                                 fontWeight: FontWeight.bold,
+//                 Wrap(
+//                   direction: Axis.horizontal,
+//                   runSpacing: 1,
+//                   spacing: 1,
+//                   children: ingredients.map((text) {
+//                     final textLength = text.length;
+//                     return Padding(
+//                       // padding: const EdgeInsets.all(5.0),
+//                       padding: const EdgeInsets.fromLTRB(20, 0.5, 2, 0.5),
+//                       child: ConstrainedBox(
+//                         constraints: BoxConstraints(
+//                           maxWidth: textLength * 25.0, // 최대 너비를 텍스트 길이에 따라 계산
+//                         ),
+//                         child: TextButton(
+//                           onPressed: () {},
+//                           style: TextButton.styleFrom(
+//                             foregroundColor: Color(0xffA1CBA1),
+//                             backgroundColor: Colors.white,
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15.0),
+//                               side: BorderSide(
+//                                 color: Color(0xff4EC64C),
+//                                 width: 1.0,
 //                               ),
 //                             ),
 //                           ),
-//                         ),
-//                       );
-//                     }).toList(),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: SizedBox(
-//                     child: ListTile(
-//                       title: Text(
-//                         '조리법',
-//                         style: TextStyle(fontWeight: FontWeight.w700),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: SizedBox(
-//                     child: Column(
-//                       children: [
-//                         for (int index = 0; index < steps.length; index++)
-//                           Row(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Padding(
-//                                 padding: EdgeInsets.only(
-//                                   left: 20,
-//                                 ),
-//                                 child: ElevatedButton(
-//                                   onPressed: () {},
-//                                   style: ElevatedButton.styleFrom(
-//                                     shape: CircleBorder(),
-//                                     backgroundColor: Colors.white,
-//                                     side: BorderSide(
-//                                       color: Color(0xffA1CBA1),
-//                                       width: 3.0,
-//                                     ),
-//                                     minimumSize: Size(30, 30),
-//                                   ),
-//                                   child: Text(
-//                                     '${index + 1}',
-//                                     style: TextStyle(
-//                                       color: Color(0xffA1CBA1), // 텍스트 색상
-//                                       fontSize: 18.0, // 텍스트 크기
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                               Flexible(
-//                                 child: Padding(
-//                                   padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-//                                   child: Text(
-//                                     steps[index].description,
-//                                     style: TextStyle(
-//                                       fontWeight: FontWeight.w900,
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
+//                           child: Text(
+//                             text,
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                             ),
 //                           ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: SizedBox(
-//                     child: ListTile(
-//                       title: Text(
-//                         '유사한 레시피',
-//                         style: TextStyle(fontWeight: FontWeight.w700),
+//                         ),
 //                       ),
+//                     );
+//                   }).toList(),
+//                 ),
+//                 SizedBox(
+//                   child: ListTile(
+//                     title: Text(
+//                       '조리법',
+//                       style: TextStyle(fontWeight: FontWeight.w700),
 //                     ),
 //                   ),
 //                 ),
-//                 // Expanded(
-//                 //   child: Process(),
-//                 // ),
+//                 SizedBox(
+//                   child: Column(
+//                     children: [
+//                       for (int index = 0; index < steps.length; index++)
+//                         Row(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Padding(
+//                               padding: EdgeInsets.only(
+//                                 left: 20,
+//                               ),
+//                               child: ElevatedButton(
+//                                 onPressed: () {},
+//                                 style: ElevatedButton.styleFrom(
+//                                   shape: CircleBorder(),
+//                                   backgroundColor: Colors.white,
+//                                   side: BorderSide(
+//                                     color: Color(0xffA1CBA1),
+//                                     width: 3.0,
+//                                   ),
+//                                   minimumSize: Size(30, 30),
+//                                 ),
+//                                 child: Text(
+//                                   '${index + 1}',
+//                                   style: TextStyle(
+//                                     color: Color(0xffA1CBA1), // 텍스트 색상
+//                                     fontSize: 18.0, // 텍스트 크기
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                             Flexible(
+//                               child: Padding(
+//                                 padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+//                                 child: Text(
+//                                   steps[index].description,
+//                                   style: TextStyle(
+//                                     fontWeight: FontWeight.w900,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                     ],
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   child: ListTile(
+//                     title: Text(
+//                       '유사한 레시피',
+//                       style: TextStyle(fontWeight: FontWeight.w700),
+//                     ),
+//                   ),
+//                 ),
 //                 Container(
 //                   child: Similaryoutube(),
 //                 )
@@ -479,20 +466,16 @@ class Recipedetail extends StatefulWidget {
 }
 
 class _RecipedetailState extends State<Recipedetail> {
-  Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://10.0.2.2:8080/',
-  ));
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
 // 레시피 상세 조회
-  var categoryDetail = [];
 
-  Future<void> getRecipe(recipeid) async {
+  Future<dynamic> getRecipe(recipeid) async {
     try {
-      Response response = await dio.get('recipe/detail/$recipeid');
+      Response response = await dio.get('$serverURL/recipe/detail/$recipeid');
       print(response.data);
-      setState(() {
-        categoryDetail = response.data;
-      });
+      return response.data;
     } catch (e) {
       print(e);
     }
@@ -531,152 +514,166 @@ class _RecipedetailState extends State<Recipedetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: Color.fromARGB(255, 255, 255, 255),
-            toolbarHeight: 55,
-            title: Text(
-              '베이컨 치즈 토스트 레시피',
-              style: TextStyle(
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                  fontWeight: FontWeight.w900 // 원하는 색상으로 변경
-                  ),
-            ),
-            centerTitle: true,
-            pinned: false,
-            elevation: 0,
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Container(child: Recipeyoutube()),
-                ListTile(
+      body: FutureBuilder(
+        future: getRecipe(widget.recipeId),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('에러발생: ${snapshot.error.toString()}'));
+            // } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+            //   return Center(child: Text('데이터없음'));
+          } else {
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  toolbarHeight: 55,
                   title: Text(
-                    '베이컨 치즈 토스트 레시피(2인분)',
+                    '${snapshot.data['recipeName']}',
                     style: TextStyle(
-                      fontWeight: FontWeight.w700,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                  trailing: Icon(Icons.favorite_border),
+                  centerTitle: true,
+                  pinned: false,
+                  elevation: 0,
                 ),
-                SizedBox(
-                  child: ListTile(
-                    title: Text(
-                      '재료',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                Wrap(
-                  direction: Axis.horizontal,
-                  runSpacing: 1,
-                  spacing: 1,
-                  children: ingredients.map((text) {
-                    final textLength = text.length;
-                    return Padding(
-                      // padding: const EdgeInsets.all(5.0),
-                      padding: const EdgeInsets.fromLTRB(20, 0.5, 2, 0.5),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: textLength * 25.0, // 최대 너비를 텍스트 길이에 따라 계산
-                        ),
-                        child: TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Color(0xffA1CBA1),
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              side: BorderSide(
-                                color: Color(0xff4EC64C),
-                                width: 1.0,
-                              ),
-                            ),
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Container(
+                          child: Recipeyoutube(
+                              recipeLink: snapshot.data['recipeLink'])),
+                      ListTile(
+                        title: Text(
+                          '${snapshot.data['recipeName']}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
                           ),
-                          child: Text(
-                            text,
+                        ),
+                        trailing: Icon(Icons.favorite_border),
+                      ),
+                      SizedBox(
+                        child: ListTile(
+                          title: Text(
+                            '재료',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                SizedBox(
-                  child: ListTile(
-                    title: Text(
-                      '조리법',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  child: Column(
-                    children: [
-                      for (int index = 0; index < steps.length; index++)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 20,
+                      Wrap(
+                        direction: Axis.horizontal,
+                        runSpacing: 1,
+                        spacing: 1,
+                        children: ingredients.map((text) {
+                          final textLength = text.length;
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0.5, 2, 0.5),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: textLength * 25.0,
                               ),
-                              child: ElevatedButton(
+                              child: TextButton(
                                 onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Color(0xffA1CBA1),
                                   backgroundColor: Colors.white,
-                                  side: BorderSide(
-                                    color: Color(0xffA1CBA1),
-                                    width: 3.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    side: BorderSide(
+                                      color: Color(0xff4EC64C),
+                                      width: 1.0,
+                                    ),
                                   ),
-                                  minimumSize: Size(30, 30),
                                 ),
                                 child: Text(
-                                  '${index + 1}',
+                                  text,
                                   style: TextStyle(
-                                    color: Color(0xffA1CBA1), // 텍스트 색상
-                                    fontSize: 18.0, // 텍스트 크기
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                            Flexible(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-                                child: Text(
-                                  steps[index].description,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(
+                        child: ListTile(
+                          title: Text(
+                            '조리법',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            for (int index = 0; index < steps.length; index++)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 20,
+                                    ),
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        shape: CircleBorder(),
+                                        backgroundColor: Colors.white,
+                                        side: BorderSide(
+                                          color: Color(0xffA1CBA1),
+                                          width: 3.0,
+                                        ),
+                                        minimumSize: Size(30, 30),
+                                      ),
+                                      child: Text(
+                                        '${index + 1}',
+                                        style: TextStyle(
+                                          color: Color(0xffA1CBA1),
+                                          fontSize: 18.0,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                                      child: Text(
+                                        steps[index].description,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        child: ListTile(
+                          title: Text(
+                            '유사한 레시피',
+                            style: TextStyle(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Similaryoutube(),
+                      )
                     ],
                   ),
                 ),
-                SizedBox(
-                  child: ListTile(
-                    title: Text(
-                      '유사한 레시피',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Similaryoutube(),
-                )
               ],
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
     );
   }
