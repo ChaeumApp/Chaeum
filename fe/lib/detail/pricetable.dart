@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PriceTable extends StatefulWidget {
   PriceTable({super.key});
@@ -36,7 +37,15 @@ class _PriceTableState extends State<PriceTable> {
     return FutureBuilder(future: getPriceTable(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
+            return Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  width: 400,
+                  height: 200,
+                  color: Colors.grey,
+                )
+            );
           }
 
           else if (snapshot.hasError) {

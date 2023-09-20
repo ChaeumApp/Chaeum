@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PriceChart extends StatefulWidget {
   PriceChart({super.key});
@@ -62,7 +63,15 @@ class _PriceChartState extends State<PriceChart> {
     return FutureBuilder(future: getPriceChart(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
+            return Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(
+                width: 400,
+                height: 250,
+                color: Colors.grey,
+              )
+            );
           }
 
           else if (snapshot.hasError) {

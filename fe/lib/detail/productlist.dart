@@ -32,8 +32,13 @@ class _ProductListState extends State<ProductList> {
     return FutureBuilder(future: getProductList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return Center(child: SpinKitWanderingCubes(
-
+            return Center(child: SpinKitPulse(
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Image.asset('assets/images/repeat/bottom_logo.png',
+                  height: 40),
+                );
+              },
             ));
           }
 
