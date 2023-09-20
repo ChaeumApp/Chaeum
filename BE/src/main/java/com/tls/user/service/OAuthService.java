@@ -8,6 +8,7 @@ import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 
+import com.tls.user.vo.UserKakaoVO;
 import java.sql.Date;
 import java.util.Objects;
 
@@ -29,7 +30,6 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class OAuthService {
 
-    /*
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -51,14 +51,14 @@ public class OAuthService {
     @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String NAVER_REDIRECT_URI;
 
-    @Value("${spring.security.oauth2.provider.naver.user-info-uri}")
-    private String NAVER_USER_INFO_URI;
+//    @Value("${spring.security.oauth2.provider.naver.user-info-uri}")
+//    private String NAVER_USER_INFO_URI;
 
     private String TYPE;
     private String CLIENT_ID;
     private String REDIRECT_URI;
 
-    public UserDto signUp(String code, String type) {
+    public UserKakaoVO signUp(String accessToken, String type) {
         TYPE = type;
 
         if (type.equals("kakao")) {
@@ -69,52 +69,59 @@ public class OAuthService {
             REDIRECT_URI = NAVER_REDIRECT_URI;
         }
 
-        String accessToken = Objects.requireNonNull(getAccessToken(code)).get("access_token").asText();
         if (getUserInfo(accessToken) != null) {
+            UserKakaoVO vo = new UserKakaoVO();
             String email = Objects.requireNonNull(getUserInfo(accessToken)).get("email").asText();
+            vo.setUserEmail(email);
+            if (userRepository.findByUserEmail(email).isPresent()) {
+                vo.setMsg("dup");
+                return vo;
+            }
             String gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText();
             String birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
-            String birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
-            User user = registerUserIfNeed(email, birthyear + "-" + birthday, gender);
-//            String jwtToken = usersAuthorizationInput(user);
-            return user != null ? userConverter.entityToDto(user) : null;
+            String birthyear = "0000";
+            if (type.equals("kakao")) birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
+
+            vo.setUserGender(gender.substring(0, 1));
+            vo.setBirth(birthyear + birthday);
+            return vo;
         }
         return null;
     }
 
-    private JsonNode getAccessToken(String code) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type", "application/x-www-form-urlencoeded;charset=utf-8");
-
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        if (TYPE.equals("naver")) body.add("client_secret", NAVER_CLIENT_SECRET);
-        body.add("redirect_uri", REDIRECT_URI);
-        body.add("code", code);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response;
-
-        if (TYPE.equals("kakao")) {
-            response = rt.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, request, String.class);
-        } else {
-            response = rt.exchange("https://nid.anver.com/oauth2.0/token", HttpMethod.POST, request, String.class);
-        }
-
-        String responseBody = response.getBody();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(responseBody);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    private JsonNode getAccessToken(String code) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+//
+//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//        body.add("grant_type", "authorization_code");
+//        body.add("client_id", CLIENT_ID);
+//        if (TYPE.equals("naver")) body.add("client_secret", NAVER_CLIENT_SECRET);
+//        body.add("redirect_uri", REDIRECT_URI);
+//        body.add("code", code);
+//
+//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+//        RestTemplate rt = new RestTemplate();
+//        ResponseEntity<String> response;
+//
+//        if (TYPE.equals("kakao")) {
+//            response = rt.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, request, String.class);
+//        } else {
+//            response = rt.exchange("https://nid.anver.com/oauth2.0/token", HttpMethod.POST, request, String.class);
+//        }
+//
+//        String responseBody = response.getBody();
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            return objectMapper.readTree(responseBody);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
     private JsonNode getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer" + accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
@@ -131,9 +138,10 @@ public class OAuthService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
+            log.info(jsonNode.toString());
 
             if (TYPE.equals("kakao")) {
-                return jsonNode.get("kakao-account");
+                return jsonNode.get("kakao_account");
             } else {
                 return jsonNode.get("response");
             }
@@ -158,6 +166,4 @@ public class OAuthService {
 //    private Boolean checkIsMember(User user) {
 //        return user.getUserEmail() != null;
 //    }
-
-     */
 }
