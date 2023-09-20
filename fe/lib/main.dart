@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:fe/category/categorymain.dart';
 import 'package:fe/recipe/recipemain.dart';
 import 'package:fe/search/searchmain.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -104,7 +105,7 @@ class _MainState extends State<Main> {
           body: SafeArea(
             child: TabBarView(
               children: [
-                Ingrecate(),
+                CategoryMain(),
                 RecipeMain(),
                 Mainb(),
                 SearchMain(),
