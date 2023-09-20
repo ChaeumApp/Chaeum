@@ -72,20 +72,25 @@ public class OAuthService {
         if (getUserInfo(accessToken) != null) {
             UserKakaoVO vo = new UserKakaoVO();
             String email = Objects.requireNonNull(getUserInfo(accessToken)).get("email").asText();
+            log.info(email);
             vo.setUserEmail(email);
             if (userRepository.findByUserEmail(email).isPresent()) {
+                log.info("email exists");
                 vo.setMsg("dup");
                 return vo;
             }
+            log.info("email does not exist");
             String gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText();
             String birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
             String birthyear = "0000";
-            if (type.equals("kakao")) birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
+            if (!type.equals("kakao")) birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
 
             vo.setUserGender(gender.substring(0, 1));
             vo.setBirth(birthyear + birthday);
+            log.info(vo.toString());
             return vo;
         }
+        log.info("error");
         return null;
     }
 
