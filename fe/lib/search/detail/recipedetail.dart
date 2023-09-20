@@ -726,6 +726,7 @@ import './similarrecipe.dart';
 import './process.dart';
 import 'package:dio/dio.dart';
 import 'package:like_button/like_button.dart';
+import 'package:marquee/marquee.dart';
 
 class Recipedetail extends StatefulWidget {
   Recipedetail({super.key, this.recipeId});
@@ -814,11 +815,22 @@ class _RecipedetailState extends State<Recipedetail> {
                 SliverAppBar(
                   backgroundColor: Color.fromARGB(255, 255, 255, 255),
                   toolbarHeight: 55,
-                  title: Text(
-                    '${snapshot.data['recipeName']}',
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.w800,
+                  title: SizedBox(
+                    height: 55,
+                    child: Marquee(
+                      text: '${snapshot.data['recipeName']}',
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                        fontWeight: FontWeight.w800,
+                      ),
+                      scrollAxis: Axis.horizontal,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      blankSpace: 20.0,
+                      startPadding: 20.0,
+                      accelerationDuration: Duration(seconds: 1),
+                      accelerationCurve: Curves.easeInOut,
+                      decelerationDuration: Duration(milliseconds: 500),
+                      decelerationCurve: Curves.easeOut,
                     ),
                   ),
                   centerTitle: true,
@@ -831,11 +843,13 @@ class _RecipedetailState extends State<Recipedetail> {
                       Container(
                           child: Recipeyoutube(
                               recipeLink: snapshot.data['recipeLink'])),
+
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                            Flexible(
+                                child: Container(
+                              margin: EdgeInsets.fromLTRB(20, 14, 10, 0),
                               child: Text(
                                 '${snapshot.data['recipeName']}',
                                 style: TextStyle(
@@ -843,9 +857,9 @@ class _RecipedetailState extends State<Recipedetail> {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                            ),
+                            )),
                             Container(
-                              margin: EdgeInsets.fromLTRB(0, 10, 20, 0),
+                              margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
                               child: LikeButton(
                                 isLiked: data['like'] as bool, // 초기 좋아요 상태
                                 onTap: (isLiked) {
