@@ -87,7 +87,7 @@ public class UserController {
 //    }
 
     @GetMapping("/oAuth/kakao")
-    @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.")
+    @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
         @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
@@ -105,7 +105,6 @@ public class UserController {
                     return new ResponseEntity<>("signin fail", HttpStatus.OK);
                 }
             } else {
-                log.info("test" + vo.toString());
                 return ResponseEntity.ok(vo);
             }
         } catch (Exception e) {
@@ -177,13 +176,34 @@ public class UserController {
             + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
             + "업데이트에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> updateUser(@RequestBody UserPwdVO userDto,
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserSignUpVO userVO,
         @RequestHeader("Authorization") String tokenWithPrefix) {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
             tokenWithPrefix.substring(7));
         log.info("findUserPwd call :: {}", authentication.getName());
-        int responseCode = userService.updateUser(authentication.getName(), userDto);
+        int responseCode = userService.updateUserInfo(authentication.getName(), userVO);
+        if (responseCode == 1) {
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
+
+    @PutMapping("/pwd")
+    @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.", tags = "유저 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
+            + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
+            + "업데이트에 실패하면 fail 을 반환한다.")
+    })
+    public ResponseEntity<?> updateUserPwd(@RequestBody UserPwdVO userPwdVO,
+        @RequestHeader("Authorization") String tokenWithPrefix) {
+        // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
+        Authentication authentication = jwtTokenProvider.getAuthentication(
+            tokenWithPrefix.substring(7));
+        log.info("findUserPwd call :: {}", authentication.getName());
+        int responseCode = userService.updateUserPwd(authentication.getName(), userPwdVO);
         if (responseCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {

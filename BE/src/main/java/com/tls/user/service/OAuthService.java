@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.user.converter.UserConverter;
-import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 
@@ -21,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -73,7 +71,7 @@ public class OAuthService {
             UserKakaoVO vo = new UserKakaoVO();
             String email = Objects.requireNonNull(getUserInfo(accessToken)).get("email").asText();
             log.info(email);
-            vo.setUserEmail(email);
+            vo.setUserEmail("[S] + email");
             if (userRepository.findByUserEmail(email).isPresent()) {
                 log.info("email exists");
                 vo.setMsg("dup");
@@ -85,6 +83,7 @@ public class OAuthService {
             String birthyear = "0000";
             if (!type.equals("kakao")) birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
 
+            vo.setUserPwd("");
             vo.setUserGender(gender.substring(0, 1));
             vo.setBirth(birthyear + birthday);
             log.info(vo.toString());
