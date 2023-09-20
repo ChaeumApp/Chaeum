@@ -1,3 +1,4 @@
+import 'package:fe/search/searchresult.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,11 @@ class _SearchState extends State<Search> {
             onSubmitted: (value){
                 context.read<UserStore>().addSearchList(value);
                 print(context.read<UserStore>().searchList);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SearchResult(searchWord: value)));
             },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),
