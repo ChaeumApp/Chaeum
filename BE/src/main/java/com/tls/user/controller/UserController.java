@@ -95,7 +95,7 @@ public class UserController {
     public ResponseEntity<?> signUpK(@RequestParam(name = "token") String token) {
         try {
             UserKakaoVO vo = oAuthService.signUp(token, "kakao");
-            if (vo.getMsg().equals("dup")) {
+            if (vo.getMsg() != null) {
                 TokenDto tokenDto = userService.signIn(vo.getUserEmail(), "");
                 if (tokenDto != null) {
                     log.debug("signin 성공");
@@ -105,7 +105,8 @@ public class UserController {
                     return new ResponseEntity<>("signin fail", HttpStatus.OK);
                 }
             } else {
-                return ResponseEntity.ok(oAuthService.signUp(token, "kakao"));
+                log.info("test" + vo.toString());
+                return ResponseEntity.ok(vo);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
