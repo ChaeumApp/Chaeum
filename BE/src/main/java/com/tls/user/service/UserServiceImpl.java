@@ -7,6 +7,8 @@ import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
+import com.tls.user.converter.UserConverter;
+import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
+    private UserConverter userConverter = new UserConverter();
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -158,8 +161,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
+        try {
+            Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
+            updateUser.ifPresent( selectUser -> {
+                UserDto userDto = userConverter.entityToDto(selectUser);
+                userDto.setVeganId(userVO.getVeganId());
+                userRepository.save(userConverter.dtoToEntity(userDto));
+            });
+            List<UserAllergy> userAllergyList = new ArrayList<>();
+            userVO.getAllergyList().forEach(allergy -> {
+                UserAllergy userAllergy = UserAllergy.builder()
+                    .userId(updateUser.get())
+                    .algyId(allergy)
+                    .build();
+                userAllergyList.add(userAllergy);
+            });
+            userAllergyRepository.saveAll(userAllergyList);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
     @Transactional
-    public int updateUser(String userEmail, UserPwdVO userDto) {
+    public int updateUserPwd(String userEmail, UserPwdVO userDto) {
         try {
             User updateUser = userRepository.findByUserEmail(userEmail).orElseThrow();
             if (passwordEncoder.matches(userDto.getCurpassword(), updateUser.getUserPwd())) {
