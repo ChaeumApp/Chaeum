@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailRecipe extends StatefulWidget {
@@ -9,6 +11,19 @@ class DetailRecipe extends StatefulWidget {
 }
 
 class _DetailRecipeState extends State<DetailRecipe> {
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+
+  Future<dynamic> getDetailRecipe() async {
+    try {
+      final response = await dio.get('$serverURL/recipe');
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
   var recipes = [
     {'title' : '복숭아 잼', 'url' : 'https://www.youtube.com/watch?v=zqvatzbtXXg'},
     {'title' : '복숭아 우유', 'url' : 'https://www.youtube.com/watch?v=-ALrxisJdpI'},
@@ -23,44 +38,72 @@ class _DetailRecipeState extends State<DetailRecipe> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-      child: ListView.builder(
-          itemCount: recipes.length,
-          itemBuilder: (BuildContext context, int index){
-        return Container(
-          height: 100,
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
-            )
-          ),
-          child: Row(
-            children: [
-              Flexible(
-                flex: 3,
-                child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
-                height: 100),
+    return FutureBuilder(future: getDetailRecipe(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData == false) {
+            return Center(child: SpinKitPulse(
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Image.asset('assets/images/repeat/bottom_logo.png',
+                      height: 40),
+                );
+              },
+            ));
+          }
+
+          else if (snapshot.hasError) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(fontSize: 15),
               ),
-              Flexible(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(recipes[index]['title'] as String, style: TextStyle(
-                        fontSize: 15
-                      )),
-                      Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        );
-      }),
-    );
+            );
+          }
+
+
+          else {
+            return Container(
+              margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: ListView.builder(
+                  itemCount: recipes.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
+                          )
+                      ),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            flex: 3,
+                            child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
+                                height: 100),
+                          ),
+                          Flexible(
+                            flex: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(recipes[index]['title'] as String, style: TextStyle(
+                                      fontSize: 15
+                                  )),
+                                  Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+            );
+          }
+        });
   }
 }
