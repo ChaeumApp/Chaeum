@@ -1,7 +1,26 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class PriceTable extends StatelessWidget {
+class PriceTable extends StatefulWidget {
   PriceTable({super.key});
+
+  @override
+  State<PriceTable> createState() => _PriceTableState();
+}
+
+class _PriceTableState extends State<PriceTable> {
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+
+  Future<dynamic> getPriceTable() async {
+    try {
+      final response = await dio.get('$serverURL/recipe');
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
 
   var data = [
     {'price': 4350, 'site': 'naver'},
@@ -14,7 +33,26 @@ class PriceTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
+    return FutureBuilder(future: getPriceTable(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData == false) {
+            return CircularProgressIndicator();
+          }
+
+          else if (snapshot.hasError) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(fontSize: 15),
+              ),
+            );
+          }
+
+
+          else {
+            return
 //     ListView.builder(
 //         itemCount: data.length,
 //         shrinkWrap: true,
@@ -39,47 +77,50 @@ class PriceTable extends StatelessWidget {
 //   }
 // }
 
-    Table(
-    columnWidths: const <int, TableColumnWidth>{
-      0 : FlexColumnWidth(),
-      1 : FlexColumnWidth(),
-    },
-    children: [
-      TableRow(children: [
-        DataTable(
-          dataRowMinHeight: 50,
-            dataRowMaxHeight: 50,
-            columns: [
-              DataColumn(label: Text('가격', style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18
-              ),)),
-              DataColumn(label: Text('사이트', style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18
-              ),))
-            ],
-            rows: data.map((entry) => DataRow(
-              cells: [
-                DataCell(Text('${entry['price'] as int}원',
-                style: TextStyle(
-                  fontSize: 16
-                ),)),
-                DataCell(Row(
-                  children: [
-                    // Container(
-                    //     width: 65,
-                    //     child: Text(entry['site'] as String)),
-                    Container(
-                        width: 50,
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: Image.asset('${entry['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}'))
-                  ],
-                )),
-              ],
-            )).toList()),
-      ]),
-    ],
-  );
+              Table(
+                columnWidths: const <int, TableColumnWidth>{
+                  0 : FlexColumnWidth(),
+                  1 : FlexColumnWidth(),
+                },
+                children: [
+                  TableRow(children: [
+                    DataTable(
+                        dataRowMinHeight: 50,
+                        dataRowMaxHeight: 50,
+                        columns: [
+                          DataColumn(label: Text('가격', style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18
+                          ),)),
+                          DataColumn(label: Text('사이트', style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18
+                          ),))
+                        ],
+                        rows: data.map((entry) => DataRow(
+                          cells: [
+                            DataCell(Text('${entry['price'] as int}원',
+                              style: TextStyle(
+                                  fontSize: 16
+                              ),)),
+                            DataCell(Row(
+                              children: [
+                                // Container(
+                                //     width: 65,
+                                //     child: Text(entry['site'] as String)),
+                                Container(
+                                    width: 50,
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Image.asset('${entry['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}'))
+                              ],
+                            )),
+                          ],
+                        )).toList()),
+                  ]),
+                ],
+              );
+          }
+        });
+
 }
 }
