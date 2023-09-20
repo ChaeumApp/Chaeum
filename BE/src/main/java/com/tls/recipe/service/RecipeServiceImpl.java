@@ -1,6 +1,7 @@
 package com.tls.recipe.service;
 
 import com.tls.config.ReadExcel;
+import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.entity.composite.RecipeProc;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
@@ -68,8 +69,25 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe viewRecipe(int recipeId) {
-        return recipeRepository.findByRecipeId(recipeId).orElse(null);
+    public RecipeDto viewRecipe(int recipeId) {
+        try{
+            List<String> process = new ArrayList<>();
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            recipeProcRepository.findByRecipeId(recipe).forEach(recipeProc -> {
+                process.add(recipeProc.getRecipeProcContent());
+            });
+            return RecipeDto.builder()
+                .recipeName(recipe.getRecipeName())
+                .recipeThumbnail(recipe.getRecipeThumbnail())
+                .recipeLink(recipe.getRecipeLink())
+                .recipeProcess(process)
+                .recipeIngredients(null)
+                .build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
