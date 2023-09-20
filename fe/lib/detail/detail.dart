@@ -216,11 +216,16 @@ import './profile.dart';
 import './priceinfo.dart';
 import './detailrecipe.dart';
 
-class Detail extends StatelessWidget {
+class Detail extends StatefulWidget {
   Detail({super.key, this.category});
 
   final category;
 
+  @override
+  State<Detail> createState() => _DetailState();
+}
+
+class _DetailState extends State<Detail> {
   var data = {'saleper': 10, 'salewon': 300, 'salerank': 1};
 
   @override
@@ -238,7 +243,7 @@ class Detail extends StatelessWidget {
                   iconTheme: IconThemeData(color: Colors.black),
                   collapsedHeight: 325,
                   expandedHeight: 325,
-                  flexibleSpace: ProfileView(category: category),
+                  flexibleSpace: ProfileView(category: widget.category),
                 ),
                 SliverPersistentHeader(
                   delegate: MyDelegate(TabBar(
