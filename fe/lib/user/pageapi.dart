@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/firebaseapi.dart';
 
 class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
@@ -6,6 +7,7 @@ class PageApi {
 
   Future<dynamic> login(id, password) async {
     try {
+      // final deviceToken = getMyDeviceToken();
       final response = await dio.post('$serverURL/user/signin',
           data: {'userEmail': id, 'userPwd': password});
       print(response.data);
@@ -28,8 +30,8 @@ class PageApi {
 
   Future<dynamic> sendEmail(id) async {
     try {
-      final response =
-          await dio.post('$serverURL/user/auth/sendEmail', data: id);
+      final response = await dio
+          .post('$serverURL/user/auth/sendEmail', data: {'userEmail': id});
       print(response.data);
       return response.data;
     } catch (e) {
@@ -40,7 +42,7 @@ class PageApi {
   Future<dynamic> checkcode(id, code) async {
     try {
       final response = await dio.post('$serverURL/user/auth/checkEmail/$code',
-          data: id, queryParameters: {'code': code});
+          data: {'userEmail': id}, queryParameters: {'code': code});
       print('코드 확인 여부 ${response.data}');
       return response.data;
     } catch (e) {
@@ -55,8 +57,8 @@ class PageApi {
         'userPwd': pwd,
         'userBirthDay': birth,
         'userGender': gender,
-        'userVegan': vegan,
-        'userRole': role
+        'veganId': vegan,
+        'allergyList': role
       });
       print('회원가입 여부 ${response.data}');
       return response.data;
@@ -102,5 +104,16 @@ class PageApi {
     }
   }
 
+  Future<dynamic> kakaologin(token) async {
+    try {
+      print('받은토큰$token');
+      final response = await dio.get('http://10.0.2.2:8080/user/oAuth/kakao',
+          queryParameters: {'token': token});
+      print('ㅋ카오 로그인 여부 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
   // 다른 API 호출 메서드 추가
 }

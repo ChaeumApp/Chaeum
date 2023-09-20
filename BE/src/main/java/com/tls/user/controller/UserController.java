@@ -1,13 +1,17 @@
 package com.tls.user.controller;
 
+import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
+import com.tls.user.repository.UserRepository;
+import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
 import com.tls.user.vo.UserEmailVO;
 import com.tls.user.vo.UserFindPwdVO;
+import com.tls.user.vo.UserKakaoVO;
 import com.tls.user.vo.UserPwdVO;
 import com.tls.user.vo.UserSignUpVO;
-import com.tls.user.vo.UserSigninVO;
+import com.tls.user.vo.UserSignInVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,8 +40,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    //    private final OAuthService oAuthService;
+    private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private RandomStringCreator rsc;
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.", tags = "유저 API")
@@ -46,52 +52,73 @@ public class UserController {
     })
     public ResponseEntity<?> signUp(@RequestBody UserSignUpVO userDto) {
         log.info("signUp call:: {}", userDto);
+        if (userDto.getUserPwd().isEmpty()) {
+            userDto.setUserEmail("[S]"+userDto.getUserEmail());
+            userDto.setUserPwd(rsc.getRandomString(20));
+        }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
-            return new ResponseEntity<>("ok", HttpStatus.OK);
+            TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
+            if (tokenDto != null) {
+                log.debug("signin 성공");
+                return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+            } else {
+                log.debug("signin 실패");
+                return new ResponseEntity<>("signin fail", HttpStatus.OK);
+            }
         } else {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
+            return new ResponseEntity<>("signup fail", HttpStatus.OK);
         }
     }
 
-    /*
-    @GetMapping("/signup/naver")
-    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
-        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
-    })
-    public ResponseEntity<?> signUpN(@RequestParam(name = "code") String code) {
-        try {
-            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
+//    @GetMapping("/oAuth/naver")
+//    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
+//    @ApiResponses(value = {
+//        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
+//        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+//    })
+//    public ResponseEntity<?> signUpN(@RequestParam(name = "") String code) {
+//        try {
+//            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+//        }
+//    }
 
-    @GetMapping("/signup/kakao")
+    @GetMapping("/oAuth/kakao")
     @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
         @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
     })
-    public ResponseEntity<?> signUpK(@RequestParam(name = "code") String code) {
+    public ResponseEntity<?> signUpK(@RequestParam(name = "token") String token) {
         try {
-            return ResponseEntity.ok(oAuthService.signUp(code, "kakao"));
+            UserKakaoVO vo = oAuthService.signUp(token, "kakao");
+            if (vo.getMsg() != null) {
+                TokenDto tokenDto = userService.signIn(vo.getUserEmail(), "");
+                if (tokenDto != null) {
+                    log.debug("signin 성공");
+                    return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+                } else {
+                    log.debug("signin 실패");
+                    return new ResponseEntity<>("signin fail", HttpStatus.OK);
+                }
+            } else {
+                log.info("test" + vo.toString());
+                return ResponseEntity.ok(vo);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
-     */
 
     @PostMapping("/signin")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> signIn(@RequestBody UserSigninVO userDto) {
+    public ResponseEntity<?> signIn(@RequestBody UserSignInVO userDto) {
         log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
         TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
         if (tokenDto != null) {

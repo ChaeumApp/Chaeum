@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:fe/category/categorymain.dart';
 import 'package:fe/recipe/recipemain.dart';
 import 'package:fe/search/searchmain.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -38,9 +39,8 @@ void main() async {
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid){
+  if (Platform.isAndroid) {
     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
   KakaoSdk.init(
@@ -74,7 +74,6 @@ class _MainState extends State<Main> {
   static final storage = FlutterSecureStorage();
   @override
   void initState() {
-    super.initState();
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
@@ -84,6 +83,7 @@ class _MainState extends State<Main> {
       await _asyncMethod();
       setState(() {});
     });
+    super.initState();
   }
 
   _asyncMethod() async {
@@ -106,7 +106,7 @@ class _MainState extends State<Main> {
           body: SafeArea(
             child: TabBarView(
               children: [
-                Ingrecate(),
+                CategoryMain(),
                 RecipeMain(),
                 Mainb(),
                 SearchMain(),
