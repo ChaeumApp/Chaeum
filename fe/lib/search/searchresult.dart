@@ -79,7 +79,7 @@ class _SearchResultState extends State<SearchResult> {
               ),
                 SliverPersistentHeader(
                   delegate: MyDelegate(TabBar(
-                    // indicatorPadding: EdgeInsets.fromLTRB(0, 30, 0, 30),
+                    indicatorPadding: EdgeInsets.fromLTRB(0, 0, 0, 20),
                       labelColor: Colors.black,
                       unselectedLabelColor: Color(0xffD0D0D0),
                       labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -90,8 +90,12 @@ class _SearchResultState extends State<SearchResult> {
                       indicatorColor: Color(0xff4C8C4C),
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: [
-                        Text('식재료'),
-                        Text('레시피'),
+                        SizedBox(
+                          height: 50,
+                            child: Text('식재료')),
+                        SizedBox(
+                          height: 40,
+                            child: Text('레시피')),
                       ])),
                   floating: true,
                   pinned: true,
@@ -161,10 +165,10 @@ class MyDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 80;
+  double get maxExtent => 70;
 
   @override
-  double get minExtent => 80;
+  double get minExtent => 70;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
