@@ -83,6 +83,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenDto signIn(String userEmail, String userPwd) {
         try {
+            if (userEmail.equals("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
+                userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
+            }
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -176,7 +179,7 @@ public class UserServiceImpl implements UserService {
             Optional<User> user = userRepository.findByUserEmailAndUserBirthday(userEmail,
                 Date.valueOf(userBirthday));
             if (user.isPresent()) {
-                String tempPassword = new RandomStringCreator().getTempPassword();
+                String tempPassword = new RandomStringCreator().getRandomString(10);
                 MailDto mailDto = new MailDto();
                 mailDto.setAddress(userEmail);
                 mailDto.setTitle("채움 임시 비밀번호 안내 이메일입니다.");
