@@ -70,8 +70,7 @@ public class OAuthService {
         if (getUserInfo(accessToken) != null) {
             UserKakaoVO vo = new UserKakaoVO();
             String email = Objects.requireNonNull(getUserInfo(accessToken)).get("email").asText();
-            log.info(email);
-            vo.setUserEmail("[S] + email");
+            vo.setUserEmail("[S]" + email);
             if (userRepository.findByUserEmail(email).isPresent()) {
                 log.info("email exists");
                 vo.setMsg("dup");
