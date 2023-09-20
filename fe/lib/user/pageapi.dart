@@ -104,5 +104,15 @@ class PageApi {
     }
   }
 
+  Future<dynamic> kakaologin(token) async {
+    try {
+      final response = await dio.get('$serverURL/user/oAuth/kakao',
+          queryParameters: {'token': token});
+      print('ㅋ카오 로그인 여부 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
   // 다른 API 호출 메서드 추가
 }

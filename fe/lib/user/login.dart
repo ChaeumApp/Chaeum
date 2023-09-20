@@ -1,7 +1,9 @@
 import 'package:fe/store/userstore.dart';
+import 'package:fe/user/addinfo.dart';
 import 'package:fe/user/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:provider/provider.dart';
 import '../user/mypage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -226,8 +228,33 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token =
                                                         await UserApi.instance
                                                             .loginWithKakaoTalk();
-                                                    print('카카오톡으로 로그인 성공');
-                                                    print('1');
+                                                    final sociallogininfo = {
+                                                      'accesstoken': 'lll'
+                                                    };
+                                                    if (sociallogininfo
+                                                        .containsKey(
+                                                            'accessToken')) {
+                                                      final accessToken =
+                                                          sociallogininfo[
+                                                              'accessToken'];
+                                                      final refreshToken =
+                                                          sociallogininfo[
+                                                              'refreshToken'];
+                                                      await widget.storage.write(
+                                                          key: "login",
+                                                          value:
+                                                              "accessToken $accessToken refreshToken $refreshToken");
+                                                    } else {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AddInfo(
+                                                                    user:
+                                                                        sociallogininfo)),
+                                                      );
+                                                    }
                                                     print(token.accessToken);
                                                   } catch (error) {
                                                     print(
@@ -247,8 +274,33 @@ class _LogInState extends State<LogIn> {
                                                       OAuthToken token =
                                                           await UserApi.instance
                                                               .loginWithKakaoAccount();
-                                                      print('카카오계정으로 로그인 성공');
-                                                      print('2');
+                                                      final sociallogininfo = {
+                                                        'accesstoken': 'lll'
+                                                      };
+                                                      if (sociallogininfo
+                                                          .containsKey(
+                                                              'accessToken')) {
+                                                        final accessToken =
+                                                            sociallogininfo[
+                                                                'accessToken'];
+                                                        final refreshToken =
+                                                            sociallogininfo[
+                                                                'refreshToken'];
+                                                        await widget.storage.write(
+                                                            key: "login",
+                                                            value:
+                                                                "accessToken $accessToken refreshToken $refreshToken");
+                                                      } else {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  AddInfo(
+                                                                      user:
+                                                                          sociallogininfo)),
+                                                        );
+                                                      }
                                                       print(token.accessToken);
                                                     } catch (error) {
                                                       print(
@@ -261,7 +313,36 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token = await UserApi
                                                         .instance
                                                         .loginWithKakaoAccount();
-                                                    print('3');
+                                                    final sociallogininfo =
+                                                        await pageapi
+                                                            .kakaologin(token);
+                                                    print(
+                                                        'ggggg$sociallogininfo');
+
+                                                    if (sociallogininfo
+                                                        .containsKey(
+                                                            'accessToken')) {
+                                                      final accessToken =
+                                                          sociallogininfo[
+                                                              'accessToken'];
+                                                      final refreshToken =
+                                                          sociallogininfo[
+                                                              'refreshToken'];
+                                                      await widget.storage.write(
+                                                          key: "login",
+                                                          value:
+                                                              "accessToken $accessToken refreshToken $refreshToken");
+                                                    } else {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                AddInfo(
+                                                                    user:
+                                                                        sociallogininfo)),
+                                                      );
+                                                    }
                                                     print(token.accessToken);
                                                   } catch (error) {
                                                     print(
@@ -289,7 +370,20 @@ class _LogInState extends State<LogIn> {
                                                   const BorderRadius.all(
                                                 Radius.circular(35.0),
                                               ),
-                                              onTap: () async {},
+                                              onTap: () async {
+                                                try {
+                                                  final NaverLoginResult user =
+                                                      await FlutterNaverLogin
+                                                          .logIn();
+                                                  NaverAccessToken res =
+                                                      await FlutterNaverLogin
+                                                          .currentAccessToken;
+                                                  print(res.accessToken);
+                                                } catch (error) {
+                                                  print(
+                                                      'naver login error $error');
+                                                }
+                                              },
                                             ),
                                           ),
                                         ),
