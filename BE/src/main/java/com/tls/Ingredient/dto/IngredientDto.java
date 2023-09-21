@@ -1,8 +1,11 @@
 package com.tls.Ingredient.dto;
 
-import com.tls.category.entity.Category;
-import com.tls.category.entity.SubCategory;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
 public class IngredientDto {
 
     int ingrId;
