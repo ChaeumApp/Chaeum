@@ -740,27 +740,19 @@ class _RecipedetailState extends State<Recipedetail> {
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
-  // var data = {'like': false};
+  var data = {'like': false};
 
-  // Future<bool?> toggleLike(bool isLiked) async {
-  //   bool liked = false;
-  //   setState(() {
-  //     if (data.containsKey('like') && data['like'] is bool) {
-  //       data['like'] = !(data['like'] as bool);
-  //       liked = data['like'] as bool;
-  //     } else {
-  //       data['like'] = false;
-  //     }
-  //   });
-  //   return Future.value(liked);
-  // }
-
-  bool isFavorited = false;
-
-  void _toggleFavorite() {
+  Future<bool?> toggleLike(bool isLiked) async {
+    bool liked = false;
     setState(() {
-      isFavorited = !isFavorited;
+      if (data.containsKey('like') && data['like'] is bool) {
+        data['like'] = !(data['like'] as bool);
+        liked = data['like'] as bool;
+      } else {
+        data['like'] = false;
+      }
     });
+    return Future.value(liked);
   }
 
 // 레시피 상세 조회
@@ -775,35 +767,35 @@ class _RecipedetailState extends State<Recipedetail> {
     }
   }
 
-  final List<String> ingredients = [
-    '계란 3개',
-    '우유 200ml',
-    '소금 약간',
-    '피자치즈 100g',
-    '베이컨 2줄',
-    '크림치즈 4숟가락',
-  ];
+  // final List<String> ingredients = [
+  //   '계란 3개',
+  //   '우유 200ml',
+  //   '소금 약간',
+  //   '피자치즈 100g',
+  //   '베이컨 2줄',
+  //   '크림치즈 4숟가락',
+  // ];
 
-  final List<RecipeStep> steps = [
-    RecipeStep(
-      description: '계란을 깨서 그릇에 담습니다.',
-    ),
-    RecipeStep(
-      description: '우유를 계란에 넣고 잘 섞습니다.',
-    ),
-    RecipeStep(
-      description: '소금을 약간 넣고 섞습니다.',
-    ),
-    RecipeStep(
-      description: '피자치즈를 넣고 섞습니다.',
-    ),
-    RecipeStep(
-      description: '베이컨을 추가하고 섞은 다음에 치즈계란소세지를 추가하고 소스를 뿌린뒤에 30초간 가열합니다',
-    ),
-    RecipeStep(
-      description: '크림치즈를 넣고 잘 섞습니다.',
-    ),
-  ];
+  // final List<RecipeStep> steps = [
+  //   RecipeStep(
+  //     description: '계란을 깨서 그릇에 담습니다.',
+  //   ),
+  //   RecipeStep(
+  //     description: '우유를 계란에 넣고 잘 섞습니다.',
+  //   ),
+  //   RecipeStep(
+  //     description: '소금을 약간 넣고 섞습니다.',
+  //   ),
+  //   RecipeStep(
+  //     description: '피자치즈를 넣고 섞습니다.',
+  //   ),
+  //   RecipeStep(
+  //     description: '베이컨을 추가하고 섞은 다음에 치즈계란소세지를 추가하고 소스를 뿌린뒤에 30초간 가열합니다',
+  //   ),
+  //   RecipeStep(
+  //     description: '크림치즈를 넣고 잘 섞습니다.',
+  //   ),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -856,25 +848,40 @@ class _RecipedetailState extends State<Recipedetail> {
                           children: [
                             Flexible(
                                 child: Container(
-                              margin: EdgeInsets.fromLTRB(20, 14, 10, 0),
+                              margin: EdgeInsets.fromLTRB(23, 14, 10, 0),
                               child: Text(
                                 '${snapshot.data['recipeName']}',
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
+                                  // fontFamily: ,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             )),
                             Container(
                               margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
-                              child: IconButton(
-                                icon: Icon(
-                                  isFavorited
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: Colors.red[500],
+                              child: LikeButton(
+                                isLiked: data['like'] as bool, // 초기 좋아요 상태
+                                onTap: (isLiked) {
+                                  return toggleLike(isLiked);
+                                },
+                                circleColor: CircleColor(
+                                    start: Color(0xffff0044),
+                                    end: Color(0xffff4c7c)),
+                                bubblesColor: BubblesColor(
+                                  dotPrimaryColor: Color(0xffff3333),
+                                  dotSecondaryColor: Color(0xffff9999),
                                 ),
-                                onPressed: _toggleFavorite,
+                                likeBuilder: (bool isLiked) {
+                                  return Icon(
+                                    data['like'] as bool
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: data['like'] as bool
+                                        ? Colors.red
+                                        : Colors.black,
+                                  );
+                                },
                               ),
                             )
                           ]),
@@ -883,62 +890,63 @@ class _RecipedetailState extends State<Recipedetail> {
                         child: Text(
                           '재료',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 19,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-                          child: Wrap(
-                            direction: Axis.horizontal,
-                            runSpacing: 1,
-                            spacing: 1,
-                            children: snapshot.data['recipeIngredients'] != null
-                                ? snapshot.data['recipeIngredients']
-                                    .map<Widget>((ingredient) {
-                                    final text =
-                                        '${ingredient[0]} ${ingredient[1]}'; // 재료 데이터에서 추출
-                                    final textLength = text.length;
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 3, 1, 3),
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxWidth: textLength * 25.0,
-                                          maxHeight: 35.0,
-                                        ),
-                                        child: TextButton(
-                                          onPressed: () {},
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: Color(0xffA1CBA1),
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                              side: BorderSide(
-                                                color: Color(0xff4EC64C),
-                                                width: 1.0,
-                                              ),
+                      // Flexible(
+                      //   child:
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+                        child: Wrap(
+                          direction: Axis.horizontal,
+                          runSpacing: 1,
+                          spacing: 1,
+                          children: (snapshot.data['recipeIngredients'] !=
+                                      null &&
+                                  snapshot.data['recipeIngredients'].isNotEmpty)
+                              ? snapshot.data['recipeIngredients']
+                                  .map<Widget>((ingredient) {
+                                  final text =
+                                      '${ingredient[0]} ${ingredient[1]}'; // 재료 데이터에서 추출
+                                  final textLength = text.length;
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 3, 1, 3),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: textLength * 25.0,
+                                        maxHeight: 35.0,
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () {},
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Color(0xffA1CBA1),
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                            side: BorderSide(
+                                              color: Color(0xff4EC64C),
+                                              width: 1.0,
                                             ),
                                           ),
-                                          child: Text(
-                                            text,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                        ),
+                                        child: Text(
+                                          text,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
-                                    );
-                                  }).toList()
-                                : [], // 재료 데이터가 없는 경우 빈 리스트 반환
-                          ),
+                                    ),
+                                  );
+                                }).toList()
+                              : [], // 재료 데이터가 없는 경우 빈 리스트 반환
                         ),
                       ),
-                      // ]),
-
+                      // ),
                       SizedBox(
                         child: Column(
                           children: [
