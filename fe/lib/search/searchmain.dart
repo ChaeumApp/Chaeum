@@ -1,7 +1,9 @@
 import 'package:fe/repeat/search.dart';
 import 'package:fe/search/searchlist.dart';
 import 'package:fe/search/searchmainrecipe.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SearchMain extends StatefulWidget {
   const SearchMain({super.key});
@@ -11,6 +13,13 @@ class SearchMain extends StatefulWidget {
 }
 
 class _SearchMainState extends State<SearchMain> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

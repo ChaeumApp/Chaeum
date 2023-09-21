@@ -27,29 +27,26 @@ class _RecipeMainState extends State<RecipeMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Search(),
-          RecipeMainList(scrollController: scrollController),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.small(
-              onPressed: () {
-                scrollController.animateTo(
-                  scrollController.position.minScrollExtent,
-                  duration: Duration(milliseconds: 500),
-                  curve: Curves.fastOutSlowIn,
-                );
-              },
-              backgroundColor: Colors.grey[50],
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1,
-                color: Color(0xffA1CBA1)),
-                  borderRadius: BorderRadius.circular(12)),
-        child: Icon(Icons.arrow_upward_sharp,
-        color: Color(0xffA1CBA1)),
-            )
-    );
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Search(),
+            RecipeMainList(scrollController: scrollController),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.small(
+          onPressed: () {
+            scrollController.animateTo(
+              scrollController.position.minScrollExtent,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.fastOutSlowIn,
+            );
+          },
+          backgroundColor: Colors.grey[50],
+          shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: Color(0xffA1CBA1)),
+              borderRadius: BorderRadius.circular(12)),
+          child: Icon(Icons.arrow_upward_sharp, color: Color(0xffA1CBA1)),
+        ));
   }
 }

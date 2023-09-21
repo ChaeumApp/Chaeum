@@ -179,13 +179,13 @@ class _MainBestState extends State<MainBest> {
                                     width: 25,
                                     height: 25,
                                     decoration: BoxDecoration(
-                                        color: Color.fromRGBO(161, 203, 161, 0.8),
+                                        color: Color.fromRGBO(76, 140, 76, 0.8),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
+                                            color: Colors.grey.withOpacity(0.8),
                                             blurRadius: 5.0,
                                             spreadRadius: 0.0,
-                                            offset: Offset(3, 3),
+                                            offset: Offset(2, 2),
                                           )
                                         ],
                                         borderRadius: BorderRadius.only(
@@ -196,7 +196,7 @@ class _MainBestState extends State<MainBest> {
                                           '${ranking[i]['rank']}',
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w700,
                                               fontSize: 15),
                                         )),
                                   )
