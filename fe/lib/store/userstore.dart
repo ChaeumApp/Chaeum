@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 
 class UserStore extends ChangeNotifier {
-  var Login = false;
+  String userId = '';
+
   changeUserInfo(userInfo) {
-    userInfo = userInfo;
+    userId = userInfo;
   }
+
+  List<String?> searchList = [];
+  addSearchList(searchWord){
+    if(searchList.length >= 10){
+      searchList.removeAt(searchList.length - 1);
+    }
+    searchList.insert(0, searchWord);
+  }
+
+  deleteSearchList(index){
+    searchList.removeAt(index);
+}
 }

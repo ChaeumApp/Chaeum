@@ -1,10 +1,12 @@
 package com.tls.recipe.service;
 
 import com.tls.config.ReadExcel;
+import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.entity.composite.RecipeProc;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
 import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.repository.RecipeIngredientRepository;
 import com.tls.recipe.repository.RecipeProcRepository;
 import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
@@ -28,6 +30,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final UserRecipeLogRepository userRecipeLogRepository;
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeProcRepository recipeProcRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
 
     @Override
     public int updateRecipe() {
@@ -68,8 +71,32 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe viewRecipe(int recipeId) {
-        return recipeRepository.findByRecipeId(recipeId).orElse(null);
+    public RecipeDto viewRecipe(int recipeId) {
+        try {
+            List<String> process = new ArrayList<>();
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            recipeProcRepository.findByRecipeId(recipe).forEach(recipeProc ->
+                process.add(recipeProc.getRecipeProcContent())
+            );
+            List<String[]> ingredients = new ArrayList<>();
+            recipeIngredientRepository.findByRecipeId(recipe).forEach(recipeIngr -> {
+                String[] info = new String[2];
+                info[0] = recipeIngr.getRecipeIngrName();
+                info[1] = recipeIngr.getRecipeIngrAmount();
+                ingredients.add(info);
+            });
+            return RecipeDto.builder()
+                .recipeName(recipe.getRecipeName())
+                .recipeThumbnail(recipe.getRecipeThumbnail())
+                .recipeLink(recipe.getRecipeLink())
+                .recipeProcess(process)
+                .recipeIngredients(ingredients)
+                .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
