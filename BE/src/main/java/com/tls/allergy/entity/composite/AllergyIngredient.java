@@ -1,8 +1,8 @@
-package com.tls.allergy.composite;
+package com.tls.allergy.entity.composite;
 
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.allergy.id.AllergyIngredientId;
-import com.tls.allergy.single.Allergy;
+import com.tls.allergy.entity.single.Allergy;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;

@@ -1,6 +1,6 @@
 package com.tls.allergy.service;
 
-import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.entity.composite.UserAllergy;
 import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.user.repository.UserRepository;
