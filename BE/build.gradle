@@ -56,6 +56,9 @@ dependencies {
 	// to read excel file
 	implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+
+	// send Firebase notification
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 }
 
 tasks.named('test') {
