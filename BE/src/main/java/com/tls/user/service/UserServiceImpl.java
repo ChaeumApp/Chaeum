@@ -70,6 +70,9 @@ public class UserServiceImpl implements UserService {
     public int signUp(UserSignUpVO userDto) {
         try {
             // user 정보 먼저 저장한다.
+            if (userDto.getUserEmail().startsWith("[S]") && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
+                return 200;
+            }
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
                 .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
