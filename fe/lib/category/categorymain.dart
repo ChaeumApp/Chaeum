@@ -46,11 +46,13 @@ class _CategoryMainState extends State<CategoryMain> {
                 border: Border(
                   bottom: BorderSide(
                       color: Colors.black54,
-                      width: 0.6)
+                      width: 0.5)
                 )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/fr.png'),
+                leading: Image.asset('assets/images/category/fr.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('과일'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -69,11 +71,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/vg.png'),
+                leading: Image.asset('assets/images/category/vg.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('채소'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -92,11 +96,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/pn.png'),
+                leading: Image.asset('assets/images/category/pn.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('곡류/견과'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -107,7 +113,7 @@ class _CategoryMainState extends State<CategoryMain> {
                 border: Border(
                     bottom: BorderSide(
                         color: Colors.black54,
-                        width: 0.6)
+                        width: 0.5)
                 )
             ),
             child: ExpansionTile(
@@ -121,12 +127,33 @@ class _CategoryMainState extends State<CategoryMain> {
                 isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
                 color: Colors.black54,
                 ),
-              leading: Image.asset('assets/images/category/mt.png'),
-              title: Text('정육',
+              leading: Image.asset('assets/images/category/mt.png',
+                width: 28,
+                height: 28,),
+              title: Text('정육/달걀',
                 style: TextStyle(
                   color: Colors.black,
                 ),),
               children: <Widget>[
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                IngrMain(catId : 4, subCatId : 0, catName: '정육/달걀')));
+                  },
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      leading: Image.asset('assets/images/category/barbecue.png',
+                        width: 28,
+                        height: 28,),
+                      title: Text('전체보기'),
+                      trailing: Icon(Icons.keyboard_arrow_right),
+                    ),
+                  ),
+                ),
                 GestureDetector(
                   onTap: (){
                     Navigator.push(
@@ -257,11 +284,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/fsh.png'),
+                leading: Image.asset('assets/images/category/fsh.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('수산물'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -280,7 +309,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
@@ -305,11 +334,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/gch.png'),
+                leading: Image.asset('assets/images/category/gch.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('김치'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -328,7 +359,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
@@ -353,11 +384,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/can.png'),
+                leading: Image.asset('assets/images/category/can.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('통조림'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -376,11 +409,13 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
-                leading: Image.asset('assets/images/category/sc.png'),
+                leading: Image.asset('assets/images/category/sc.png',
+                  width: 28,
+                  height: 28,),
                 title: Text('가루/조미료'),
                 trailing: Icon(Icons.keyboard_arrow_right),
               ),
@@ -399,7 +434,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
@@ -424,7 +459,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   border: Border(
                       bottom: BorderSide(
                           color: Colors.black54,
-                          width: 0.6)
+                          width: 0.5)
                   )
               ),
               child: ListTile(
