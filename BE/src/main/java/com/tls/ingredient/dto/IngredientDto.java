@@ -1,5 +1,10 @@
 package com.tls.ingredient.dto;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
 public class IngredientDto {
 
     int ingrId;
