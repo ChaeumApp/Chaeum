@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.text.SimpleDateFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,8 @@ public class UserController {
         }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
-            TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
+            TokenDto tokenDto = userService.signIn(new UserSignInVO(
+                userDto.getUserEmail(), userDto.getUserPwd(), userDto.getNotiToken()));
             if (tokenDto != null) {
                 log.debug("signin 성공");
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -72,20 +74,31 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/oAuth/naver")
-//    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
-//    @ApiResponses(value = {
-//        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
-//        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
-//    })
-//    public ResponseEntity<?> signUpN(@RequestParam(name = "") String code) {
-//        try {
-//            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
-//        }
-//    }
+    @GetMapping("/oAuth/naver")
+    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.", tags = "유저 API")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpN(@RequestParam(name = "token") String token) {
+        try {
+            UserKakaoVO vo = oAuthService.signUp(token, "naver");
+            if (vo.getMsg() != null) {
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                TokenDto tokenDto = userService.signIn(userSignInVO);
+                if (tokenDto != null) {
+                    log.debug("signin 성공");
+                    return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+                } else {
+                    log.debug("signin 실패");
+                    return new ResponseEntity<>("signin fail", HttpStatus.OK);
+                }
+            } else {
+                return ResponseEntity.ok(vo);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 
     @GetMapping("/oAuth/kakao")
     @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.", tags = "유저 API")
@@ -97,7 +110,8 @@ public class UserController {
         try {
             UserKakaoVO vo = oAuthService.signUp(token, "kakao");
             if (vo.getMsg() != null) {
-                TokenDto tokenDto = userService.signIn(vo.getUserEmail(), "");
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                TokenDto tokenDto = userService.signIn(userSignInVO);
                 if (tokenDto != null) {
                     log.debug("signin 성공");
                     return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -118,9 +132,9 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> signIn(@RequestBody UserSignInVO userDto) {
-        log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
-        TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
+    public ResponseEntity<?> signIn(@RequestBody UserSignInVO userSignInVO) {
+        log.info("signIn call:: {} / {}", userSignInVO.getUserEmail(), userSignInVO.getUserPwd());
+        TokenDto tokenDto = userService.signIn(userSignInVO);
         if (tokenDto != null) {
             log.debug("signin 성공");
             return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -220,13 +234,12 @@ public class UserController {
             + "업데이트에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
-        log.info("findUserPwd call :: {}", userDto.getUserEmail());
+        log.info("findUserPwd call :: {}", userDto.getUserBirthday());
         int resultCode = userService.findUserPwd(userDto.getUserEmail(),
-            userDto.getUserBirthday().toString());
+          new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {
-            log.info("{} 로 임시 비밀번호를 전송하였습니다.", userDto.getUserEmail());
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.OK);
