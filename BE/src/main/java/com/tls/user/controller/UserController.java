@@ -72,20 +72,31 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/oAuth/naver")
-//    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
-//    @ApiResponses(value = {
-//        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success를 반환한다."),
-//        @ApiResponse(responseCode = "406", description = "네이버 로그인 시도 중 오류 발생 시 fail을 반환한다.")
-//    })
-//    public ResponseEntity<?> signUpN(@RequestParam(name = "") String code) {
-//        try {
-//            return ResponseEntity.ok(oAuthService.signUp(code, "naver"));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
-//        }
-//    }
+    @GetMapping("/oAuth/naver")
+    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
+    })
+    public ResponseEntity<?> signUpN(@RequestParam(name = "token") String token) {
+        try {
+            UserKakaoVO vo = oAuthService.signUp(token, "naver");
+            if (vo.getMsg() != null) {
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                TokenDto tokenDto = userService.signIn(userSignInVO);
+                if (tokenDto != null) {
+                    log.debug("signin 성공");
+                    return new ResponseEntity<>(tokenDto, HttpStatus.OK);
+                } else {
+                    log.debug("signin 실패");
+                    return new ResponseEntity<>("signin fail", HttpStatus.OK);
+                }
+            } else {
+                return ResponseEntity.ok(vo);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 
     @GetMapping("/oAuth/kakao")
     @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.", tags = "유저 API")
