@@ -109,7 +109,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{ingrName}")
-    @Operation(summary = "소분류 관련 레시피 검색 메서드", description = "소분류 이름을 주면 이름이 포함된 레시피 배열을 반환한다.", tags = "레시피 API")
+    @Operation(summary = "레시피 검색 메서드", description = "이름이 포함된 레시피 배열을 반환한다.", tags = "레시피 API")
     public ResponseEntity<?> findByIngrName(@PathVariable("ingrName") String ingrName) {
         return new ResponseEntity<>(recipeService.findByIngrName(ingrName), HttpStatus.OK);
     }
