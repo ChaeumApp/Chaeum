@@ -1,7 +1,7 @@
-package com.tls.Ingredient.converter;
+package com.tls.ingredient.converter;
 
-import com.tls.Ingredient.dto.IngredientDto;
-import com.tls.Ingredient.entity.single.Ingredient;
+import com.tls.ingredient.dto.IngredientDto;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
 import org.springframework.stereotype.Component;
