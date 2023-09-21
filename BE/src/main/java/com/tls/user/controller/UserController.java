@@ -54,14 +54,17 @@ public class UserController {
     })
     public ResponseEntity<?> signUp(@RequestBody UserSignUpVO userDto) {
         log.info("signUp call:: {}", userDto);
+        String randomPwd = rsc.getRandomString(20);
+        boolean isSocial = false;
         if (userDto.getUserPwd().isEmpty()) {
+            isSocial = true;
             userDto.setUserEmail("[S]"+userDto.getUserEmail());
-            userDto.setUserPwd(rsc.getRandomString(20));
+            userDto.setUserPwd(randomPwd);
         }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
             TokenDto tokenDto = userService.signIn(new UserSignInVO(
-                userDto.getUserEmail(), userDto.getUserPwd(), userDto.getNotiToken()));
+                userDto.getUserEmail(), isSocial ? randomPwd : userDto.getUserPwd(), userDto.getNotiToken()));
             if (tokenDto != null) {
                 log.debug("signin 성공");
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
