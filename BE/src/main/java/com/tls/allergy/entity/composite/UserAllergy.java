@@ -1,7 +1,7 @@
-package com.tls.allergy.composite;
+package com.tls.allergy.entity.composite;
 
+import com.tls.allergy.entity.single.Allergy;
 import com.tls.allergy.id.UserAllergyId;
-import com.tls.allergy.single.Allergy;
 import com.tls.user.entity.User;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_allergy_tb")
 @IdClass(UserAllergyId.class)
 public class UserAllergy {
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

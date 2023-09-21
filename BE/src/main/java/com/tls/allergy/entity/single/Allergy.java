@@ -1,4 +1,4 @@
-package com.tls.allergy.single;
+package com.tls.allergy.entity.single;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
