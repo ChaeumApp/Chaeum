@@ -159,7 +159,38 @@ CREATE TABLE `recipe_select_log_tb`
     `user_id`            INT       NOT NULL,
     `recipe_id`          INT       NOT NULL,
     `recipe_select_time` TIMESTAMP NOT NULL
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+CREATE TABLE `ingredient_select_log_tb`
+(
+    `user_id`          INT       NOT NULL,
+    `ingr_id`          INT       NOT NULL,
+    `ingr_select_time` TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+ALTER TABLE `ingredient_select_log_tb`
+    ADD CONSTRAINT `PK_INGREDIENT_SELECT_LOG_TB` PRIMARY KEY (
+                                                              `user_id`,
+                                                              `ingr_id`
+        );
+
+ALTER TABLE `ingredient_select_log_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_ingredient_select_log_tb_1` FOREIGN KEY (
+                                                                           `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `ingredient_select_log_tb`
+    ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_select_log_tb_1` FOREIGN KEY (
+                                                                                 `ingr_id`
+        )
+        REFERENCES `ingredient_tb` (
+                                    `ingr_id`
+            );
+
 
 CREATE TABLE `user_devtoken_tb`
 (

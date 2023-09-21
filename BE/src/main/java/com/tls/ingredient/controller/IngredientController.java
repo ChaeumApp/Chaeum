@@ -47,9 +47,10 @@ public class IngredientController {
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
     public ResponseEntity<?> getIngredientsByCatAndSubCat(
-        @RequestParam int catId, @RequestParam(required = false) int subCatId) {
+        @RequestParam int catId, @RequestParam(required = false) String subCatId) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId, subCatId);
+        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId,
+            subCatId == null ? 0 : Integer.parseInt(subCatId));
         if (ingredientDtoList != null) {
             return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
         } else {
