@@ -76,11 +76,11 @@ public class OAuthService {
 
             String gender, birthday, birthyear = "0000";
             if (type.equals("kakao")) {
-                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().toLowerCase();
-                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText().replace("-", "");
-            } else {
                 gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().substring(0, 1);
                 birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
+            } else {
+                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().toLowerCase();
+                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText().replace("-", "");
                 birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
             }
             vo.setUserPwd("");
