@@ -1,6 +1,6 @@
 package com.tls.user.vo;
 
-import com.tls.allergy.single.Allergy;
+import com.tls.allergy.entity.single.Allergy;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
