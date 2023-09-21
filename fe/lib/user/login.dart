@@ -125,7 +125,10 @@ class _LogInState extends State<LogIn> {
                                             final response =
                                                 await pageapi.login(
                                                     controller.text.toString(),
-                                                    controller2.text
+                                                    controller2.text,
+                                                    context
+                                                        .read<UserStore>()
+                                                        .deviceToken
                                                         .toString());
                                             if (response["accessToken"] !=
                                                 null) {

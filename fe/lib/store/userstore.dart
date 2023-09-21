@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 class UserStore extends ChangeNotifier {
-  String userId = '';
+  String? deviceToken;
+  savedevicetoken(token) {
+    deviceToken = token;
+  }
 
+  String userId = '';
   changeUserInfo(userInfo) {
     userId = userInfo;
   }

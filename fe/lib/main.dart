@@ -74,7 +74,8 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     super.initState();
-    getMyDeviceToken();
+    final devicetoken = getMyDeviceToken();
+    context.read<UserStore>().savedevicetoken(devicetoken);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
     });
