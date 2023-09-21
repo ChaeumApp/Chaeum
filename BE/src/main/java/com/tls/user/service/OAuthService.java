@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.user.converter.UserConverter;
-import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 
 import com.tls.user.vo.UserKakaoVO;
-import java.sql.Date;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
