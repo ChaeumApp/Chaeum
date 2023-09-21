@@ -40,3 +40,6 @@ out/
 
 ## log
 logs
+
+### FireBase Cloud Messaging ##
+chaeum-fcmmsg.json
