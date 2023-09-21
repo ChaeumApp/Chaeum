@@ -156,6 +156,7 @@ CREATE TABLE `recipe_process_tb`
 
 CREATE TABLE `recipe_select_log_tb`
 (
+    `recipe_select_pk`	BIGINT	NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`            INT       NOT NULL,
     `recipe_id`          INT       NOT NULL,
     `recipe_select_time` TIMESTAMP NOT NULL
@@ -163,17 +164,38 @@ CREATE TABLE `recipe_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `ingredient_select_log_tb`
 (
+    `ingr_select_pk`	BIGINT	NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `ingr_id`          INT       NOT NULL,
     `ingr_select_time` TIMESTAMP NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+CREATE TABLE `item_select_log_tb`
+(
+    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `user_id`          INT       NOT NULL,
+    `item_id`          BIGINT    NOT NULL,
+    `item_select_time` TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
-ALTER TABLE `ingredient_select_log_tb`
-    ADD CONSTRAINT `PK_INGREDIENT_SELECT_LOG_TB` PRIMARY KEY (
-                                                              `user_id`,
-                                                              `ingr_id`
-        );
+
+ALTER TABLE `item_select_log_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_item_select_log_tb_1` FOREIGN KEY (
+                                                                     `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `item_select_log_tb`
+    ADD CONSTRAINT `FK_item_tb_TO_item_select_log_tb_1` FOREIGN KEY (
+                                                                     `item_id`
+        )
+        REFERENCES `item_tb` (
+                              `item_id`
+            );
+
 
 ALTER TABLE `ingredient_select_log_tb`
     ADD CONSTRAINT `FK_user_tb_TO_ingredient_select_log_tb_1` FOREIGN KEY (
@@ -194,8 +216,8 @@ ALTER TABLE `ingredient_select_log_tb`
 
 CREATE TABLE `user_devtoken_tb`
 (
-    `user_id`           INT         NOT NULL,
-    `token_id`          VARCHAR(30) NOT NULL
+    `user_id`  INT         NOT NULL,
+    `token_id` VARCHAR(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -269,11 +291,6 @@ ALTER TABLE `recipe_process_tb`
                                                        `recipe_id`
         );
 
-ALTER TABLE `recipe_select_log_tb`
-    ADD CONSTRAINT `PK_RECIPE_SELECT_LOG_TB` PRIMARY KEY (
-                                                          `user_id`,
-                                                          `recipe_id`
-        );
 
 ALTER TABLE `user_devtoken_tb`
     ADD CONSTRAINT `PK_USER_DEVTOKEN_TB` PRIMARY KEY (
@@ -451,10 +468,10 @@ ALTER TABLE `recipe_select_log_tb`
 
 ALTER TABLE `user_devtoken_tb`
     ADD CONSTRAINT `FK_user_tb_TO_user_device_token_1` FOREIGN KEY (
-                                                                         `user_id`
+                                                                    `user_id`
         )
         REFERENCES `user_tb` (
-                                `user_id`
+                              `user_id`
             );
 
 
