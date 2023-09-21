@@ -12,5 +12,5 @@ public class RecipeDto {
     String recipeThumbnail;
     String recipeLink;
     List<String> recipeProcess;
-    List<String> recipeIngredients;
+    List<String[]> recipeIngredients;
 }
