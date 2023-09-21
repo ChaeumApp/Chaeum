@@ -1,6 +1,6 @@
 package com.tls.allergy.composite;
 
-import com.tls.Ingredient.entity.single.Ingredient;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.allergy.id.AllergyIngredientId;
 import com.tls.allergy.single.Allergy;
 import javax.persistence.Entity;
