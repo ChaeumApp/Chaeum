@@ -1,4 +1,6 @@
+import 'package:fe/main.dart';
 import 'package:fe/search/searchresult.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,13 +26,19 @@ class _SearchState extends State<Search> {
         children: [
           Flexible(
               flex: 2,
-              child: Center(child: Image.asset('assets/images/repeat/top_logo.png')),
+              child: GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                        Main()
+                    ));
+                  },
+                  child: Center(child: Image.asset('assets/images/repeat/top_logo.png'))),
               ),
           Flexible(
             flex: 9,
             child: TextField(
               controller: searchController,
-            onSubmitted: (value){
+              onSubmitted: (value){
                 context.read<UserStore>().addSearchList(value);
                 print(context.read<UserStore>().searchList);
                 Navigator.push(
@@ -38,6 +46,8 @@ class _SearchState extends State<Search> {
                     MaterialPageRoute(
                         builder: (context) =>
                             SearchResult(searchWord: value)));
+                context.read<SearchStore>().watchSearch();
+                print(context.read<SearchStore>().doSearch);
             },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),
