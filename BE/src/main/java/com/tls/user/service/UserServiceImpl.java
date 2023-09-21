@@ -225,6 +225,7 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(selectUser);
                 });
                 mailService.sendEmail(mailDto);
+                log.info("{} 로 임시 비밀번호 {}를 전송하였습니다.", userEmail, tempPassword);
                 return 1;
             } else { // 사용자 이메일과 생년월일이 일치하지 않을 경우
                 return 0;
