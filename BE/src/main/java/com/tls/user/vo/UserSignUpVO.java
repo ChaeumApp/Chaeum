@@ -1,6 +1,5 @@
 package com.tls.user.vo;
 
-import com.tls.allergy.entity.single.Allergy;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -12,6 +11,6 @@ public class UserSignUpVO {
     String userGender;
     String userPwd;
     int veganId;
-    List<Allergy> allergyList;
+    List<Integer> allergyList;
     String notiToken;
 }
