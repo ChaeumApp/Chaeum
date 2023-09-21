@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
-class HeartProvider with ChangeNotifier {
-  bool animatedHeart = false;
+class LikeButtonProvider extends ChangeNotifier {
+  bool _isLiked = false;
 
-  void onHeartTap() {
-    animatedHeart = !animatedHeart; 
-    notifyListeners(); 
+  bool get isLiked => _isLiked;
+
+  void toggleLike() {
+    _isLiked = !_isLiked;
+    notifyListeners();
   }
 }
