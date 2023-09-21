@@ -1,12 +1,10 @@
 package com.tls.recipe.entity.composite;
 
-import com.tls.Ingredient.entity.single.Ingredient;
 import com.tls.recipe.entity.single.Recipe;
-import com.tls.recipe.id.RecipeIngrId;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,16 +19,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "recipe_ingredient_tb")
-@IdClass(RecipeIngrId.class)
 public class RecipeIngr {
 
     @Id
+    @Column(name = "recipe_ingr_pk")
+    private long recipIngrPk;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipeId;
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingr_id")
-    private Ingredient ingrId;
+    @Column(name = "recipe_ingr_name")
+    private String RecipeIngrName;
+
+    @Column(name = "recipe_ingr_amount")
+    private String RecipeIngrAmount;
 }
