@@ -49,7 +49,7 @@ class _RecipeyoutubeState extends State<Recipeyoutube> {
       initialVideoId:
           YoutubePlayer.convertUrlToId(widget.recipeLink).toString(),
       flags: const YoutubePlayerFlags(
-        autoPlay: true,
+        autoPlay: false,
         mute: false,
       ),
     );
