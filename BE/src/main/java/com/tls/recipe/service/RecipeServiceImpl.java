@@ -146,7 +146,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<Recipe> findByIngrName(String ingrName) {
-        return recipeRepository.findByRecipeNameLike(ingrName);
+        return recipeRepository.findByRecipeNameContaining(ingrName);
     }
 
     @Override
