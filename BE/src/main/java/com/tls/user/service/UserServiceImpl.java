@@ -1,6 +1,6 @@
 package com.tls.user.service;
 
-import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.entity.composite.UserAllergy;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
