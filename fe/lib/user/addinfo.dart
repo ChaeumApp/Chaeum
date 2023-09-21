@@ -1,7 +1,9 @@
+import 'package:fe/store/userstore.dart';
 import 'package:fe/user/pageapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:provider/provider.dart';
 
 class AddInfo extends StatefulWidget {
   AddInfo({super.key, this.user});
@@ -422,11 +424,25 @@ class _AddInfoState extends State<AddInfo> {
                               .map((allergie) =>
                                   MultiSelectItem<String>(allergie, allergie))
                               .toList(),
-                          onConfirm: (values) {
+                          onConfirm: (values) async {
                             print(values);
                             setState(() {
                               selectedAllergie = values;
                             });
+                            List<int> resultList = [];
+
+                            for (int i = 0; i < selectedAllergie.length; i++) {
+                              for (int j = 0;
+                                  j < allergieNameList.length;
+                                  j++) {
+                                if (selectedAllergie[i] ==
+                                    allergieNameList[j]) {
+                                  resultList.add(j);
+                                }
+                              }
+                            }
+                            selectedAllergieNumber = resultList;
+                            print(selectedAllergieNumber);
                           },
                           chipDisplay: MultiSelectChipDisplay(
                             chipColor: Color(0xffA1CBA1),
@@ -435,6 +451,14 @@ class _AddInfoState extends State<AddInfo> {
                               setState(() {
                                 selectedAllergie.remove(value);
                               });
+                              for (int i = 0;
+                                  i < allergieNameList.length;
+                                  i++) {
+                                if (allergieNameList[i] == value) {
+                                  selectedAllergieNumber.remove(i);
+                                  print(selectedAllergieNumber);
+                                }
+                              }
                             },
                           ),
                         ),
@@ -462,14 +486,17 @@ class _AddInfoState extends State<AddInfo> {
                             print(selectedGender);
                             print(selectedVegan);
                             print(selectedAllergie);
+                            final deviceToken =
+                                context.read<UserStore>().deviceToken;
 
-                            // final response = pageapi.signup(
-                            //     widget.user['userEmail'],
-                            //     widget.user['userPwd'],
-                            //     birthday,
-                            //     gender,
-                            //     selectedVegan,
-                            //     selectedVegan);
+                            final response = pageapi.signup(
+                                widget.user['userEmail'],
+                                widget.user['userPwd'],
+                                birthday,
+                                gender,
+                                selectedVegan,
+                                selectedAllergieNumber,
+                                deviceToken);
                           },
                           style: ButtonStyle(
                               backgroundColor:

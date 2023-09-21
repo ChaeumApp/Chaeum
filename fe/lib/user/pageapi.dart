@@ -1,15 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/firebaseapi.dart';
+import 'package:flutter/material.dart';
 
 class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
-  Future<dynamic> login(id, password) async {
+  Future<dynamic> login(id, password, deviceToken) async {
     try {
       // final deviceToken = getMyDeviceToken();
-      final response = await dio.post('$serverURL/user/signin',
-          data: {'userEmail': id, 'userPwd': password});
+      final response = await dio.post('$serverURL/user/signin', data: {
+        'userEmail': id,
+        'userPwd': password,
+        'deviceToken': deviceToken
+      });
       print(response.data);
       return response.data;
     } catch (e) {
@@ -50,7 +54,8 @@ class PageApi {
     }
   }
 
-  Future<dynamic> signup(id, pwd, birth, gender, vegan, alergylist) async {
+  Future<dynamic> signup(
+      id, pwd, birth, gender, vegan, alergylist, devicetoken) async {
     try {
       final response = await dio.post('$serverURL/user/signup', data: {
         'userEmail': id,
@@ -58,7 +63,8 @@ class PageApi {
         'userBirthDay': birth,
         'userGender': gender,
         'veganId': int.parse(vegan),
-        'allergyList': alergylist
+        'allergyList': alergylist,
+        'deviceToken': devicetoken
       });
       print('회원가입 여부 ${response.data}');
       return response.data;
