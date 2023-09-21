@@ -23,7 +23,7 @@ class _SearchResultState extends State<SearchResult> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    word.text = _textFieldValue;
+    word.text = widget.searchWord;
   }
 
   @override
