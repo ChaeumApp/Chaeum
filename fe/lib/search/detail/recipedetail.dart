@@ -728,6 +728,9 @@ import 'package:dio/dio.dart';
 import 'package:like_button/like_button.dart';
 import 'package:marquee/marquee.dart';
 
+import '../heart/heartpro.dart';
+import 'package:provider/provider.dart';
+
 class Recipedetail extends StatefulWidget {
   Recipedetail({super.key, this.recipeId});
   final recipeId;
@@ -740,20 +743,20 @@ class _RecipedetailState extends State<Recipedetail> {
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
-  var data = {'like': false};
+  // var ddata = {'like': true};
 
-  Future<bool?> toggleLike(bool isLiked) async {
-    bool liked = false;
-    setState(() {
-      if (data.containsKey('like') && data['like'] is bool) {
-        data['like'] = !(data['like'] as bool);
-        liked = data['like'] as bool;
-      } else {
-        data['like'] = false;
-      }
-    });
-    return Future.value(liked);
-  }
+  // Future<bool?> toggleLike(bool isLiked) async {
+  //   bool liked = false;
+  //   setState(() {
+  //     if (ddata.containsKey('like') && ddata['like'] is bool) {
+  //       ddata['like'] = !(ddata['like'] as bool);
+  //       liked = ddata['like'] as bool;
+  //     } else {
+  //       ddata['like'] = false;
+  //     }
+  //   });
+  //   return Future.value(liked);
+  // }
 
 // 레시피 상세 조회
 
@@ -766,36 +769,6 @@ class _RecipedetailState extends State<Recipedetail> {
       print(e);
     }
   }
-
-  // final List<String> ingredients = [
-  //   '계란 3개',
-  //   '우유 200ml',
-  //   '소금 약간',
-  //   '피자치즈 100g',
-  //   '베이컨 2줄',
-  //   '크림치즈 4숟가락',
-  // ];
-
-  // final List<RecipeStep> steps = [
-  //   RecipeStep(
-  //     description: '계란을 깨서 그릇에 담습니다.',
-  //   ),
-  //   RecipeStep(
-  //     description: '우유를 계란에 넣고 잘 섞습니다.',
-  //   ),
-  //   RecipeStep(
-  //     description: '소금을 약간 넣고 섞습니다.',
-  //   ),
-  //   RecipeStep(
-  //     description: '피자치즈를 넣고 섞습니다.',
-  //   ),
-  //   RecipeStep(
-  //     description: '베이컨을 추가하고 섞은 다음에 치즈계란소세지를 추가하고 소스를 뿌린뒤에 30초간 가열합니다',
-  //   ),
-  //   RecipeStep(
-  //     description: '크림치즈를 넣고 잘 섞습니다.',
-  //   ),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -858,32 +831,38 @@ class _RecipedetailState extends State<Recipedetail> {
                                 ),
                               ),
                             )),
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
-                              child: LikeButton(
-                                isLiked: data['like'] as bool, // 초기 좋아요 상태
-                                onTap: (isLiked) {
-                                  return toggleLike(isLiked);
-                                },
-                                circleColor: CircleColor(
-                                    start: Color(0xffff0044),
-                                    end: Color(0xffff4c7c)),
-                                bubblesColor: BubblesColor(
-                                  dotPrimaryColor: Color(0xffff3333),
-                                  dotSecondaryColor: Color(0xffff9999),
-                                ),
-                                likeBuilder: (bool isLiked) {
-                                  return Icon(
-                                    data['like'] as bool
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: data['like'] as bool
-                                        ? Colors.red
-                                        : Colors.black,
-                                  );
-                                },
-                              ),
-                            )
+                            // Container(
+                            //   margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
+                            //   child: LikeButton(
+                            //     isLiked:
+                            //         Provider.of<LikeButtonProvider>(context)
+                            //             .isLiked,
+                            //     onTap: (isLiked) {
+                            //       Provider.of<LikeButtonProvider>(context,
+                            //               listen: false)
+                            //           .toggleLike();
+                            //       return toggleLike(isLiked);
+                            //     },
+                            //     circleColor: CircleColor(
+                            //       start: Color(0xffff0044),
+                            //       end: Color(0xffff4c7c),
+                            //     ),
+                            //     bubblesColor: BubblesColor(
+                            //       dotPrimaryColor: Color(0xffff3333),
+                            //       dotSecondaryColor: Color(0xffff9999),
+                            //     ),
+                            //     likeBuilder: (bool isLiked) {
+                            //       return Icon(
+                            //         ddata['like'] as bool
+                            //             ? Icons.favorite
+                            //             : Icons.favorite_border,
+                            //         color: ddata['like'] as bool
+                            //             ? Colors.red
+                            //             : Colors.black,
+                            //       );
+                            //     },
+                            //   ),
+                            // )
                           ]),
                       Container(
                         margin: EdgeInsets.fromLTRB(30, 15, 0, 0),
