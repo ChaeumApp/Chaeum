@@ -1,16 +1,18 @@
 package com.tls.recipe.service;
 
 import com.tls.config.ReadExcel;
+import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.entity.composite.RecipeProc;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
 import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.repository.RecipeIngredientRepository;
 import com.tls.recipe.repository.RecipeProcRepository;
 import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
 import com.tls.recipe.repository.UserRecipeRepository;
-import com.tls.user.repository.UserRepository;
 import com.tls.user.entity.User;
+import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final UserRecipeLogRepository userRecipeLogRepository;
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeProcRepository recipeProcRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
 
     @Override
     public int updateRecipe() {
@@ -68,8 +71,32 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Recipe viewRecipe(int recipeId) {
-        return recipeRepository.findByRecipeId(recipeId).orElse(null);
+    public RecipeDto viewRecipe(int recipeId) {
+        try {
+            List<String> process = new ArrayList<>();
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            recipeProcRepository.findByRecipeId(recipe).forEach(recipeProc ->
+                process.add(recipeProc.getRecipeProcContent())
+            );
+            List<String[]> ingredients = new ArrayList<>();
+            recipeIngredientRepository.findByRecipeId(recipe).forEach(recipeIngr -> {
+                String[] info = new String[2];
+                info[0] = recipeIngr.getRecipeIngrName();
+                info[1] = recipeIngr.getRecipeIngrAmount();
+                ingredients.add(info);
+            });
+            return RecipeDto.builder()
+                .recipeName(recipe.getRecipeName())
+                .recipeThumbnail(recipe.getRecipeThumbnail())
+                .recipeLink(recipe.getRecipeLink())
+                .recipeProcess(process)
+                .recipeIngredients(ingredients)
+                .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
@@ -104,8 +131,9 @@ public class RecipeServiceImpl implements RecipeService {
             if (userRecipeRepository.findByUserIdAndRecipeId(user, recipe)
                 .isEmpty()) { // 즐겨찾기에 존재한다면
                 UserRecipe userRecipe = UserRecipe.builder()
-                    .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                    .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow()).build();
+                    .userId(user)
+                    .recipeId(recipe).
+                    build();
                 userRecipeRepository.save(userRecipe); // 즐겨찾기 목록에 등록
             } else { // 이미 즐겨찾기 목록에 존재한다면
                 userRecipeRepository.deleteByUserIdAndRecipeId(user, recipe);
