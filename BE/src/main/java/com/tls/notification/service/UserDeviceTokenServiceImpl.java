@@ -8,7 +8,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class UserDeviceTokenServiceImpl implements UserDeviceTokenService {
 
-    private void sendNotifications(String accessToken) {
+    @Override
+    public void sendNotifications(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
 
