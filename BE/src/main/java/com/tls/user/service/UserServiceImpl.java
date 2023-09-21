@@ -1,17 +1,17 @@
 package com.tls.user.service;
 
-import com.tls.Ingredient.entity.composite.UserIngr;
-import com.tls.Ingredient.entity.single.Ingredient;
-import com.tls.Ingredient.repository.UserIngrRepository;
-import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.entity.composite.UserAllergy;
+import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.single.Recipe;
+import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.dto.UserProfileDto;
 import com.tls.user.converter.UserConverter;
@@ -21,7 +21,9 @@ import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
 import com.tls.user.util.RedisUtil;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignInVO;
 import com.tls.user.vo.UserSignUpVO;
+import com.tls.ingredient.repository.UserIngrRepository;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -55,8 +57,10 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
-    private final UserIngrRepository userIngrRepostiory;
+    private final UserIngrRepository userIngrRepository;
     private final UserRecipeRepository userRecipeRepository;
+    private final AllergyRepository allergyRepository;
+
     private UserConverter userConverter = new UserConverter();
 
     @Value("${jwt.secret}")
@@ -81,7 +85,7 @@ public class UserServiceImpl implements UserService {
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                     .userId(user)
-                    .algyId(allergy)
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                     .build();
                 userAllergyList.add(userAllergy);
             });
@@ -94,7 +98,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto signIn(String userEmail, String userPwd) {
+    public TokenDto signIn(UserSignInVO userSignInVO) {
+        String userEmail = userSignInVO.getUserEmail();
+        String userPwd = userSignInVO.getUserPwd();
         try {
             if (userEmail.equals("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
                 userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
@@ -117,6 +123,9 @@ public class UserServiceImpl implements UserService {
                 redisTemplate.opsForValue()
                     .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
                         TimeUnit.MILLISECONDS);
+
+                // user_notification_token table에 저장
+
             }
             return tokenDto;
         } catch (Exception e) {
@@ -174,7 +183,7 @@ public class UserServiceImpl implements UserService {
     public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
         try {
             Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
-            updateUser.ifPresent( selectUser -> {
+            updateUser.ifPresent(selectUser -> {
                 UserDto userDto = userConverter.entityToDto(selectUser);
                 userDto.setVeganId(userVO.getVeganId());
                 userRepository.save(userConverter.dtoToEntity(userDto));
@@ -183,7 +192,7 @@ public class UserServiceImpl implements UserService {
             userVO.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                     .userId(updateUser.get())
-                    .algyId(allergy)
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                     .build();
                 userAllergyList.add(userAllergy);
             });
@@ -306,8 +315,8 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             List<Ingredient> ingrList = new ArrayList<>();
             List<Recipe> recipeList = new ArrayList<>();
-            if (userIngrRepostiory.findAllByUserId(user).isPresent()) {
-                ingrList = userIngrRepostiory.findAllByUserId(user).get().stream()
+            if (userIngrRepository.findAllByUserId(user).isPresent()) {
+                ingrList = userIngrRepository.findAllByUserId(user).get().stream()
                     .map(UserIngr::getIngrId).collect(Collectors.toList());
             }
             if (userRecipeRepository.findAllByUserId(user).isPresent()) {

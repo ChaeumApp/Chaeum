@@ -192,6 +192,13 @@ ALTER TABLE `ingredient_select_log_tb`
             );
 
 
+CREATE TABLE `user_devtoken_tb`
+(
+    `user_id`           INT         NOT NULL,
+    `token_id`          VARCHAR(30) NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
                                               `vegan_id`
@@ -266,6 +273,12 @@ ALTER TABLE `recipe_select_log_tb`
     ADD CONSTRAINT `PK_RECIPE_SELECT_LOG_TB` PRIMARY KEY (
                                                           `user_id`,
                                                           `recipe_id`
+        );
+
+ALTER TABLE `user_devtoken_tb`
+    ADD CONSTRAINT `PK_USER_DEVTOKEN_TB` PRIMARY KEY (
+                                                      `user_id`,
+                                                      `token_id`
         );
 
 ALTER TABLE `user_allergy_tb`
@@ -434,6 +447,14 @@ ALTER TABLE `recipe_select_log_tb`
         )
         REFERENCES `recipe_tb` (
                                 `recipe_id`
+            );
+
+ALTER TABLE `user_devtoken_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_user_device_token_1` FOREIGN KEY (
+                                                                         `user_id`
+        )
+        REFERENCES `user_tb` (
+                                `user_id`
             );
 
 
