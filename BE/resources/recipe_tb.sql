@@ -2011,7 +2011,6 @@ values  (1, '만들어두면 계속 먹게되는 자두청&자두에이드', 'ht
         (2010, '김밥이 흰밥이라는 생각은 버려뒀~! 고추장김밥 ★', 'https://www.youtube.com/embed/6iJTzR3Ie3g', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/27/30ee41802fca1e36363c7c359b5e57f41_f.jpg'),
         (2011, '보들보들하게 황태로 맛있는 반찬 만들기~! 황태찹쌀구이 ★', 'https://www.youtube.com/embed/IcXZwJgQulA', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/27/a4e324858778b5aa547e3179401429e41_f.jpg'),
         (2012, '오늘 저녁은 채식위주로??? 에어프라이어표 버섯채소구이 ★', 'https://www.youtube.com/embed/GqrG5QUAfTg', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/23/dde5c3f44d10f5f8f55ac6fb181388ce1_f.jpg'),
-        (2013, '38년 전통 특제양념이 곁들여진, 명품 LA갈비세트 ★', 'https://www.youtube.com/embed/83wp53O-uEA', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/27/6a435e9e128c53365597bb54b0b9a3741_f.jpg'),
         (2014, '에어프라이어로 튀긴다는 생각은 놉~! 양파두부조림 ★', 'https://www.youtube.com/embed/aVYpC6dqPCQ', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/23/612ea004bd254b2b0a72c389b1959ccb1_f.jpg'),
         (2015, '간단한 아침 볶음밥 어때? 양파&대파볶음밥 ★', 'https://www.youtube.com/embed/GfentJp2yNA', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/23/f40a20b1fbca20de026dfd7e1217cb4c1_f.jpg'),
         (2016, '쫄깃쫄깃 중국당면을 끊을 수 없어~! 해물당면볶음 ★ ', 'https://www.youtube.com/embed/cWHzScqa5S4', 'https://recipe1.ezmember.co.kr/cache/recipe/2019/08/22/e93efd6bac6f0238e9b4676a2426b6571_f.png'),
