@@ -11,8 +11,8 @@ import com.tls.recipe.repository.RecipeProcRepository;
 import com.tls.recipe.repository.RecipeRepository;
 import com.tls.recipe.repository.UserRecipeLogRepository;
 import com.tls.recipe.repository.UserRecipeRepository;
-import com.tls.user.repository.UserRepository;
 import com.tls.user.entity.User;
+import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -131,8 +131,9 @@ public class RecipeServiceImpl implements RecipeService {
             if (userRecipeRepository.findByUserIdAndRecipeId(user, recipe)
                 .isEmpty()) { // 즐겨찾기에 존재한다면
                 UserRecipe userRecipe = UserRecipe.builder()
-                    .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                    .recipeId(recipeRepository.findByRecipeId(recipeId).orElseThrow()).build();
+                    .userId(user)
+                    .recipeId(recipe).
+                    build();
                 userRecipeRepository.save(userRecipe); // 즐겨찾기 목록에 등록
             } else { // 이미 즐겨찾기 목록에 존재한다면
                 userRecipeRepository.deleteByUserIdAndRecipeId(user, recipe);
