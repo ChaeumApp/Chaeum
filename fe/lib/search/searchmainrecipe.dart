@@ -31,65 +31,65 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData == false) {
             return SliverToBoxAdapter(
-              child: Expanded(
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 2,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             ));
-                        },
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                height: 210,
-                                width: double.infinity,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                height: 16.0,
-                                width: 200.0,
-                                child: Container(color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 3.0,
-                              ),
-                              SizedBox(
-                                height: 16.0,
-                                width: 250.0,
-                                child: Container(color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                            ],
-                          ),
+              child: Container(
+                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 2,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             ));
+                      },
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              height: 210,
+                              width: double.infinity,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              height: 16.0,
+                              width: 200.0,
+                              child: Container(color: Colors.white),
+                            ),
+                            SizedBox(
+                              height: 3.0,
+                            ),
+                            SizedBox(
+                              height: 16.0,
+                              width: 250.0,
+                              child: Container(color: Colors.white),
+                            ),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             );
           }
           else if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: 15),
+            return SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Error: ${snapshot.error}',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             );
           }
