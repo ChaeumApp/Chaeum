@@ -58,7 +58,8 @@ public class UserController {
         }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
-            TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
+            TokenDto tokenDto = userService.signIn(new UserSignInVO(
+                userDto.getUserEmail(), userDto.getUserPwd(), userDto.getNotiToken()));
             if (tokenDto != null) {
                 log.debug("signin 성공");
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -96,7 +97,8 @@ public class UserController {
         try {
             UserKakaoVO vo = oAuthService.signUp(token, "kakao");
             if (vo.getMsg() != null) {
-                TokenDto tokenDto = userService.signIn(vo.getUserEmail(), "");
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                TokenDto tokenDto = userService.signIn(userSignInVO);
                 if (tokenDto != null) {
                     log.debug("signin 성공");
                     return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -117,9 +119,9 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
     })
-    public ResponseEntity<?> signIn(@RequestBody UserSignInVO userDto) {
-        log.info("signIn call:: {} / {}", userDto.getUserEmail(), userDto.getUserPwd());
-        TokenDto tokenDto = userService.signIn(userDto.getUserEmail(), userDto.getUserPwd());
+    public ResponseEntity<?> signIn(@RequestBody UserSignInVO userSignInVO) {
+        log.info("signIn call:: {} / {}", userSignInVO.getUserEmail(), userSignInVO.getUserPwd());
+        TokenDto tokenDto = userService.signIn(userSignInVO);
         if (tokenDto != null) {
             log.debug("signin 성공");
             return new ResponseEntity<>(tokenDto, HttpStatus.OK);
