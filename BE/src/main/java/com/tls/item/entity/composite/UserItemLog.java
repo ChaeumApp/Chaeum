@@ -1,6 +1,6 @@
-package com.tls.recipe.entity.composite;
+package com.tls.item.entity.composite;
 
-import com.tls.recipe.entity.single.Recipe;
+import com.tls.item.entity.single.Item;
 import com.tls.user.entity.User;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -21,22 +21,22 @@ import org.hibernate.annotations.CreationTimestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "reipce_select_log_tb")
-public class UserRecipeLog {
+@Table(name = "item_select_log_tb")
+public class UserItemLog {
 
     @Id
-    @Column(name = "recipe_select_pk")
-    private long recipeSelectPk;
+    @Column(name = "item_select_pk")
+    private long itemSelectPk;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipeId;
+    @JoinColumn(name = "item_id")
+    private Item itemId;
 
     @CreationTimestamp
-    @Column(name = "recipe_select_time")
-    private LocalDateTime recipeSelectTime;
+    @Column(name = "item_select_time")
+    private LocalDateTime itemSelectTime;
 }
