@@ -30,54 +30,56 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
     return FutureBuilder(future: getRecipe(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData == false) {
-            return Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 2,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             ));
-                      },
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              height: 210,
-                              width: double.infinity,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 200.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 3.0,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 250.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
+            return SliverToBoxAdapter(
+              child: Expanded(
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             ));
+                        },
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                height: 210,
+                                width: double.infinity,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                height: 16.0,
+                                width: 200.0,
+                                child: Container(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 3.0,
+                              ),
+                              SizedBox(
+                                height: 16.0,
+                                width: 250.0,
+                                child: Container(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             );
@@ -92,46 +94,51 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
             );
           }
           else {
-            return Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                      itemCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: (){
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             ));
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                child: Image.network(snapshot.data[index]['recipeThumbnail'],
-                                    height: 210,
-                                    width: double.infinity,
-                                    fit: BoxFit.fill),
-                              ),
-                              Text('채움의 ${index+1}번째 추천 레시피🎁',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              )),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                  child: Text('${snapshot.data[index]['recipeName']}'))
-                            ],
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             ));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: Image.network(
+                              snapshot.data[index]['recipeThumbnail'],
+                              height: 210,
+                              width: double.infinity,
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        );
-                      }),
+                          Text(
+                            '채움의 ${index + 1}번째 추천 레시피🎁',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                            child: Text('${snapshot.data[index]['recipeName']}'),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                childCount: 2, // 아이템 개수에 따라 설정
               ),
             );
-          }
+        }
         });
   }
 }
