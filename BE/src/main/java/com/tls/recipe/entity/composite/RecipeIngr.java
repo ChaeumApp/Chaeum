@@ -1,5 +1,6 @@
 package com.tls.recipe.entity.composite;
 
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.recipe.entity.single.Recipe;
 import javax.persistence.Column;
 import javax.persistence.Entity;
