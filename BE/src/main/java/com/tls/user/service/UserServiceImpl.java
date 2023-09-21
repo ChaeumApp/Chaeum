@@ -14,6 +14,7 @@ import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
 import com.tls.user.util.RedisUtil;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignInVO;
 import com.tls.user.vo.UserSignUpVO;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
@@ -84,7 +85,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto signIn(String userEmail, String userPwd) {
+    public TokenDto signIn(UserSignInVO userSignInVO) {
+        String userEmail = userSignInVO.getUserEmail();
+        String userPwd = userSignInVO.getUserPwd();
         try {
             if (userEmail.equals("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
                 userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
@@ -107,6 +110,9 @@ public class UserServiceImpl implements UserService {
                 redisTemplate.opsForValue()
                     .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
                         TimeUnit.MILLISECONDS);
+
+                // user_notification_token table에 저장
+
             }
             return tokenDto;
         } catch (Exception e) {

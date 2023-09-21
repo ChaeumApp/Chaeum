@@ -13,4 +13,5 @@ public class UserSignUpVO {
     String userPwd;
     int veganId;
     List<Allergy> allergyList;
+    String notiToken;
 }
