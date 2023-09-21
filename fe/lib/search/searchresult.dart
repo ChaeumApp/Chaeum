@@ -51,6 +51,7 @@ class _SearchResultState extends State<SearchResult> {
                 onSubmitted: (value){
                   context.read<UserStore>().addSearchList(value);
                   print(context.read<UserStore>().searchList);
+
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
                     SearchResult(searchWord : value)
                   ));

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fe/category/categorymain.dart';
 import 'package:fe/recipe/recipemain.dart';
 import 'package:fe/search/searchmain.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
@@ -51,15 +52,19 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.grey[50],
       statusBarIconBrightness: Brightness.dark));
-  runApp(ChangeNotifierProvider(
-    create: (c) => UserStore(),
-    child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: "Pretendard",
-        ),
-        home: const Splash()),
-  ));
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (c) => UserStore()),
+        ChangeNotifierProvider(create: (c) => SearchStore()),
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            fontFamily: "Pretendard",
+          ),
+          home: const Splash()),
+    ),
+  );
 }
 
 class Main extends StatefulWidget {
