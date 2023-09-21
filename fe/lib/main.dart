@@ -69,13 +69,12 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  static String? userInfo; //user의 정보를 저장하기 위한 변수;
+  static String? userToken; //user의 정보를 저장하기 위한 변수;
   static final storage = FlutterSecureStorage();
   @override
   void initState() {
     super.initState();
-    final devicetoken = getMyDeviceToken();
-    context.read<UserStore>().savedevicetoken(devicetoken);
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
     });
@@ -90,11 +89,13 @@ class _MainState extends State<Main> {
     //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
     //(데이터가 없을때는 null을 반환을 합니다.)
 
-    userInfo = await storage.read(key: "login");
+    userToken = await storage.read(key: "login");
 
-    print('제발 시작이니까 ');
-    print(userInfo);
-    print('시작2');
+    await context.read<UserStore>().changeUserInfo(
+        userToken != null ? userToken.toString().split(" ")[5].toString() : '');
+    final devicetoken = await getMyDeviceToken();
+
+    await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }
 
   @override
@@ -110,7 +111,7 @@ class _MainState extends State<Main> {
                 RecipeMain(),
                 Mainb(),
                 SearchMain(),
-                userInfo == null
+                userToken == null
                     ? LogIn(storage: storage)
                     : MyPage(storage: storage)
                 // FavoriteMore(),

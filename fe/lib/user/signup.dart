@@ -4,8 +4,9 @@ import '../user/mypage.dart';
 import 'pageapi.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  const SignUp({super.key, this.storage});
 
+  final storage;
   @override
   State<SignUp> createState() => _SignUpState();
 }
@@ -440,12 +441,16 @@ class _SignUpState extends State<SignUp> {
                                                             builder:
                                                                 (context) =>
                                                                     AddInfo(
-                                                                        user: {
-                                                                          'userEmail':
-                                                                              controller.text,
-                                                                          'userPwd':
-                                                                              controller2.text
-                                                                        })),
+                                                                      user: {
+                                                                        'userEmail':
+                                                                            controller.text,
+                                                                        'userPwd':
+                                                                            controller2.text
+                                                                      },
+                                                                      storage:
+                                                                          widget
+                                                                              .storage,
+                                                                    )),
                                                       );
                                                     }
                                                   : null,

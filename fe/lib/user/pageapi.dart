@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/firebaseapi.dart';
+import 'package:fe/user/findpassword.dart';
 import 'package:flutter/material.dart';
 
 class PageApi {
@@ -12,7 +13,7 @@ class PageApi {
       final response = await dio.post('$serverURL/user/signin', data: {
         'userEmail': id,
         'userPwd': password,
-        'deviceToken': deviceToken
+        'notiToken': deviceToken
       });
       print(response.data);
       return response.data;
@@ -55,16 +56,16 @@ class PageApi {
   }
 
   Future<dynamic> signup(
-      id, pwd, birth, gender, vegan, alergylist, devicetoken) async {
+      id, pwd, birth, gender, vegan, alergylist, deviceToken) async {
     try {
       final response = await dio.post('$serverURL/user/signup', data: {
         'userEmail': id,
         'userPwd': pwd,
-        'userBirthDay': birth,
+        'userBirthday': birth,
         'userGender': gender,
-        'veganId': int.parse(vegan),
+        'veganId': vegan,
         'allergyList': alergylist,
-        'deviceToken': devicetoken
+        'notiToken': deviceToken
       });
       print('회원가입 여부 ${response.data}');
       return response.data;
@@ -74,7 +75,10 @@ class PageApi {
   }
 
   Future<dynamic> getinfo(id, token) async {
+    print(id);
+    print(id.runtimeType);
     print(token);
+    print(token.runtimeType);
     try {
       final response = await dio.post('$serverURL/user/mypage',
           data: {
@@ -98,7 +102,31 @@ class PageApi {
       print('받은토큰$token');
       final response = await dio.get('$serverURL/user/oAuth/kakao',
           queryParameters: {'token': token});
-      print('ㅋ카오 로그인 여부 ${response.data}');
+      print('카카오 로그인 여부 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> naverlogin(token) async {
+    try {
+      print('받은토큰$token');
+      final response = await dio.get('$serverURL/user/oAuth/kakao',
+          queryParameters: {'token': token});
+      print('네이버 로그인 여부 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> findPassword(id, birth) async {
+    print('$id,$birth');
+    try {
+      final response = await dio.post('$serverURL/user/find/pwd',
+          data: {'userBirthday': birth, 'userEmail': id});
+      print('비밀번호 찾기 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());

@@ -1,3 +1,4 @@
+import 'package:fe/main.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/user/pageapi.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +7,9 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
 class AddInfo extends StatefulWidget {
-  AddInfo({super.key, this.user});
+  AddInfo({super.key, this.user, this.storage});
   final user;
+  final storage;
 
   @override
   State<AddInfo> createState() => _AddInfoState();
@@ -25,6 +27,7 @@ class _AddInfoState extends State<AddInfo> {
     '여성',
   ];
   String selectedGender = '남성';
+  String selectedGenderString = 'm';
   List<String> veganList = [
     'none',
     'vegan',
@@ -36,6 +39,7 @@ class _AddInfoState extends State<AddInfo> {
     'flexi',
   ];
   String selectedVegan = 'none';
+  int selectedVeganNumber = 0;
   List<String> allergieList = ['없음', '있음'];
   String havAllergie = '없음';
   List<dynamic> allergieNameList = [
@@ -74,6 +78,7 @@ class _AddInfoState extends State<AddInfo> {
       setState(() {
         selectedGender = '여성';
       });
+      selectedGenderString = 'f';
     }
 
     if (widget.user.containsKey('birth')) {
@@ -81,6 +86,9 @@ class _AddInfoState extends State<AddInfo> {
       setState(() {
         print('111');
         controller.text = widget.user['birth'].toString().substring(0, 4);
+        if (controller.text != '0000') {
+          yearcheck = true;
+        }
         controller2.text = widget.user['birth'].toString().substring(4, 6);
         monthcheck = true;
         controller3.text = widget.user['birth'].toString().substring(6, 8);
@@ -313,6 +321,11 @@ class _AddInfoState extends State<AddInfo> {
                         setState(() {
                           selectedGender = value;
                         });
+                        if (selectedGender == '남자') {
+                          selectedGenderString = 'm';
+                        } else {
+                          selectedGenderString = 'f';
+                        }
                       },
                     ),
                   ],
@@ -348,6 +361,11 @@ class _AddInfoState extends State<AddInfo> {
                               setState(() {
                                 selectedVegan = value;
                               });
+                              for (int i = 0; i < veganList.length; i++) {
+                                if (veganList[i] == selectedVegan) {
+                                  selectedVeganNumber = i;
+                                }
+                              }
                             },
                           ),
                         ],
@@ -480,27 +498,64 @@ class _AddInfoState extends State<AddInfo> {
                   children: [
                     Flexible(
                       child: TextButton(
-                          onPressed: () {
-                            print(widget.user['userPwd']);
-                            print(birthday);
-                            print(selectedGender);
-                            print(selectedVegan);
-                            print(selectedAllergie);
-                            final deviceToken =
-                                context.read<UserStore>().deviceToken;
+                          onPressed: yearcheck && monthcheck && daycheck
+                              ? () async {
+                                  if (controller2.text.length == 1) {
+                                    controller2.text = '0${controller2.text}';
+                                  }
+                                  if (controller3.text.length == 1) {
+                                    controller3.text = '0${controller3.text}';
+                                  }
+                                  birthday =
+                                      '${controller.text}-${controller2.text}-${controller3.text}';
+                                  final deviceToken =
+                                      context.read<UserStore>().deviceToken;
+                                  print(widget.user['userEmail']);
+                                  print(widget.user['userPwd']);
+                                  print(birthday);
+                                  print(selectedGenderString);
+                                  print(selectedVeganNumber);
+                                  print(selectedAllergieNumber);
+                                  print(deviceToken);
 
-                            final response = pageapi.signup(
-                                widget.user['userEmail'],
-                                widget.user['userPwd'],
-                                birthday,
-                                gender,
-                                selectedVegan,
-                                selectedAllergieNumber,
-                                deviceToken);
-                          },
+                                  final loginres = await pageapi.signup(
+                                      widget.user['userEmail'].toString(),
+                                      widget.user['userPwd'].toString(),
+                                      birthday,
+                                      selectedGenderString,
+                                      selectedVeganNumber,
+                                      selectedAllergieNumber,
+                                      deviceToken.toString());
+                                  print('여기 회원가입 요청 ');
+                                  print('여기 리턴값 $loginres');
+                                  if (loginres is Map &&
+                                      loginres.containsKey('accessToken')) {
+                                    final accessToken = loginres['accessToken'];
+                                    final refreshToken =
+                                        loginres['refreshToken'];
+                                    print(accessToken);
+                                    print(refreshToken);
+                                    await widget.storage.write(
+                                        key: "login",
+                                        value:
+                                            "accessToken $accessToken refreshToken $refreshToken id ${widget.user["userEmail"]}");
+                                    print(await widget.storage
+                                        .read(key: "login"));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Main()),
+                                    );
+                                  }
+                                }
+                              : null,
                           style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll(Color(0xffA1CBA1))),
+                              backgroundColor: yearcheck &&
+                                      monthcheck &&
+                                      daycheck
+                                  ? MaterialStatePropertyAll(Color(0xffA1CBA1))
+                                  : MaterialStatePropertyAll(Colors.grey)),
                           child: SizedBox(
                             height: 30,
                             child: Row(
