@@ -1,6 +1,7 @@
 package com.tls.user.service;
 
 import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
@@ -48,6 +49,8 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
+    private final AllergyRepository allergyRepository;
+
     private UserConverter userConverter = new UserConverter();
 
     @Value("${jwt.secret}")
@@ -72,7 +75,7 @@ public class UserServiceImpl implements UserService {
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                     .userId(user)
-                    .algyId(allergy)
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                     .build();
                 userAllergyList.add(userAllergy);
             });
@@ -179,7 +182,7 @@ public class UserServiceImpl implements UserService {
             userVO.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                     .userId(updateUser.get())
-                    .algyId(allergy)
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                     .build();
                 userAllergyList.add(userAllergy);
             });
