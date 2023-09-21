@@ -740,19 +740,27 @@ class _RecipedetailState extends State<Recipedetail> {
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
-  var data = {'like': false};
+  // var data = {'like': false};
 
-  Future<bool?> toggleLike(bool isLiked) async {
-    bool liked = false;
+  // Future<bool?> toggleLike(bool isLiked) async {
+  //   bool liked = false;
+  //   setState(() {
+  //     if (data.containsKey('like') && data['like'] is bool) {
+  //       data['like'] = !(data['like'] as bool);
+  //       liked = data['like'] as bool;
+  //     } else {
+  //       data['like'] = false;
+  //     }
+  //   });
+  //   return Future.value(liked);
+  // }
+
+  bool isFavorited = false;
+
+  void _toggleFavorite() {
     setState(() {
-      if (data.containsKey('like') && data['like'] is bool) {
-        data['like'] = !(data['like'] as bool);
-        liked = data['like'] as bool;
-      } else {
-        data['like'] = false;
-      }
+      isFavorited = !isFavorited;
     });
-    return Future.value(liked);
   }
 
 // 레시피 상세 조회
@@ -843,7 +851,6 @@ class _RecipedetailState extends State<Recipedetail> {
                       Container(
                           child: Recipeyoutube(
                               recipeLink: snapshot.data['recipeLink'])),
-
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -853,105 +860,91 @@ class _RecipedetailState extends State<Recipedetail> {
                               child: Text(
                                 '${snapshot.data['recipeName']}',
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                             )),
                             Container(
                               margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
-                              child: LikeButton(
-                                isLiked: data['like'] as bool, // 초기 좋아요 상태
-                                onTap: (isLiked) {
-                                  return toggleLike(isLiked);
-                                },
-                                circleColor: CircleColor(
-                                    start: Color(0xffff0044),
-                                    end: Color(0xffff4c7c)),
-                                bubblesColor: BubblesColor(
-                                  dotPrimaryColor: Color(0xffff3333),
-                                  dotSecondaryColor: Color(0xffff9999),
+                              child: IconButton(
+                                icon: Icon(
+                                  isFavorited
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: Colors.red[500],
                                 ),
-                                likeBuilder: (bool isLiked) {
-                                  return Icon(
-                                    data['like'] as bool
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: data['like'] as bool
-                                        ? Colors.red
-                                        : Colors.black,
-                                  );
-                                },
+                                onPressed: _toggleFavorite,
                               ),
                             )
                           ]),
-                      Row(children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(30, 10, 0, 0),
-                          child: Text(
-                            '재료',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                            ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(30, 15, 0, 0),
+                        child: Text(
+                          '재료',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Flexible(
-                            child: Container(
-                          padding: const EdgeInsets.fromLTRB(30, 20, 10, 10),
+                      ),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
                           child: Wrap(
                             direction: Axis.horizontal,
                             runSpacing: 1,
                             spacing: 1,
-                            children: ingredients.map((text) {
-                              final textLength = text.length;
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 3, 1, 3),
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth: textLength * 25.0,
-                                      maxHeight: 35.0),
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Color(0xffA1CBA1),
-                                      backgroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        side: BorderSide(
-                                          color: Color(0xff4EC64C),
-                                          width: 1.0,
+                            children: snapshot.data['recipeIngredients'] != null
+                                ? snapshot.data['recipeIngredients']
+                                    .map<Widget>((ingredient) {
+                                    final text =
+                                        '${ingredient[0]} ${ingredient[1]}'; // 재료 데이터에서 추출
+                                    final textLength = text.length;
+                                    return Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          12, 3, 1, 3),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: textLength * 25.0,
+                                          maxHeight: 35.0,
+                                        ),
+                                        child: TextButton(
+                                          onPressed: () {},
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Color(0xffA1CBA1),
+                                            backgroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              side: BorderSide(
+                                                color: Color(0xff4EC64C),
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            text,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      text,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                    );
+                                  }).toList()
+                                : [], // 재료 데이터가 없는 경우 빈 리스트 반환
                           ),
-                        ))
-                      ]),
-                      // Container(
-                      //   margin: EdgeInsets.fromLTRB(20, 10, 0, 0),
-                      //   child: Text(
-                      //     '조리법',
-                      //     style: TextStyle(
-                      //       fontSize: 18,
-                      //       fontWeight: FontWeight.w700,
-                      //     ),
-                      //   ),
-                      // ),
+                        ),
+                      ),
+                      // ]),
+
                       SizedBox(
                         child: Column(
                           children: [
-                            for (int index = 0; index < steps.length; index++)
+                            for (int index = 0;
+                                index < snapshot.data['recipeProcess'].length;
+                                index++)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -984,7 +977,7 @@ class _RecipedetailState extends State<Recipedetail> {
                                       padding:
                                           EdgeInsets.fromLTRB(1, 11, 30, 2),
                                       child: Text(
-                                        steps[index].description,
+                                        snapshot.data['recipeProcess'][index],
                                         style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.w700,
