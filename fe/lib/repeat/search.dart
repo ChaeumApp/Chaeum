@@ -1,4 +1,7 @@
+import 'package:fe/search/searchresult.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -28,7 +31,13 @@ class _SearchState extends State<Search> {
             child: TextField(
               controller: searchController,
             onSubmitted: (value){
-
+                context.read<UserStore>().addSearchList(value);
+                print(context.read<UserStore>().searchList);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SearchResult(searchWord: value)));
             },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),

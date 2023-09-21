@@ -1,46 +1,57 @@
-import 'package:fe/user/login.dart';
+import 'package:fe/main.dart';
+import 'package:fe/user/pageapi.dart';
+
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyPage extends StatefulWidget {
-  MyPage({super.key});
+  MyPage({super.key, this.storage});
 
+  final storage;
   @override
   State<MyPage> createState() => _MyPageState();
 }
 
 class _MyPageState extends State<MyPage> {
-  String? userInfo; //user의 정보를 저장하기 위한 변수
+  final PageApi pageapi = PageApi();
 
-  static final storage =
-      FlutterSecureStorage(); //flutter_secure_storage 사용을 위한 초기화 작업
-  @override
-  void initState() {
-    super.initState();
+  List<String> foodlist = ['bakery.png', 'cabbage.png'];
+  TextEditingController controller = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
+  TextEditingController controller3 = TextEditingController();
 
-    //비동기로 flutter secure storage 정보를 불러오는 작업.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
-  }
+  Dio dio = Dio();
 
-  _asyncMethod() async {
-    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
-    //(데이터가 없을때는 null을 반환을 합니다.)
-    userInfo = await storage.read(key: "login");
-    print(userInfo);
-
-    //user의 정보가 있다면 바로 로그아웃 페이지로 넝어가게 합니다.
-    if (userInfo != null) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LogIn(storage: storage)));
+  changepassword() async {
+    try {
+      Response response =
+          await dio.post('http://10.0.2.2:8080/user/signin', data: {
+        'curpassword': controller.text.toString(),
+        'nextpassword': controller2.text.toString()
+      });
+      print('여기문제없어');
+      return response.data;
+    } catch (e) {
+      print(e);
     }
   }
 
-  List<String> foodlist = ['bakery.png', 'cabbage.png'];
+  @override
+  void initState() {
+    super.initState();
+    getuserinfo();
+  }
+
+  getuserinfo() async {
+    print('이게 토큰');
+    print(context.watch<UserStore>().userId);
+    final token = await widget.storage.read(key: 'login');
+    final info = await pageapi.getinfo(context.watch<UserStore>().userId,
+        token.toString().split(" ")[1].toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +62,6 @@ class _MyPageState extends State<MyPage> {
         title: Text('마이페이지'),
         centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_backspace_rounded),
-          onPressed: () {
-            print('menu butten is clicked');
-          },
-        ),
       ),
       body: Container(
         padding: EdgeInsets.all(30),
@@ -85,7 +90,7 @@ class _MyPageState extends State<MyPage> {
                           Padding(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Text(
-                              'user ',
+                              '${context.watch<UserStore>().userId.split('@')[0]} ',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -117,7 +122,7 @@ class _MyPageState extends State<MyPage> {
                 children: [
                   SizedBox(
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
                       child: Text(
                         'My채움',
                         style: TextStyle(
@@ -160,7 +165,7 @@ class _MyPageState extends State<MyPage> {
                                   List<Widget>.generate(foodlist.length, (idx) {
                                 return Container(
                                   color: Colors.amber,
-                                  padding: const EdgeInsets.all(40),
+                                  padding: const EdgeInsets.all(30),
                                   margin: const EdgeInsets.all(8),
                                   child: Image.asset(
                                     'assets/images/main/${foodlist[idx]}',
@@ -170,24 +175,28 @@ class _MyPageState extends State<MyPage> {
                                 );
                               }).toList()),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(children: [
-                              Text(
-                                '식재료 ',
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w600),
-                              ),
-                              Text(
-                                '(${'3'}건)',
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w600),
-                              ),
-                            ]),
-                            Text('더보기')
-                          ],
+                        SizedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(children: [
+                                Text(
+                                  '식재료 ',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  '(${'3'}건)',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ]),
+                              Text('더보기')
+                            ],
+                          ),
                         ),
                         Expanded(
                           child: GridView.count(
@@ -212,14 +221,297 @@ class _MyPageState extends State<MyPage> {
                 ],
               ),
             ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              TextButton(
+                child: Text('회원정보 수정'),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: ((context) {
+                        return AlertDialog(
+                          title: Text("회원 정보 수정"),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                                  child: TextField(
+                                    maxLength: 20,
+                                    controller: controller,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    obscureText: true, // 비밀번호 안보이도록 하는 것
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 16.0, horizontal: 10.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Color(0xffA1CBA1))),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide()),
+                                        labelText: '현재 비밀번호',
+                                        focusColor: Color(0xffA1CBA1)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                                  child: TextField(
+                                    maxLength: 20,
+
+                                    controller: controller2,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    obscureText: true, // 비밀번호 안보이도록 하는 것
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 16.0, horizontal: 10.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Color(0xffA1CBA1))),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide()),
+                                        labelText: '새로운 비밀번호',
+                                        focusColor: Color(0xffA1CBA1)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(1, 0, 1, 0),
+                                  child: TextField(
+                                    maxLength: 20,
+
+                                    controller: controller3,
+                                    obscureText: true, // 비밀번호 안보이도록 하는 것
+                                    decoration: InputDecoration(
+                                        counterText: '',
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 16.0, horizontal: 10.0),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Color(0xffA1CBA1))),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide()),
+                                        labelText: '비밀번호 확인',
+                                        focusColor: Color(0xffA1CBA1)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Color(0xffA1CBA1))),
+                                      child: Text("변경하기"),
+                                      onPressed: () async {
+                                        if (RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                .hasMatch(controller2.text) &&
+                                            RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                .hasMatch(controller3.text) &&
+                                            controller2.text ==
+                                                controller3.text) {
+                                          final response =
+                                              await changepassword();
+                                        } else if (!RegExp(
+                                                r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                            .hasMatch(controller2.text)) {
+                                          showSnackBar(
+                                              context,
+                                              Text(
+                                                  '비밀번호는 특수문자,영어, 숫자를 포함해 주세요'));
+                                        } else if (controller2.text !=
+                                            controller3.text) {
+                                          showSnackBar(context,
+                                              Text('비밀번호화 비밀번호 확인이 다릅니다.'));
+                                        } else {
+                                          showSnackBar(context,
+                                              Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
+                                        }
+                                      }),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Color(0xffA1CBA1))),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(); //창 닫기
+                                    },
+                                    child: Text("취소하기"),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        );
+                      }));
+                },
+              ),
+              Text('|'),
               TextButton(
                 child: Text(
                   '비밀번호 변경',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                    builder: ((context) {
+                      return AlertDialog(
+                        title: Text("비밀번호 변경"),
+                        content: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                                child: TextField(
+                                  maxLength: 20,
+                                  controller: controller,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  obscureText: true, // 비밀번호 안보이도록 하는 것
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 16.0, horizontal: 10.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Color(0xffA1CBA1))),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide()),
+                                      labelText: '현재 비밀번호',
+                                      focusColor: Color(0xffA1CBA1)),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                                child: TextField(
+                                  maxLength: 20,
+
+                                  controller: controller2,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  obscureText: true, // 비밀번호 안보이도록 하는 것
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 16.0, horizontal: 10.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Color(0xffA1CBA1))),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide()),
+                                      labelText: '새로운 비밀번호',
+                                      focusColor: Color(0xffA1CBA1)),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
+                                child: TextField(
+                                  maxLength: 20,
+
+                                  controller: controller3,
+                                  obscureText: true, // 비밀번호 안보이도록 하는 것
+                                  decoration: InputDecoration(
+                                      counterText: '',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 16.0, horizontal: 10.0),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Color(0xffA1CBA1))),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide()),
+                                      labelText: '비밀번호 확인',
+                                      focusColor: Color(0xffA1CBA1)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Color(0xffA1CBA1))),
+                                    child: Text("변경하기"),
+                                    onPressed: () async {
+                                      if (RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                              .hasMatch(controller2.text) &&
+                                          RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                              .hasMatch(controller3.text) &&
+                                          controller2.text ==
+                                              controller3.text) {
+                                        final response = await changepassword();
+                                      } else if (!RegExp(
+                                              r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                          .hasMatch(controller2.text)) {
+                                        showSnackBar(context,
+                                            Text('비밀번호는 특수문자,영어, 숫자를 포함해 주세요'));
+                                      } else if (controller2.text !=
+                                          controller3.text) {
+                                        showSnackBar(context,
+                                            Text('비밀번호화 비밀번호 확인이 다릅니다.'));
+                                      } else {
+                                        showSnackBar(context,
+                                            Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
+                                      }
+                                    }),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                          Color(0xffA1CBA1))),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); //창 닫기
+                                  },
+                                  child: Text("취소하기"),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    }),
+                  );
+                },
               ),
+              Text('|'),
+              TextButton(
+                  child: Text(
+                    '로그아웃',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                  onPressed: () async {
+                    await widget.storage.delete(key: "login");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => Main()),
+                    );
+                  }),
+              Text('|'),
               TextButton(
                 child: Text(
                   '회원 탈퇴',
@@ -227,19 +519,18 @@ class _MyPageState extends State<MyPage> {
                 ),
                 onPressed: () {},
               ),
-              TextButton(
-                child: Text(
-                  '로그아웃',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                ),
-                onPressed: () async {
-                  await storage.delete(key: "login");
-                },
-              ),
             ]),
           ],
         ),
       ),
     );
   }
+}
+
+void showSnackBar(BuildContext context, Text text) {
+  final snackBar = SnackBar(content: text, backgroundColor: Color(0xffA1CBA1));
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

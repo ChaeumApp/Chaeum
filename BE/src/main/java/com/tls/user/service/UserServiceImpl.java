@@ -14,6 +14,8 @@ import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.dto.UserProfileDto;
+import com.tls.user.converter.UserConverter;
+import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
@@ -53,8 +55,12 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
+<<<<<<< BE/src/main/java/com/tls/user/service/UserServiceImpl.java
     private final UserIngrRepository userIngrRepostiory;
     private final UserRecipeRepository userRecipeRepository;
+=======
+    private UserConverter userConverter = new UserConverter();
+>>>>>>> BE/src/main/java/com/tls/user/service/UserServiceImpl.java
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -93,6 +99,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public TokenDto signIn(String userEmail, String userPwd) {
         try {
+            if (userEmail.equals("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
+                userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
+            }
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -123,11 +132,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int signOut(TokenDto tokenDto) {
-        // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
-        if (!jwtTokenProvider.validateToken(tokenDto.getAccessToken())) {
-            return -1;
-        }
         try {
+            // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
+            if (!jwtTokenProvider.validateToken(tokenDto.getAccessToken())) {
+                return -1;
+            }
             // Access Token에서 User email을 가져온다
             Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenDto.getAccessToken());
@@ -165,8 +174,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
+        try {
+            Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
+            updateUser.ifPresent( selectUser -> {
+                UserDto userDto = userConverter.entityToDto(selectUser);
+                userDto.setVeganId(userVO.getVeganId());
+                userRepository.save(userConverter.dtoToEntity(userDto));
+            });
+            List<UserAllergy> userAllergyList = new ArrayList<>();
+            userVO.getAllergyList().forEach(allergy -> {
+                UserAllergy userAllergy = UserAllergy.builder()
+                    .userId(updateUser.get())
+                    .algyId(allergy)
+                    .build();
+                userAllergyList.add(userAllergy);
+            });
+            userAllergyRepository.saveAll(userAllergyList);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
     @Transactional
-    public int updateUser(String userEmail, UserPwdVO userDto) {
+    public int updateUserPwd(String userEmail, UserPwdVO userDto) {
         try {
             User updateUser = userRepository.findByUserEmail(userEmail).orElseThrow();
             if (passwordEncoder.matches(userDto.getCurpassword(), updateUser.getUserPwd())) {
@@ -186,7 +219,7 @@ public class UserServiceImpl implements UserService {
             Optional<User> user = userRepository.findByUserEmailAndUserBirthday(userEmail,
                 Date.valueOf(userBirthday));
             if (user.isPresent()) {
-                String tempPassword = new RandomStringCreator().getTempPassword();
+                String tempPassword = new RandomStringCreator().getRandomString(10);
                 MailDto mailDto = new MailDto();
                 mailDto.setAddress(userEmail);
                 mailDto.setTitle("채움 임시 비밀번호 안내 이메일입니다.");

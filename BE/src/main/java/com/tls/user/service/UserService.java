@@ -15,7 +15,9 @@ public interface UserService {
 
     int checkEmail(String userEmail);
 
-    int updateUser(String userEmail, UserPwdVO userDto);
+    int updateUserInfo(String userEmail, UserSignUpVO userVO);
+
+    int updateUserPwd(String userEmail, UserPwdVO userVO);
 
     int findUserPwd(String userEmail, String userBirthday);
 
