@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.text.SimpleDateFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class UserController {
     }
 
     @GetMapping("/oAuth/naver")
-    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.")
+    @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
     })
@@ -232,13 +233,12 @@ public class UserController {
             + "업데이트에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
-        log.info("findUserPwd call :: {}", userDto.getUserEmail());
+        log.info("findUserPwd call :: {}", userDto.getUserBirthday());
         int resultCode = userService.findUserPwd(userDto.getUserEmail(),
-            userDto.getUserBirthday().toString());
+          new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {
-            log.info("{} 로 임시 비밀번호를 전송하였습니다.", userDto.getUserEmail());
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.OK);
