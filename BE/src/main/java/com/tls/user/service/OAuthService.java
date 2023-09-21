@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.user.converter.UserConverter;
-import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 
 import com.tls.user.vo.UserKakaoVO;
-import java.sql.Date;
 import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
@@ -72,18 +70,21 @@ public class OAuthService {
             String email = Objects.requireNonNull(getUserInfo(accessToken)).get("email").asText();
             vo.setUserEmail("[S]" + email);
             if (userRepository.findByUserEmail(email).isPresent()) {
-                log.info("email exists");
                 vo.setMsg("dup");
                 return vo;
             }
-            log.info("email does not exist");
-            String gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText();
-            String birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
-            String birthyear = "0000";
-            if (!type.equals("kakao")) birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
 
+            String gender, birthday, birthyear = "0000";
+            if (type.equals("kakao")) {
+                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().toLowerCase();
+                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText().replace("-", "");
+            } else {
+                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().substring(0, 1);
+                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
+                birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
+            }
             vo.setUserPwd("");
-            vo.setUserGender(gender.substring(0, 1));
+            vo.setUserGender(gender);
             vo.setBirth(birthyear + birthday);
             log.info(vo.toString());
             return vo;
@@ -91,36 +92,6 @@ public class OAuthService {
         log.info("error");
         return null;
     }
-
-//    private JsonNode getAccessToken(String code) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-//
-//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//        body.add("grant_type", "authorization_code");
-//        body.add("client_id", CLIENT_ID);
-//        if (TYPE.equals("naver")) body.add("client_secret", NAVER_CLIENT_SECRET);
-//        body.add("redirect_uri", REDIRECT_URI);
-//        body.add("code", code);
-//
-//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-//        RestTemplate rt = new RestTemplate();
-//        ResponseEntity<String> response;
-//
-//        if (TYPE.equals("kakao")) {
-//            response = rt.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, request, String.class);
-//        } else {
-//            response = rt.exchange("https://nid.anver.com/oauth2.0/token", HttpMethod.POST, request, String.class);
-//        }
-//
-//        String responseBody = response.getBody();
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            return objectMapper.readTree(responseBody);
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
 
     private JsonNode getUserInfo(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
@@ -152,21 +123,4 @@ public class OAuthService {
             return null;
         }
     }
-
-    private User registerUserIfNeed(String email, String birthday, String gender) {
-        User user = userRepository.findByUserEmail(email).orElse(null);
-        if (user == null) {
-            user = User.builder().userEmail(email).userPwd(passwordEncoder.encode(TYPE)).userBirthday(Date.valueOf(birthday)).userGender(gender).build();
-            userRepository.save(user);
-        }
-        return user;
-    }
-
-//    private String usersAuthorizationInput(User user) {
-//        return null;
-//    }
-
-//    private Boolean checkIsMember(User user) {
-//        return user.getUserEmail() != null;
-//    }
 }
