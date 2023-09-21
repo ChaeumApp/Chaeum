@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeMainList extends StatefulWidget {
-  RecipeMainList({super.key});
+  RecipeMainList({super.key, this.scrollController});
+  final scrollController;
 
   @override
   State<RecipeMainList> createState() => _RecipeMainListState();
@@ -43,7 +44,7 @@ class _RecipeMainListState extends State<RecipeMainList> {
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
                       child: Container(
-                        height: 220,
+                        height: 230,
                         width: double.infinity,
                         color: Colors.white,
                       ),
@@ -95,6 +96,7 @@ class _RecipeMainListState extends State<RecipeMainList> {
         else {
           return Expanded(
                 child: ListView.builder(
+                  controller: widget.scrollController,
                   shrinkWrap: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -110,7 +112,7 @@ class _RecipeMainListState extends State<RecipeMainList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Image.network(snapshot.data[index]['recipeThumbnail'],
-                            height: 220,
+                            height: 230,
                             width: double.infinity,
                             fit: BoxFit.fill),
                             Container(
