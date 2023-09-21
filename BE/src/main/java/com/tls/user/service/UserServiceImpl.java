@@ -102,9 +102,6 @@ public class UserServiceImpl implements UserService {
         String userEmail = userSignInVO.getUserEmail();
         String userPwd = userSignInVO.getUserPwd();
         try {
-            if (userEmail.startsWith("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
-                userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
-            }
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
