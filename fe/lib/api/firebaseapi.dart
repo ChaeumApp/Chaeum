@@ -65,7 +65,8 @@ getMyDeviceToken() async {
   final firebaseMessaging = FirebaseMessaging.instance;
   await firebaseMessaging.requestPermission();
   final token = await firebaseMessaging.getToken();
-  return token;
+
+  return token.toString();
 }
 
 void foregroundMessage(RemoteMessage message) {

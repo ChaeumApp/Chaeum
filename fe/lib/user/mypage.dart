@@ -47,9 +47,9 @@ class _MyPageState extends State<MyPage> {
 
   getuserinfo() async {
     print('이게 토큰');
-    print(context.watch<UserStore>().userId);
+    print(context.read<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
-    final info = await pageapi.getinfo(context.watch<UserStore>().userId,
+    final info = await pageapi.getinfo(context.read<UserStore>().userId,
         token.toString().split(" ")[1].toString());
   }
 
