@@ -55,12 +55,9 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
-<<<<<<< BE/src/main/java/com/tls/user/service/UserServiceImpl.java
     private final UserIngrRepository userIngrRepostiory;
     private final UserRecipeRepository userRecipeRepository;
-=======
     private UserConverter userConverter = new UserConverter();
->>>>>>> BE/src/main/java/com/tls/user/service/UserServiceImpl.java
 
     @Value("${jwt.secret}")
     private String secretKey;
