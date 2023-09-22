@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/click.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../detail/detail.dart';
 
@@ -99,6 +101,23 @@ class _MainRowPriceState extends State<MainRowPrice> {
         'saleper': 10
       },
     ];
+
+    Future<dynamic> clickIngr(ingrId) async {
+      var accessToken = context.read<UserStore>().accessToken;
+      print(accessToken);
+      if(accessToken != ''){
+        try {
+          final response = await dio.post('$serverURL/ingr/selected', data: {'ingrId' : ingrId},
+            options: Options(
+              headers: {'Authorization': 'Bearer $accessToken'},
+            ),);
+          print(response.data);
+          return response.data;
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
 
     return FutureBuilder(future: getLowPrice(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -215,12 +234,12 @@ class _MainRowPriceState extends State<MainRowPrice> {
                     itemBuilder: (c, i) {
                       return InkWell(
                         onTap: () {
-                          // clickIngr();
+                          clickIngr(ranking[i]['rank']);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      Detail(category: ranking[i]['category'])));
+                                      Detail(category: ranking[i]['rank'])));
                         },
                         child: Container(
                           width: 120,

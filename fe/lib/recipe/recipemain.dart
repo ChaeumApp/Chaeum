@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:fe/recipe/recipemainlist.dart';
 import 'package:fe/repeat/search.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RecipeMain extends StatefulWidget {
   const RecipeMain({super.key});
@@ -14,15 +16,6 @@ class _RecipeMainState extends State<RecipeMain> {
   final ScrollController scrollController = ScrollController();
   bool isFabVisible = false;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   scrollController.addListener(() {
-  //     setState(() {
-  //       isFabVisible = scrollController.offset > 100;
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
