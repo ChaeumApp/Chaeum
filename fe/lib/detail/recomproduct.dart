@@ -52,6 +52,13 @@ class _RecommendProductState extends State<RecommendProduct> {
       'price': 19800,
       'site': 'naver'
     },
+    {
+      'id': 7,
+      'title': '어쩌고저쩌고 상품',
+      'image': 'assets/images/temporary/paper_plane.jpg',
+      'price': 19800,
+      'site': 'naver'
+    },
   ];
 
   _RecommendProductState() {

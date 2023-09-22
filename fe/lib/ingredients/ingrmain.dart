@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
 import 'package:fe/detail/detail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
@@ -65,24 +66,41 @@ class _IngrMainState extends State<IngrMain> {
   }
 
   // 관심없음
-  Future<dynamic> dislikeIngr() async {
-    try {
-      final response = await dio.get('ingr/dislike');
-      return response.data;
-    } catch (e) {
-      print(e);
+  Future<dynamic> dislikeIngr(ingrId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/ingr/dislike', queryParameters: {'ingrId' : ingrId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print('관심없음 ${response.data}');
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
 
+
+
   // 클릭
   Future<dynamic> clickIngr(ingrId) async {
-    try {
-      final response = await dio.post('ingr/selected',
-      queryParameters: {'ingrId' : ingrId, 'userEmail' : context.read<UserStore>().userId});
-      return response.data;
-    } catch (e) {
-      print(e);
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/ingr/selected', data: {'ingrId' : ingrId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -320,7 +338,7 @@ class _IngrMainState extends State<IngrMain> {
                                         child: Icon(Icons.more_vert),
                                       ),
                                       itemBuilder: (BuildContext context) {
-                                        return [_menuItem("관심없음")];
+                                        return [_menuItem("관심없음", snapshot.data[index]['ingrId'])];
                                       },
                                     )
                                   ],
@@ -353,11 +371,11 @@ class _IngrMainState extends State<IngrMain> {
         });
   }
 
-  PopupMenuItem<String> _menuItem(String text) {
+  PopupMenuItem<String> _menuItem(String text, int ingrId) {
     return PopupMenuItem<String>(
       enabled: true,
       onTap: () {
-        dislikeIngr();
+        dislikeIngr(ingrId);
         setState(() {});
       },
       value: text,
