@@ -88,7 +88,7 @@ public class IngredientController {
         try{
             String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
                 .getName();
-            log.info("selectIngredient call :: {}", userEmail);
+            log.info("selectIngredient call :: {} : {}", userEmail, userIngrVO.getIngrId());
             int n = ingredientService.selectIngredient(userEmail, userIngrVO);
             if (n == 1) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
