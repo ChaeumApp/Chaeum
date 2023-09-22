@@ -134,21 +134,24 @@ class _LogInState extends State<LogIn> {
                                             if (response["accessToken"] !=
                                                 null) {
                                               final accessToken =
-                                                  response["accessToken"];
+                                                  await response["accessToken"];
                                               final refreshToken =
                                                   response["refreshToken"];
                                               await widget.storage.write(
                                                   key: "login",
                                                   value:
-                                                      "accessToken $accessToken refreshToken $refreshToken id ${controller.text.toString()}");
+                                                      "accessToken $accessToken refreshToken $refreshToken");
 
                                               print('여기는 로그인 버튼');
-                                              final kkk = await context
+                                              await context
                                                   .read<UserStore>()
                                                   .changeAccessToken(
                                                       accessToken);
-                                              print(
-                                                  'kkk${context.read<UserStore>().accessToken}');
+                                              final ok = context
+                                                  .read<UserStore>()
+                                                  .accessToken;
+                                              print('ggggg');
+                                              print('kkk$ok');
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
