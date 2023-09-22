@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 class SearchRecipe extends StatefulWidget {
   const SearchRecipe({super.key});
@@ -19,6 +21,23 @@ class _SearchRecipeState extends State<SearchRecipe> {
       return response.data;
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<dynamic> clickRecipe(recipeId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -69,48 +88,53 @@ class _SearchRecipeState extends State<SearchRecipe> {
                     child: Text('총 ${snapshot.data.length}개 상품'),
                   );
                 } else {
-                  return Container(
-                    margin: EdgeInsets.fromLTRB(20, 5, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.network(snapshot.data[index]['recipeThumbnail'],
-                            height: 220,
-                            width: double.infinity,
-                            fit: BoxFit.fill),
-                        Container(
-                            margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.asset('assets/images/recipe/recipe.png',
-                                    height: 40,
-                                    width: 40,),
-                                ),
-                                SizedBox(width: 15,),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${snapshot.data[index]['recipeName']}',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                        ),softWrap: true,),
-                                      Text('만개의 레시피',
-                                      style: TextStyle(
-                                        color: Colors.black54
-                                      ),
-                                      ),
-                                    ],
+                  return GestureDetector(
+                    onTap: (){
+                      clickRecipe(snapshot.data[index]['recipeId']);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(20, 5, 20, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(snapshot.data[index]['recipeThumbnail'],
+                              height: 220,
+                              width: double.infinity,
+                              fit: BoxFit.fill),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: Image.asset('assets/images/recipe/recipe.png',
+                                      height: 40,
+                                      width: 40,),
                                   ),
-                                ),
-                              ],
-                            ),
-                        ),
-                      ],
+                                  SizedBox(width: 15,),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('${snapshot.data[index]['recipeName']}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),softWrap: true,),
+                                        Text('만개의 레시피',
+                                        style: TextStyle(
+                                          color: Colors.black54
+                                        ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
