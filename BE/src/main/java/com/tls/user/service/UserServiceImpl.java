@@ -324,7 +324,7 @@ public class UserServiceImpl implements UserService {
                 recipeList = userRecipeRepository.findAllByUserId(user).get().stream()
                         .map(UserRecipe::getRecipeId).collect(Collectors.toList());
             }
-            return new UserProfileDto(ingrList, recipeList);
+            return new UserProfileDto(userEmail, ingrList, recipeList);
         } catch (Exception e) {
             return null;
         }
