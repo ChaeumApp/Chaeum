@@ -245,7 +245,15 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll(Color(0xffA1CBA1))),
-                        onPressed: null,
+                        onPressed: () async {
+                          print(selectedVeganNumber);
+                          print(selectedAllergieNumber);
+
+                          await pageapi.updateuserinfo(
+                              context.read<UserStore>().accessToken,
+                              selectedVeganNumber,
+                              selectedAllergieNumber);
+                        },
                         child: Text("변경하기")),
                     ElevatedButton(
                       style: ButtonStyle(
