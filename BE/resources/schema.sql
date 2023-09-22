@@ -135,7 +135,7 @@ CREATE TABLE `ingredient_preference_tb`
 
 CREATE TABLE `allergy_tb`
 (
-    `algy_id`   SMALLINT    NOT NULL primary key auto_increment,
+    `algy_id`   SMALLINT    NOT NULL primary key,
     `algy_name` varchar(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
