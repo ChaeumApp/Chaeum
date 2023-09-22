@@ -77,9 +77,13 @@ class _IngrMainState extends State<IngrMain> {
 
   // 클릭
   Future<dynamic> clickIngr(ingrId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
     try {
-      final response = await dio.post('ingr/selected',
-      queryParameters: {'ingrId' : ingrId, 'userEmail' : context.read<UserStore>().userId});
+      final response = await dio.post('ingr/selected', data: {'ingrId' : ingrId},
+        options: Options(
+          headers: {'Authorization': '$accessToken'},
+        ),);
       return response.data;
     } catch (e) {
       print(e);
