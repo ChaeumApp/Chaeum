@@ -53,7 +53,8 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.grey[50],
       statusBarIconBrightness: Brightness.dark));
-  runApp(MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (c) => UserStore()),
         ChangeNotifierProvider(create: (c) => SearchStore()),
@@ -104,23 +105,22 @@ class _MainState extends State<Main> {
   }
 
   DateTime? currentBackPressTime;
-  Future<bool> onWillPop(){
+  Future<bool> onWillPop() {
     DateTime now = DateTime.now();
-    if(currentBackPressTime == null || now.difference(currentBackPressTime!) > Duration(seconds: 2))
-    {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
       currentBackPressTime = now;
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Color(0xff4C8C4C),
-            content: Text('한번 더 뒤로가기를 누를 시 종료됩니다'),
-            duration: Duration(seconds: 2),
-          ),
+        SnackBar(
+          backgroundColor: Color(0xff4C8C4C),
+          content: Text('한번 더 뒤로가기를 누를 시 종료됩니다'),
+          duration: Duration(seconds: 2),
+        ),
       );
       return Future.value(false);
     }
     return Future.value(true);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -150,4 +150,3 @@ class _MainState extends State<Main> {
     );
   }
 }
-
