@@ -18,7 +18,9 @@ class _ProfileViewState extends State<ProfileView>{
 
   Future<dynamic> getProductInfo() async {
     try {
-      final response = await dio.get('$serverURL/recipe');
+      final response = await dio.get('$serverURL/ingr/detail/${widget.category}',
+      queryParameters: {'ingrId' : widget.category});
+      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -63,7 +65,7 @@ class _ProfileViewState extends State<ProfileView>{
             backgroundColor: Colors.grey[50],
             elevation: 0,
             title: Text(
-              '${widget.category}',
+              '${snapshot.data['ingrName']}',
               style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
             ),
             centerTitle: true,
@@ -127,7 +129,7 @@ class _ProfileViewState extends State<ProfileView>{
                     Container(
                       margin: EdgeInsets.only(bottom: 5),
                       child: Text(
-                       '${widget.category}',
+                       snapshot.data['ingrName'],
                         style: TextStyle(
                            fontSize: 21,
                           fontWeight: FontWeight.w700,
