@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://10.0.2.2:8080';
 
   Future<dynamic> login(id, password, deviceToken) async {
     try {

@@ -103,6 +103,8 @@ class _MyPageState extends State<MyPage> {
                                   onChanged: (dynamic value) {
                                     setState(() {
                                       selectedVegan = value;
+                                      Navigator.of(context).pop();
+                                      openDialog();
                                     });
                                     for (int i = 0; i < veganList.length; i++) {
                                       if (veganList[i] == selectedVegan) {
@@ -183,7 +185,6 @@ class _MyPageState extends State<MyPage> {
                                 ),
                                 initialChildSize: 0.4,
                                 listType: MultiSelectListType.CHIP,
-                                searchable: true,
                                 buttonText: Text("Allergy foods"),
                                 title: Text(""),
                                 items: allergieNameList
@@ -215,19 +216,6 @@ class _MyPageState extends State<MyPage> {
                                 chipDisplay: MultiSelectChipDisplay(
                                   chipColor: Color(0xffA1CBA1),
                                   textStyle: TextStyle(color: Colors.white),
-                                  onTap: (value) {
-                                    setState(() {
-                                      selectedAllergie.remove(value);
-                                    });
-                                    for (int i = 0;
-                                        i < allergieNameList.length;
-                                        i++) {
-                                      if (allergieNameList[i] == value) {
-                                        selectedAllergieNumber.remove(i);
-                                        print(selectedAllergieNumber);
-                                      }
-                                    }
-                                  },
                                 ),
                               ),
                               selectedAllergie.isEmpty
