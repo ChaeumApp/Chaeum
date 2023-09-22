@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/click.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductList extends StatefulWidget {
@@ -25,6 +27,23 @@ class _ProductListState extends State<ProductList> {
       return response.data;
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<dynamic> clickItem(itemId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -72,8 +91,8 @@ class _ProductListState extends State<ProductList> {
                       (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: (){
-                        // 상품클릭함수 추가해야할거있음!!!
-                        // clickItem();
+                        // 상품클릭함수 상품 나오면 전달하는거 바꿔줘!!!!
+                        clickItem(index);
                         // 웹뷰페이지에 전달하는 주소도!!
                         Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
                       },
