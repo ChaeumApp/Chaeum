@@ -30,7 +30,7 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
     return FutureBuilder(future: getRecipe(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData == false) {
-            return Expanded(
+            return SliverToBoxAdapter(
               child: Container(
                 margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: ListView.builder(
@@ -71,7 +71,7 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                               child: Container(color: Colors.white),
                             ),
                             SizedBox(
-                              height: 10.0,
+                              height: 30.0,
                             ),
                           ],
                         ),
@@ -83,55 +83,62 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
             );
           }
           else if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: 15),
+            return SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Error: ${snapshot.error}',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             );
           }
           else {
-            return Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                      itemCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: (){
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             ));
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                child: Image.network(snapshot.data[index]['recipeThumbnail'],
-                                    height: 210,
-                                    width: double.infinity,
-                                    fit: BoxFit.fill),
-                              ),
-                              Text('채움의 ${index+1}번째 추천 레시피🎁',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              )),
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                  child: Text('${snapshot.data[index]['recipeName']}'))
-                            ],
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             ));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: Image.network(
+                              snapshot.data[index]['recipeThumbnail'],
+                              height: 210,
+                              width: double.infinity,
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                        );
-                      }),
+                          Text(
+                            '채움의 ${index + 1}번째 추천 레시피🎁',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                            child: Text('${snapshot.data[index]['recipeName']}'),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                childCount: 2, // 아이템 개수에 따라 설정
               ),
             );
-          }
+        }
         });
   }
 }
