@@ -107,7 +107,7 @@ class PageApi {
   Future<dynamic> naverlogin(token) async {
     try {
       print('받은토큰$token');
-      final response = await dio.get('$serverURL/user/oAuth/kakao',
+      final response = await dio.get('$serverURL/user/oAuth/naver',
           queryParameters: {'token': token});
       print('네이버 로그인 여부 ${response.data}');
       return response.data;

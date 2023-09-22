@@ -143,11 +143,12 @@ class _LogInState extends State<LogIn> {
                                                       "accessToken $accessToken refreshToken $refreshToken id ${controller.text.toString()}");
 
                                               print('여기는 로그인 버튼');
-                                              print(widget.storage);
-                                              await context
+                                              final kkk = await context
                                                   .read<UserStore>()
-                                                  .changeUserInfo(
-                                                      controller.text);
+                                                  .changeAccessToken(
+                                                      accessToken);
+                                              print(
+                                                  'kkk${context.read<UserStore>().accessToken}');
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -473,8 +474,11 @@ class _LogInState extends State<LogIn> {
                                                           builder: (BuildContext
                                                                   context) =>
                                                               AddInfo(
-                                                                  user:
-                                                                      sociallogininfo)),
+                                                                user:
+                                                                    sociallogininfo,
+                                                                storage: widget
+                                                                    .storage,
+                                                              )),
                                                     );
                                                   }
                                                 } catch (error) {

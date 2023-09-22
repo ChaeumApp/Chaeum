@@ -538,7 +538,7 @@ class _AddInfoState extends State<AddInfo> {
                                     await widget.storage.write(
                                         key: "login",
                                         value:
-                                            "accessToken $accessToken refreshToken $refreshToken id ${widget.user["userEmail"]}");
+                                            "accessToken $accessToken refreshToken $refreshToken");
                                     print(await widget.storage
                                         .read(key: "login"));
                                     Navigator.pushReplacement(

@@ -92,7 +92,7 @@ public class UserController {
                 return ResponseEntity.ok(vo);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
 

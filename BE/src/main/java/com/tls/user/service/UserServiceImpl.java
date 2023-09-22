@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             // user 가 가지고 있는 allergy 정보를 저장한다.
             List<UserAllergy> userAllergyList = new ArrayList<>();
+            System.out.println(userDto.getAllergyList());
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                         .userId(user)
@@ -95,6 +96,7 @@ public class UserServiceImpl implements UserService {
             });
             userAllergyRepository.saveAll(userAllergyList);
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("signup fail");
             return 406;
         }

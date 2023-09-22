@@ -100,8 +100,6 @@ class _MainState extends State<Main> {
 
     userToken = await storage.read(key: "login");
 
-    await context.read<UserStore>().changeUserInfo(
-        userToken != null ? userToken.toString().split(" ")[5].toString() : '');
     final devicetoken = await getMyDeviceToken();
 
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());

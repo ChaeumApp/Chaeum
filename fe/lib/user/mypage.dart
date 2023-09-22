@@ -287,11 +287,15 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   }
 
   getuserinfo() async {
-    print('이게 토큰');
     print(context.read<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
     final info =
         await pageapi.getinfo(token.toString().split(" ")[1].toString());
+    print(info);
+    await context
+        .watch<UserStore>()
+        .changeUserInfo(info != null ? info['userEmail'] : '');
+    setState(() {});
   }
 
   @override
