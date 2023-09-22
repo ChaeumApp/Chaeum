@@ -332,22 +332,17 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "조회에 성공하면 좋아요한 레시피, 좋아요 한 식재료 를 반환한다.\n"
             + "조회에 실패하면 fail 을 반환한다.\n"
             + "요청한 Email 정보와 Header 의 토큰 정보가 일치하지 않으면 unauthorized 를 반환한다.")
-    public ResponseEntity<?> readProfile(@RequestBody UserEmailVO userIdVO,
-                                         @RequestHeader("Authorization") String tokenWithPrefix) {
-        log.info("회원정보 조회 call :: {}", userIdVO.toString());
+    public ResponseEntity<?> readProfile(@RequestHeader("Authorization") String tokenWithPrefix) {
+        log.info("회원정보 조회 call ::");
 
         try {
             Authentication authentication = jwtTokenProvider.getAuthentication(
                     tokenWithPrefix.substring(7));
-            if (userIdVO.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-                UserProfileDto userProfileDto = userService.readProfile(userIdVO.getUserEmail());
-                if (userProfileDto != null) {
-                    return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
-                } else {
-                    return getResponseEntity(-1);
-                }
+            UserProfileDto userProfileDto = userService.readProfile(authentication.getName());
+            if (userProfileDto != null) {
+                return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
             } else {
-                return getResponseEntity(0);
+                return getResponseEntity(-1);
             }
         } catch (Exception e) {
             return getResponseEntity(-1);
