@@ -84,14 +84,21 @@ public class IngredientController {
 
     @PostMapping("/selected")
     @Operation(summary = "소분류 선택 반영 메서드", description = "사용자가 특정 소분류를 선택한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> selectIngredient(UserIngrVO userIngrVO) {
-        log.info("selectIngredient call :: ");
-        int n = ingredientService.selectIngredient(userIngrVO);
-        if (n == 1) {
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
+    public ResponseEntity<?> selectIngredient(@RequestHeader("Authorization") String tokenWithPrefix, @RequestBody UserIngrVO userIngrVO) {
+        try{
+            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                .getName();
+            log.info("selectIngredient call :: {}", userEmail);
+            int n = ingredientService.selectIngredient(userEmail, userIngrVO);
+            if (n == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e){
+            return new ResponseEntity<>("unauthorization", HttpStatus.OK);
         }
+
     }
 
     @PostMapping("/dislike")

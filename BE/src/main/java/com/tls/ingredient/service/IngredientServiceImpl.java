@@ -2,9 +2,11 @@ package com.tls.ingredient.service;
 
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.entity.composite.UserIngr;
+import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.converter.IngredientConverter;
+import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.ingredient.vo.UserIngrVO;
@@ -28,6 +30,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final UserIngrRepository userIngrRepository;
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final UserIngrLogRepository userIngrLogRepository;
     private final IngredientConverter ingredientConverter = new IngredientConverter();
 
     @Override
@@ -80,8 +83,17 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int selectIngredient(UserIngrVO userIngrVO) {
-        return 0;
+    public int selectIngredient(String userEmail, UserIngrVO userIngrVO) {
+        try {
+            UserIngrLog userIngrLog = UserIngrLog.builder()
+                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
+                .ingrId(ingrRepository.findByIngrId(userIngrVO.getIngrId()).orElseThrow())
+                .build();
+            userIngrLogRepository.save(userIngrLog);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     @Override
