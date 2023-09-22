@@ -84,8 +84,8 @@ class _IngrMainState extends State<IngrMain> {
     selectedVal = sort[0];
   }
 
-  var sort = ['전체보기', '추천순'];
-  String? selectedVal = "전체보기";
+  var sort = ['추천순', '가나다순'];
+  String? selectedVal = "추천순";
 
   @override
   Widget build(BuildContext context) {
@@ -222,6 +222,7 @@ class _IngrMainState extends State<IngrMain> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
+                                    clickIngr();
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -277,6 +278,7 @@ class _IngrMainState extends State<IngrMain> {
                                       margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       child: GestureDetector(
                                         onTap: () {
+                                          clickIngr();
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(

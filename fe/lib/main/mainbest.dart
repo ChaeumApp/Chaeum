@@ -17,7 +17,7 @@ class _MainBestState extends State<MainBest> {
 
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
-
+  // 얻어오는거
   Future<dynamic> getMainBest() async {
     try {
       final response = await dio.get('$serverURL/recipe');
@@ -26,6 +26,18 @@ class _MainBestState extends State<MainBest> {
       print(e);
     }
   }
+  // 상품 클릭하는거
+  // 상품아이디!!!!!
+  Future<dynamic> clickItem() async {
+    try {
+      final response = await dio.get('$serverURL/item/selected');
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +167,9 @@ class _MainBestState extends State<MainBest> {
                     itemBuilder: (c, i) {
                       return GestureDetector(
                         onTap: (){
+                          // 상품클릭함수 추가해야할거있음!!!
+                          clickItem();
+                          // 웹뷰페이지에 전달하는 주소도!!
                           Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
                         },
                         child: Container(
