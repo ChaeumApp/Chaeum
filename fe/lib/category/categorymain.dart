@@ -124,7 +124,7 @@ class _CategoryMainState extends State<CategoryMain> {
                 });
               },
               trailing: Icon(
-                isExpanded ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                 color: Colors.black54,
                 ),
               leading: Image.asset('assets/images/category/mt.png',
