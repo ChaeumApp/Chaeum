@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     private final UserRecipeRepository userRecipeRepository;
     private final AllergyRepository allergyRepository;
 
-    private UserConverter userConverter = new UserConverter();
+    private final UserConverter userConverter = new UserConverter();
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
             }
             User user = User.builder()
                     .userEmail(userDto.getUserEmail())
-                    .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
+                    .userPwd(userDto.getUserPwd() != null ? passwordEncoder.encode(userDto.getUserPwd()) : "")
                     .userBirthday(userDto.getUserBirthday())
                     .userGender(userDto.getUserGender())
                     .userActivated(true)

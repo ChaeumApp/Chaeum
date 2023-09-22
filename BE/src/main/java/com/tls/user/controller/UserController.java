@@ -54,16 +54,10 @@ public class UserController {
     })
     public ResponseEntity<?> signUp(@RequestBody UserSignUpVO userDto) {
         log.info("signUp call:: {}", userDto);
-        String randomPwd = rsc.getRandomString(20);
-        boolean isSocial = false;
-        if (userDto.getUserPwd().isEmpty()) {
-            isSocial = true;
-            userDto.setUserPwd(randomPwd);
-        }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
             TokenDto tokenDto = userService.signIn(new UserSignInVO(
-                    userDto.getUserEmail(), isSocial ? randomPwd : userDto.getUserPwd(), userDto.getNotiToken()));
+                    userDto.getUserEmail(), userDto.getUserPwd(), userDto.getNotiToken()));
             if (tokenDto != null) {
                 log.debug("signin 성공");
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -136,6 +130,10 @@ public class UserController {
     })
     public ResponseEntity<?> signIn(@RequestBody UserSignInVO userSignInVO) {
         log.info("signIn call:: {} / {}", userSignInVO.getUserEmail(), userSignInVO.getUserPwd());
+        if (userSignInVO.getUserEmail().startsWith("[N]") || userSignInVO.getUserEmail().startsWith("[K]")) {
+            log.debug("유효하지 않은 이메일 -> sns 가입 계정으로 일반 로그인 시도");
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
         TokenDto tokenDto = userService.signIn(userSignInVO);
         if (tokenDto != null) {
             log.debug("signin 성공");
