@@ -2,12 +2,13 @@ package com.tls.ingredient.service;
 
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.entity.composite.UserIngr;
+import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.converter.IngredientConverter;
+import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
-import com.tls.ingredient.vo.UserIngrVO;
 import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
@@ -28,7 +29,8 @@ public class IngredientServiceImpl implements IngredientService {
     private final UserIngrRepository userIngrRepository;
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
-    private final IngredientConverter ingredientConverter = new IngredientConverter();
+    private final UserIngrLogRepository userIngrLogRepository;
+    private final IngredientConverter ingredientConverter;
 
     @Override
     public List<IngredientDto> getIngredients() {
@@ -70,18 +72,32 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientDto getIngredient(int ingrId) {
+    public IngredientDto getIngredient(String userEmail, int ingrId) {
         try {
-            return ingredientConverter.entityToDto(
-                ingrRepository.findByIngrId(ingrId).orElseThrow());
+            if (userEmail != null) {
+                return ingredientConverter.entityToDto(userEmail,
+                    ingrRepository.findByIngrId(ingrId).orElseThrow());
+            } else {
+                return ingredientConverter.entityToDto(
+                    ingrRepository.findByIngrId(ingrId).orElseThrow());
+            }
         } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public int selectIngredient(UserIngrVO userIngrVO) {
-        return 0;
+    public int selectIngredient(String userEmail, IngredientVO ingredientVO) {
+        try {
+            UserIngrLog userIngrLog = UserIngrLog.builder()
+                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
+                .ingrId(ingrRepository.findByIngrId(ingredientVO.getIngrId()).orElseThrow())
+                .build();
+            userIngrLogRepository.save(userIngrLog);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     @Override

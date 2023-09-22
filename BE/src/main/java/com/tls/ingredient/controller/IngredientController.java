@@ -3,7 +3,6 @@ package com.tls.ingredient.controller;
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.service.IngredientService;
 import com.tls.ingredient.vo.IngredientVO;
-import com.tls.ingredient.vo.UserIngrVO;
 import com.tls.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -60,14 +60,29 @@ public class IngredientController {
 
     @GetMapping("/detail/{ingrId}")
     @Operation(summary = "소분류를 조회하는 메서드", description = "소분류 ID로 해당 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredient(int ingrId) {
-        log.info("getIngredient call :: ");
-        IngredientDto ingredientDto = ingredientService.getIngredient(ingrId);
-        if (ingredientDto != null) {
-            return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
-        } else {
+    public ResponseEntity<?> getIngredient(
+        @RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
+        @PathVariable(name = "ingrId") int ingrId) {
+        log.info("getIngredient call :: {}", ingrId);
+        try {
+            IngredientDto ingredientDto;
+            if (tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                    .getName();
+                ingredientDto = ingredientService.getIngredient(userEmail, ingrId);
+            } else {
+                ingredientDto = ingredientService.getIngredient(null, ingrId);
+            }
+
+            if (ingredientDto != null) {
+                return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
+
     }
 
     @GetMapping("/best")
@@ -84,14 +99,23 @@ public class IngredientController {
 
     @PostMapping("/selected")
     @Operation(summary = "소분류 선택 반영 메서드", description = "사용자가 특정 소분류를 선택한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> selectIngredient(UserIngrVO userIngrVO) {
-        log.info("selectIngredient call :: ");
-        int n = ingredientService.selectIngredient(userIngrVO);
-        if (n == 1) {
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
+    public ResponseEntity<?> selectIngredient(
+        @RequestHeader("Authorization") String tokenWithPrefix,
+        @RequestBody IngredientVO ingredientVO) {
+        try {
+            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                .getName();
+            log.info("selectIngredient call :: {} : {}", userEmail, ingredientVO.getIngrId());
+            int n = ingredientService.selectIngredient(userEmail, ingredientVO);
+            if (n == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("unauthorization", HttpStatus.OK);
         }
+
     }
 
     @PostMapping("/dislike")

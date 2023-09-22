@@ -12,8 +12,8 @@ public interface ItemService {
 
     ItemDto viewItem(long itemId);
 
-    int dislikeItem(ItemVO itemVO);
+    int dislikeItem(String userEmail, ItemVO itemVO);
 
-    int selectItem(ItemVO itemVO);
+    int selectItem(String userEmail, ItemVO itemVO);
 
 }

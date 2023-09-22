@@ -11,6 +11,6 @@ public class IngredientDto {
     String ingrName;
     String subCategory;
     String category;
-    
+    boolean savedIngredient;
     // 가격 정보
 }
