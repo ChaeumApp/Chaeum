@@ -33,12 +33,17 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientConverter ingredientConverter;
 
     @Override
-    public List<IngredientDto> getIngredients() {
+    public List<IngredientDto> getIngredients(String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
-            ingrRepository.findAll().orElseThrow().forEach(ingredient ->
-                results.add(ingredientConverter.entityToDto(ingredient))
-            );
+            if(userEmail != null){
+                ingrRepository.findAll().orElseThrow().forEach(ingredient ->
+                    results.add(ingredientConverter.entityToDto(userEmail, ingredient))
+                );
+            } else{
+                ingrRepository.findAll().orElseThrow().forEach(ingredient ->
+                    results.add(ingredientConverter.entityToDto(ingredient)));
+            }
         } catch (Exception e) {
             return null;
         }
