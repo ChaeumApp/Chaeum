@@ -1,12 +1,17 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:dio/dio.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WebviewPage extends StatefulWidget {
 
-  const WebviewPage({super.key});
+  const WebviewPage({super.key, this.url, this.itemId});
+  final url;
+  final itemId;
 
   @override
   State<WebviewPage> createState() => _WebviewPageState();
@@ -60,6 +65,28 @@ class _WebviewPageState extends State<WebviewPage> {
   }
 
 
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+
+  Future<dynamic> purchaseItem(itemId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/item/purchased', data: {'itemId' : itemId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -108,6 +135,8 @@ class _WebviewPageState extends State<WebviewPage> {
                     webViewController = controller;
                     controller.addJavaScriptHandler(handlerName: 'onButtonClick', callback: (args){
                       print('Button Clicked: $args');
+                      // 뭐샀는지 넣어줘야함!!!!!
+                      purchaseItem(1);
                     });
                   },
                   onLoadStart: (controller, url) {

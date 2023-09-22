@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../webview/webview.dart';
 
@@ -28,15 +30,22 @@ class _MainBestState extends State<MainBest> {
   }
   // 상품 클릭하는거
   // 상품아이디!!!!!
-  Future<dynamic> clickItem() async {
-    try {
-      final response = await dio.get('$serverURL/item/selected');
-      return response.data;
-    } catch (e) {
-      print(e);
+  Future<dynamic> clickItem(itemId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
-
 
 
   @override
@@ -167,10 +176,9 @@ class _MainBestState extends State<MainBest> {
                     itemBuilder: (c, i) {
                       return GestureDetector(
                         onTap: (){
-                          // 상품클릭함수 추가해야할거있음!!!
-                          clickItem();
-                          // 웹뷰페이지에 전달하는 주소도!!
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                          clickItem(ranking[i]['rank']);
+                          // 웹뷰페이지에 전달하는 주소도!! 아이템아이디도 보내야됨!!!!!
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
                         },
                         child: Container(
                           width: 120,
