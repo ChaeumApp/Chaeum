@@ -1,5 +1,6 @@
 import 'package:fe/store/userstore.dart';
 import 'package:fe/user/addinfo.dart';
+import 'package:fe/user/findpassword.dart';
 import 'package:fe/user/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,7 +126,10 @@ class _LogInState extends State<LogIn> {
                                             final response =
                                                 await pageapi.login(
                                                     controller.text.toString(),
-                                                    controller2.text
+                                                    controller2.text,
+                                                    context
+                                                        .read<UserStore>()
+                                                        .deviceToken
                                                         .toString());
                                             if (response["accessToken"] !=
                                                 null) {
@@ -136,14 +140,15 @@ class _LogInState extends State<LogIn> {
                                               await widget.storage.write(
                                                   key: "login",
                                                   value:
-                                                      "accessToken $accessToken refreshToken $refreshToken");
+                                                      "accessToken $accessToken refreshToken $refreshToken id ${controller.text.toString()}");
 
                                               print('여기는 로그인 버튼');
-                                              print(widget.storage);
-                                              await context
+                                              final kkk = await context
                                                   .read<UserStore>()
-                                                  .changeUserInfo(
-                                                      controller.text);
+                                                  .changeAccessToken(
+                                                      accessToken);
+                                              print(
+                                                  'kkk${context.read<UserStore>().accessToken}');
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
@@ -187,11 +192,15 @@ class _LogInState extends State<LogIn> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       GestureDetector(
-                                        child: Text('아이디 찾기'),
-                                      ),
-                                      Text(' | '),
-                                      GestureDetector(
                                         child: Text('비밀번호 찾기'),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          FindPassword()));
+                                        },
                                       ),
                                     ]),
                               ),
@@ -228,12 +237,16 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token =
                                                         await UserApi.instance
                                                             .loginWithKakaoTalk();
-                                                    final sociallogininfo = {
-                                                      'accesstoken': 'lll'
-                                                    };
+                                                    print(token.accessToken);
+                                                    final sociallogininfo =
+                                                        await pageapi
+                                                            .kakaologin(token
+                                                                .accessToken);
                                                     if (sociallogininfo
-                                                        .containsKey(
-                                                            'accessToken')) {
+                                                            is Map &&
+                                                        sociallogininfo
+                                                            .containsKey(
+                                                                'accessToken')) {
                                                       final accessToken =
                                                           sociallogininfo[
                                                               'accessToken'];
@@ -244,6 +257,16 @@ class _LogInState extends State<LogIn> {
                                                           key: "login",
                                                           value:
                                                               "accessToken $accessToken refreshToken $refreshToken");
+                                                      print(widget.storage
+                                                          .read(key: "login"));
+
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                Main()),
+                                                      );
                                                     } else {
                                                       Navigator.push(
                                                         context,
@@ -252,7 +275,9 @@ class _LogInState extends State<LogIn> {
                                                                     context) =>
                                                                 AddInfo(
                                                                     user:
-                                                                        sociallogininfo)),
+                                                                        sociallogininfo,
+                                                                    storage: widget
+                                                                        .storage)),
                                                       );
                                                     }
                                                     print(token.accessToken);
@@ -274,12 +299,16 @@ class _LogInState extends State<LogIn> {
                                                       OAuthToken token =
                                                           await UserApi.instance
                                                               .loginWithKakaoAccount();
-                                                      final sociallogininfo = {
-                                                        'accesstoken': 'lll'
-                                                      };
+                                                      print(token.accessToken);
+                                                      final sociallogininfo =
+                                                          await pageapi
+                                                              .kakaologin(token
+                                                                  .accessToken);
                                                       if (sociallogininfo
-                                                          .containsKey(
-                                                              'accessToken')) {
+                                                              is Map &&
+                                                          sociallogininfo
+                                                              .containsKey(
+                                                                  'accessToken')) {
                                                         final accessToken =
                                                             sociallogininfo[
                                                                 'accessToken'];
@@ -290,6 +319,18 @@ class _LogInState extends State<LogIn> {
                                                             key: "login",
                                                             value:
                                                                 "accessToken $accessToken refreshToken $refreshToken");
+                                                        print(widget.storage
+                                                            .read(
+                                                                key: "login"));
+
+                                                        Navigator
+                                                            .pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  Main()),
+                                                        );
                                                       } else {
                                                         Navigator.push(
                                                           context,
@@ -298,7 +339,10 @@ class _LogInState extends State<LogIn> {
                                                                       context) =>
                                                                   AddInfo(
                                                                       user:
-                                                                          sociallogininfo)),
+                                                                          sociallogininfo,
+                                                                      storage:
+                                                                          widget
+                                                                              .storage)),
                                                         );
                                                       }
                                                       print(token.accessToken);
@@ -318,12 +362,11 @@ class _LogInState extends State<LogIn> {
                                                         await pageapi
                                                             .kakaologin(token
                                                                 .accessToken);
-                                                    print(
-                                                        'ggggg$sociallogininfo');
-
                                                     if (sociallogininfo
-                                                        .containsKey(
-                                                            'accessToken')) {
+                                                            is Map &&
+                                                        sociallogininfo
+                                                            .containsKey(
+                                                                'accessToken')) {
                                                       final accessToken =
                                                           sociallogininfo[
                                                               'accessToken'];
@@ -334,6 +377,16 @@ class _LogInState extends State<LogIn> {
                                                           key: "login",
                                                           value:
                                                               "accessToken $accessToken refreshToken $refreshToken");
+                                                      print(widget.storage
+                                                          .read(key: "login"));
+
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                Main()),
+                                                      );
                                                     } else {
                                                       Navigator.push(
                                                         context,
@@ -342,7 +395,9 @@ class _LogInState extends State<LogIn> {
                                                                     context) =>
                                                                 AddInfo(
                                                                     user:
-                                                                        sociallogininfo)),
+                                                                        sociallogininfo,
+                                                                    storage: widget
+                                                                        .storage)),
                                                       );
                                                     }
                                                     print(token.accessToken);
@@ -374,13 +429,58 @@ class _LogInState extends State<LogIn> {
                                               ),
                                               onTap: () async {
                                                 try {
-                                                  final NaverLoginResult user =
+                                                  final NaverLoginResult res =
                                                       await FlutterNaverLogin
                                                           .logIn();
-                                                  NaverAccessToken res =
+                                                  // print('이건$res');
+                                                  NaverAccessToken nlog =
                                                       await FlutterNaverLogin
                                                           .currentAccessToken;
-                                                  print(res.accessToken);
+                                                  print('저건$nlog');
+
+                                                  final token =
+                                                      nlog.accessToken;
+                                                  print(token);
+                                                  final sociallogininfo =
+                                                      await pageapi
+                                                          .naverlogin(token);
+                                                  print(sociallogininfo);
+                                                  if (sociallogininfo
+                                                      .containsKey(
+                                                          'accessToken')) {
+                                                    final accessToken =
+                                                        sociallogininfo[
+                                                            'accessToken'];
+                                                    final refreshToken =
+                                                        sociallogininfo[
+                                                            'refreshToken'];
+                                                    await widget.storage.write(
+                                                        key: "login",
+                                                        value:
+                                                            "accessToken $accessToken refreshToken $refreshToken id ${sociallogininfo["userEmail"]}");
+                                                    print(widget.storage
+                                                        .read(key: "login"));
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Main()),
+                                                    );
+                                                  } else {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              AddInfo(
+                                                                user:
+                                                                    sociallogininfo,
+                                                                storage: widget
+                                                                    .storage,
+                                                              )),
+                                                    );
+                                                  }
                                                 } catch (error) {
                                                   print(
                                                       'naver login error $error');
@@ -405,7 +505,10 @@ class _LogInState extends State<LogIn> {
                                               MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
-                                                          SignUp()),
+                                                          SignUp(
+                                                            storage:
+                                                                widget.storage,
+                                                          )),
                                             );
                                           },
                                           child: Text(
