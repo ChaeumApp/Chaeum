@@ -74,16 +74,11 @@ class PageApi {
     }
   }
 
-  Future<dynamic> getinfo(id, token) async {
-    print(id);
-    print(id.runtimeType);
+  Future<dynamic> getinfo(token) async {
     print(token);
     print(token.runtimeType);
     try {
       final response = await dio.post('$serverURL/user/mypage',
-          data: {
-            'userEmail': id,
-          },
           options: Options(
             headers: {
               'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함

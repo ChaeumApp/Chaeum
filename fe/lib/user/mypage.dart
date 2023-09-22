@@ -18,7 +18,10 @@ class MyPage extends StatefulWidget {
   State<MyPage> createState() => _MyPageState();
 }
 
-class _MyPageState extends State<MyPage> {
+class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final PageApi pageapi = PageApi();
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
@@ -287,8 +290,8 @@ class _MyPageState extends State<MyPage> {
     print('이게 토큰');
     print(context.read<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
-    final info = await pageapi.getinfo(context.read<UserStore>().userId,
-        token.toString().split(" ")[1].toString());
+    final info =
+        await pageapi.getinfo(token.toString().split(" ")[1].toString());
   }
 
   @override
