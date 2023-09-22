@@ -13,4 +13,5 @@ public class RecipeDto {
     String recipeLink;
     List<String> recipeProcess;
     List<String[]> recipeIngredients;
+    boolean savedRecipe;
 }

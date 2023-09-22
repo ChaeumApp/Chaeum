@@ -50,21 +50,14 @@ public class UserController {
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "회원가입 성공하면 ok 를 반환한다.")
+            @ApiResponse(responseCode = "200", description = "회원가입 성공하면 ok 를 반환한다.")
     })
     public ResponseEntity<?> signUp(@RequestBody UserSignUpVO userDto) {
         log.info("signUp call:: {}", userDto);
-        String randomPwd = rsc.getRandomString(20);
-        boolean isSocial = false;
-        if (userDto.getUserPwd().isEmpty()) {
-            isSocial = true;
-            userDto.setUserEmail("[S]"+userDto.getUserEmail());
-            userDto.setUserPwd(randomPwd);
-        }
         int resultCode = userService.signUp(userDto);
         if (resultCode == 200) {
             TokenDto tokenDto = userService.signIn(new UserSignInVO(
-                userDto.getUserEmail(), isSocial ? randomPwd : userDto.getUserPwd(), userDto.getNotiToken()));
+                    userDto.getUserEmail(), userDto.getUserPwd(), userDto.getNotiToken()));
             if (tokenDto != null) {
                 log.debug("signin 성공");
                 return new ResponseEntity<>(tokenDto, HttpStatus.OK);
@@ -80,7 +73,7 @@ public class UserController {
     @GetMapping("/oAuth/naver")
     @Operation(summary = "네이버 로그인 메서드", description = "네이버 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
     })
     public ResponseEntity<?> signUpN(@RequestParam(name = "token") String token) {
         try {
@@ -99,15 +92,15 @@ public class UserController {
                 return ResponseEntity.ok(vo);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("fail", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
 
     @GetMapping("/oAuth/kakao")
     @Operation(summary = "카카오 로그인 메서드", description = "카카오 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
-        @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
+            @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
     })
     public ResponseEntity<?> signUpK(@RequestParam(name = "token") String token) {
         try {
@@ -133,10 +126,14 @@ public class UserController {
     @PostMapping("/signin")
     @Operation(summary = "로그인 메서드", description = "유저 정보를 넘겨주면 로그인을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "로그인에 성공하면 success 를 반환한다.\n로그인에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> signIn(@RequestBody UserSignInVO userSignInVO) {
         log.info("signIn call:: {} / {}", userSignInVO.getUserEmail(), userSignInVO.getUserPwd());
+        if (userSignInVO.getUserEmail().startsWith("[N]") || userSignInVO.getUserEmail().startsWith("[K]")) {
+            log.debug("유효하지 않은 이메일 -> sns 가입 계정으로 일반 로그인 시도");
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
         TokenDto tokenDto = userService.signIn(userSignInVO);
         if (tokenDto != null) {
             log.debug("signin 성공");
@@ -150,7 +147,7 @@ public class UserController {
     @PostMapping("/signout")
     @Operation(summary = "로그아웃 메서드", description = "유저 정보를 넘겨주면 로그아웃을 시도한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "success")
+            @ApiResponse(responseCode = "200", description = "success")
     })
     public ResponseEntity<?> signOut(@RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("signOut call");
@@ -173,7 +170,7 @@ public class UserController {
     @GetMapping("/checkemail")
     @Operation(summary = "이메일 중복 확인 메서드", description = "이메일을 주면 중복된 이메일인지 확인하는 메서드", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "success/fail 사용가능/불가능 여부 반환한다.")
+            @ApiResponse(responseCode = "200", description = "success/fail 사용가능/불가능 여부 반환한다.")
     })
     public ResponseEntity<String> checkEmail(@RequestParam String userEmail) {
         log.info("checkEmail call :: {}", userEmail);
@@ -190,15 +187,15 @@ public class UserController {
     @PutMapping
     @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
-            + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
-            + "업데이트에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
+                    + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
+                    + "업데이트에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> updateUserInfo(@RequestBody UserSignUpVO userVO,
-        @RequestHeader("Authorization") String tokenWithPrefix) {
+                                            @RequestHeader("Authorization") String tokenWithPrefix) {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
-            tokenWithPrefix.substring(7));
+                tokenWithPrefix.substring(7));
         log.info("findUserPwd call :: {}", authentication.getName());
         int responseCode = userService.updateUserInfo(authentication.getName(), userVO);
         if (responseCode == 1) {
@@ -211,15 +208,15 @@ public class UserController {
     @PutMapping("/pwd")
     @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
-            + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
-            + "업데이트에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
+                    + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
+                    + "업데이트에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> updateUserPwd(@RequestBody UserPwdVO userPwdVO,
-        @RequestHeader("Authorization") String tokenWithPrefix) {
+                                           @RequestHeader("Authorization") String tokenWithPrefix) {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
-            tokenWithPrefix.substring(7));
+                tokenWithPrefix.substring(7));
         log.info("findUserPwd call :: {}", authentication.getName());
         int responseCode = userService.updateUserPwd(authentication.getName(), userPwdVO);
         if (responseCode == 1) {
@@ -232,14 +229,14 @@ public class UserController {
     @PostMapping(value = "/find/pwd")
     @Operation(summary = "비밀번호 찾기 메서드", description = "이메일과 생년월일을 입력하면 해당 이메일로 임시비밀번호를 발급해준다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
-            + "생일과 이메일이 일치하지 않으면 unauthorized 를 반환한다.\n"
-            + "업데이트에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
+                    + "생일과 이메일이 일치하지 않으면 unauthorized 를 반환한다.\n"
+                    + "업데이트에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
         log.info("findUserPwd call :: {}", userDto.getUserBirthday());
         int resultCode = userService.findUserPwd(userDto.getUserEmail(),
-          new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
+                new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {
@@ -252,8 +249,8 @@ public class UserController {
     @PostMapping("/auth/sendEmail")
     @Operation(summary = "이메일 인증 코드 전송 메서드", description = "회원가입을 위한 이메일 입력시 해당 이메일로 인증번호를 전송해준다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송에 성공하면 success 를 반환한다.\n"
-            + "이메일 인증 코드 전송에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "이메일 인증 코드 전송에 성공하면 success 를 반환한다.\n"
+                    + "이메일 인증 코드 전송에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> sendEmailAuth(@RequestBody UserEmailVO userEmail) {
         log.info("sendEmailAuth call :: sending email to : {}", userEmail);
@@ -269,12 +266,12 @@ public class UserController {
     @PostMapping("/auth/checkEmail/{code}")
     @Operation(summary = "이메일 인증번호 검증 메서드", description = "회원가입 시 이메일로 전송된 인증번호를 검증한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "이메일 인증에 성공하면 success 를 반환한다.\n"
-            + "이메일 인증 코드가 일치하지 않을 경우 unauthorized 를 반환한다.\n"
-            + "서버 오류 발생 시 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "이메일 인증에 성공하면 success 를 반환한다.\n"
+                    + "이메일 인증 코드가 일치하지 않을 경우 unauthorized 를 반환한다.\n"
+                    + "서버 오류 발생 시 fail 을 반환한다.")
     })
     public ResponseEntity<?> checkEmailAuth(@RequestBody UserEmailVO userEmail,
-        @PathVariable("code") int code) {
+                                            @PathVariable("code") int code) {
         log.info("checkEmailAuth call :: email : {} , code : {}", userEmail, code);
         int resultCode = userService.checkEmailAuthCode(userEmail.getUserEmail(), code);
         return getResponseEntity(resultCode);
@@ -283,9 +280,9 @@ public class UserController {
     @PostMapping("/auth/checktoken")
     @Operation(summary = "토큰 유효성 검사 메서드", description = "토큰 정보를 주면 유효성을 검사한다.", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "토큰 검증에 성공하면 success 를 반환한다.\n"
-            + "토큰이 유효하지 않을 경우 unauthorized 를 반환한다.\n"
-            + "서버 오류 발생 시 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "토큰 검증에 성공하면 success 를 반환한다.\n"
+                    + "토큰이 유효하지 않을 경우 unauthorized 를 반환한다.\n"
+                    + "서버 오류 발생 시 fail 을 반환한다.")
     })
     public ResponseEntity<?> checkToken(@RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("checkToken call");
@@ -303,16 +300,16 @@ public class UserController {
     @DeleteMapping
     @Operation(summary = "회원탈퇴 메서드", description = "회원 탈퇴를 위한 메서드", tags = "유저 API")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "회원 탈퇴에 성공하면 success 를 반환한다.\n"
-            + "Token정보와 Email 주소가 않을 경우 unauthorized 를 반환한다.\n"
-            + "서버 오류 발생 시 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴에 성공하면 success 를 반환한다.\n"
+                    + "Token정보와 Email 주소가 않을 경우 unauthorized 를 반환한다.\n"
+                    + "서버 오류 발생 시 fail 을 반환한다.")
     })
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String tokenWithPrefix,
-        @RequestBody UserEmailVO userEmail) {
+                                        @RequestBody UserEmailVO userEmail) {
         log.info("deleteUser call :: {}", userEmail);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(
-            tokenWithPrefix.substring(7));
+                tokenWithPrefix.substring(7));
         if (userEmail.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
             int resultCode = userService.deleteUser(userEmail.getUserEmail());
             if (resultCode == 1) { // 회원정보 삭제 성공했으면 로그아웃 처리 후 반환
@@ -333,24 +330,19 @@ public class UserController {
     @PostMapping(value = "/mypage")
     @Operation(summary = "회원정보 조회 메서드", description = "회원 정보 조회를 위한 메서드", tags = "유저 API")
     @ApiResponse(responseCode = "200", description = "조회에 성공하면 좋아요한 레시피, 좋아요 한 식재료 를 반환한다.\n"
-        + "조회에 실패하면 fail 을 반환한다.\n"
-        + "요청한 Email 정보와 Header 의 토큰 정보가 일치하지 않으면 unauthorized 를 반환한다.")
-    public ResponseEntity<?> readProfile(@RequestBody UserEmailVO userIdVO,
-        @RequestHeader("Authorization") String tokenWithPrefix) {
-        log.info("회원정보 조회 call :: {}", userIdVO.toString());
+            + "조회에 실패하면 fail 을 반환한다.\n"
+            + "요청한 Email 정보와 Header 의 토큰 정보가 일치하지 않으면 unauthorized 를 반환한다.")
+    public ResponseEntity<?> readProfile(@RequestHeader("Authorization") String tokenWithPrefix) {
+        log.info("회원정보 조회 call ::");
 
         try {
             Authentication authentication = jwtTokenProvider.getAuthentication(
-                tokenWithPrefix.substring(7));
-            if (userIdVO.getUserEmail().equals(authentication.getName())) { // 만약 인증 정보와 일치하면
-                UserProfileDto userProfileDto = userService.readProfile(userIdVO.getUserEmail());
-                if (userProfileDto != null) {
-                    return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
-                } else {
-                    return getResponseEntity(-1);
-                }
+                    tokenWithPrefix.substring(7));
+            UserProfileDto userProfileDto = userService.readProfile(authentication.getName());
+            if (userProfileDto != null) {
+                return new ResponseEntity<>(userProfileDto, HttpStatus.OK);
             } else {
-                return getResponseEntity(0);
+                return getResponseEntity(-1);
             }
         } catch (Exception e) {
             return getResponseEntity(-1);

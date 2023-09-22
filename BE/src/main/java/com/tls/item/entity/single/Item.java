@@ -24,16 +24,16 @@ public class Item {
 
     @Id
     @Column(name = "item_id")
-    private long item_id;
+    private long itemId;
 
     @Column(name = "item_name")
-    private String item_name;
+    private String itemName;
 
     @Column(name = "item_image")
-    private String item_image;
+    private String itemImage;
 
     @Column(name = "item_price")
-    private int item_price;
+    private int itemPrice;
 
     @Column(name = "item_store")
     private String itemStore;

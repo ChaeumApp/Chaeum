@@ -1,16 +1,33 @@
+import 'package:fe/main.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:fe/user/pageapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:provider/provider.dart';
 
 class AddInfo extends StatefulWidget {
-  AddInfo({super.key, this.user});
+  AddInfo({super.key, this.user, this.storage});
   final user;
+  final storage;
 
   @override
   State<AddInfo> createState() => _AddInfoState();
+}
+
+class _AddInfoState extends State<AddInfo> {
+  final PageApi pageapi = PageApi();
+  TextEditingController controller = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
+  TextEditingController controller3 = TextEditingController();
   String? birthday;
   String? gender;
+  List<String> genderList = [
+    '남성',
+    '여성',
+  ];
+  String selectedGender = '남성';
+  String selectedGenderString = 'm';
   List<String> veganList = [
     'none',
     'vegan',
@@ -22,6 +39,7 @@ class AddInfo extends StatefulWidget {
     'flexi',
   ];
   String selectedVegan = 'none';
+  int selectedVeganNumber = 0;
   List<String> allergieList = ['없음', '있음'];
   String havAllergie = '없음';
   List<dynamic> allergieNameList = [
@@ -43,18 +61,41 @@ class AddInfo extends StatefulWidget {
     '오징어',
     '조개류'
   ];
-
   List<Object?> selectedAllergie = [];
-}
-
-class _AddInfoState extends State<AddInfo> {
-  final PageApi pageapi = PageApi();
-  TextEditingController controller = TextEditingController();
-  TextEditingController controller2 = TextEditingController();
+  List<dynamic> selectedAllergieNumber = [];
 
   bool algdropdown = false;
-  bool birthcheck = false;
-  bool gendercheck = false;
+
+  bool yearcheck = false;
+  bool monthcheck = false;
+  bool daycheck = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.user['userGender'] == "f") {
+      setState(() {
+        selectedGender = '여성';
+      });
+      selectedGenderString = 'f';
+    }
+
+    if (widget.user.containsKey('birth')) {
+      print('ggggg');
+      setState(() {
+        print('111');
+        controller.text = widget.user['birth'].toString().substring(0, 4);
+        if (controller.text != '0000') {
+          yearcheck = true;
+        }
+        controller2.text = widget.user['birth'].toString().substring(4, 6);
+        monthcheck = true;
+        controller3.text = widget.user['birth'].toString().substring(6, 8);
+        daycheck = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,39 +140,39 @@ class _AddInfoState extends State<AddInfo> {
                 ),
               ),
               Text(
-                '생년월일 및 성별',
+                '생년월일',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 40),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textBaseline: TextBaseline.ideographic,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
                     Flexible(
-                        fit: FlexFit.tight,
-                        flex: 4,
+                        flex: 3,
                         child: TextField(
-                          maxLength: 6,
+                          maxLength: 4,
                           onChanged: (value) {
                             if (!RegExp(
-                                    r"^\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$")
+                                    r"^(19[0-9][0-9]|20[01][0-9]|202[0-3])$")
                                 .hasMatch(value)) {
                               setState(() {
-                                birthcheck = false;
-                                print(birthcheck);
+                                yearcheck = false;
+                                print(yearcheck);
                               });
                             } else {
                               setState(() {
-                                birthcheck = true;
-                                print(birthcheck);
+                                yearcheck = true;
+                                print(yearcheck);
                               });
                             }
                           },
                           controller: controller,
                           cursorColor: Color(0xffA1CBA1),
                           decoration: InputDecoration(
-                              enabledBorder: birthcheck
+                              enabledBorder: yearcheck
                                   ? UnderlineInputBorder(
                                       borderSide: BorderSide(
                                           width: 1.5, color: Colors.black),
@@ -142,7 +183,7 @@ class _AddInfoState extends State<AddInfo> {
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1.5,
-                                    color: birthcheck
+                                    color: yearcheck
                                         ? Color(0xffA1CBA1)
                                         : Colors.red),
                               ),
@@ -153,34 +194,33 @@ class _AddInfoState extends State<AddInfo> {
                               focusColor: Color(0xffA1CBA1)),
                         )),
                     Flexible(
-                        fit: FlexFit.tight,
-                        flex: 2,
-                        child: Text(
-                          'ㅡ',
-                          textAlign: TextAlign.center,
-                        )),
+                        child: Text(' 년 ',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                            ))),
                     Flexible(
-                        fit: FlexFit.tight,
-                        flex: 1,
+                        flex: 2,
                         child: TextField(
+                          maxLength: 2,
                           onChanged: (value) {
-                            if (!RegExp(r"^[1-4]$").hasMatch(value)) {
+                            if (!RegExp(r"^(0?[1-9]|1[0-2])$")
+                                .hasMatch(value)) {
                               setState(() {
-                                gendercheck = false;
-                                print(gendercheck);
+                                monthcheck = false;
+                                print(monthcheck);
                               });
                             } else {
                               setState(() {
-                                gendercheck = true;
-                                print(gendercheck);
+                                monthcheck = true;
+                                print(monthcheck);
                               });
                             }
                           },
-                          maxLength: 1,
-                          cursorColor: Color(0xffA1CBA1),
                           controller: controller2,
+                          cursorColor: Color(0xffA1CBA1),
                           decoration: InputDecoration(
-                              enabledBorder: gendercheck
+                              enabledBorder: monthcheck
                                   ? UnderlineInputBorder(
                                       borderSide: BorderSide(
                                           width: 1.5, color: Colors.black),
@@ -191,7 +231,7 @@ class _AddInfoState extends State<AddInfo> {
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1.5,
-                                    color: gendercheck
+                                    color: monthcheck
                                         ? Color(0xffA1CBA1)
                                         : Colors.red),
                               ),
@@ -202,13 +242,92 @@ class _AddInfoState extends State<AddInfo> {
                               focusColor: Color(0xffA1CBA1)),
                         )),
                     Flexible(
-                        fit: FlexFit.tight,
-                        flex: 3,
-                        child: Text(
-                          ' * * * * * *',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w700),
-                        ))
+                        child: Text(' 월 ',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                            ))),
+                    Flexible(
+                        flex: 2,
+                        child: TextField(
+                          onChanged: (value) {
+                            if (!RegExp(r"^(0?[1-9]|[12][0-9]|3[01])$")
+                                .hasMatch(value)) {
+                              setState(() {
+                                daycheck = false;
+                              });
+                            } else {
+                              setState(() {
+                                daycheck = true;
+                              });
+                            }
+                          },
+                          maxLength: 2,
+                          cursorColor: Color(0xffA1CBA1),
+                          controller: controller3,
+                          decoration: InputDecoration(
+                              enabledBorder: daycheck
+                                  ? UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1.5, color: Colors.black),
+                                    )
+                                  : OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 2, color: Colors.red)),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1.5,
+                                    color: daycheck
+                                        ? Color(0xffA1CBA1)
+                                        : Colors.red),
+                              ),
+                              isDense: true,
+                              counterText: '',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 10.0),
+                              focusColor: Color(0xffA1CBA1)),
+                        )),
+                    Flexible(
+                        child: Text(' 일 ',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                            ))),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '성별',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    DropdownButton(
+                      alignment: Alignment.bottomLeft,
+                      value: selectedGender,
+                      items: genderList.map((String item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          selectedGender = value;
+                        });
+                        if (selectedGender == '남자') {
+                          selectedGenderString = 'm';
+                        } else {
+                          selectedGenderString = 'f';
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -231,8 +350,8 @@ class _AddInfoState extends State<AddInfo> {
                           ),
                           DropdownButton(
                             alignment: Alignment.bottomLeft,
-                            value: widget.selectedVegan,
-                            items: widget.veganList.map((String item) {
+                            value: selectedVegan,
+                            items: veganList.map((String item) {
                               return DropdownMenuItem<String>(
                                 value: item,
                                 child: Text(item),
@@ -240,8 +359,13 @@ class _AddInfoState extends State<AddInfo> {
                             }).toList(),
                             onChanged: (dynamic value) {
                               setState(() {
-                                widget.selectedVegan = value;
+                                selectedVegan = value;
                               });
+                              for (int i = 0; i < veganList.length; i++) {
+                                if (veganList[i] == selectedVegan) {
+                                  selectedVeganNumber = i;
+                                }
+                              }
                             },
                           ),
                         ],
@@ -260,8 +384,8 @@ class _AddInfoState extends State<AddInfo> {
                           ),
                           DropdownButton(
                             alignment: Alignment.bottomLeft,
-                            value: widget.havAllergie,
-                            items: widget.allergieList.map((String item) {
+                            value: havAllergie,
+                            items: allergieList.map((String item) {
                               return DropdownMenuItem<String>(
                                 value: item,
                                 child: Text(item),
@@ -269,14 +393,14 @@ class _AddInfoState extends State<AddInfo> {
                             }).toList(),
                             onChanged: (dynamic value) {
                               setState(() {
-                                widget.havAllergie = value;
+                                havAllergie = value;
                               });
                               if (value == '있음') {
                                 setState(() {
                                   algdropdown = true;
                                 });
-                                print(widget.havAllergie);
-                                print(widget.havAllergie.runtimeType);
+                                print(havAllergie);
+                                print(havAllergie.runtimeType);
                               } else {
                                 setState(() {
                                   algdropdown = false;
@@ -314,27 +438,49 @@ class _AddInfoState extends State<AddInfo> {
                           searchable: true,
                           buttonText: Text("Allergy foods"),
                           title: Text(""),
-                          items: widget.allergieNameList
+                          items: allergieNameList
                               .map((allergie) =>
                                   MultiSelectItem<String>(allergie, allergie))
                               .toList(),
-                          onConfirm: (values) {
+                          onConfirm: (values) async {
                             print(values);
                             setState(() {
-                              widget.selectedAllergie = values;
+                              selectedAllergie = values;
                             });
+                            List<int> resultList = [];
+
+                            for (int i = 0; i < selectedAllergie.length; i++) {
+                              for (int j = 0;
+                                  j < allergieNameList.length;
+                                  j++) {
+                                if (selectedAllergie[i] ==
+                                    allergieNameList[j]) {
+                                  resultList.add(j);
+                                }
+                              }
+                            }
+                            selectedAllergieNumber = resultList;
+                            print(selectedAllergieNumber);
                           },
                           chipDisplay: MultiSelectChipDisplay(
                             chipColor: Color(0xffA1CBA1),
                             textStyle: TextStyle(color: Colors.white),
                             onTap: (value) {
                               setState(() {
-                                widget.selectedAllergie.remove(value);
+                                selectedAllergie.remove(value);
                               });
+                              for (int i = 0;
+                                  i < allergieNameList.length;
+                                  i++) {
+                                if (allergieNameList[i] == value) {
+                                  selectedAllergieNumber.remove(i);
+                                  print(selectedAllergieNumber);
+                                }
+                              }
                             },
                           ),
                         ),
-                        widget.selectedAllergie.isEmpty
+                        selectedAllergie.isEmpty
                             ? Container(
                                 padding: EdgeInsets.all(10),
                                 alignment: Alignment.centerLeft,
@@ -352,49 +498,64 @@ class _AddInfoState extends State<AddInfo> {
                   children: [
                     Flexible(
                       child: TextButton(
-                          onPressed: () {
-                            if (controller2.text.toString() == '1') {
-                              setState(() {
-                                widget.birthday =
-                                    '19${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
-                                widget.gender = 'm';
-                              });
-                            } else if (controller2.text.toString() == '2') {
-                              setState(() {
-                                widget.birthday =
-                                    '19${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
-                                widget.gender = 'f';
-                              });
-                            } else if (controller2.text.toString() == '3') {
-                              setState(() {
-                                widget.birthday =
-                                    '20${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
-                                widget.gender = 'm';
-                              });
-                            } else if (controller2.text.toString() == '4') {
-                              setState(() {
-                                widget.birthday =
-                                    '20${controller.text.substring(0, 2)}-${controller.text.substring(2, 4)}-${controller.text.substring(4, 6)}';
-                                widget.gender = 'f';
-                              });
-                            }
+                          onPressed: yearcheck && monthcheck && daycheck
+                              ? () async {
+                                  if (controller2.text.length == 1) {
+                                    controller2.text = '0${controller2.text}';
+                                  }
+                                  if (controller3.text.length == 1) {
+                                    controller3.text = '0${controller3.text}';
+                                  }
+                                  birthday =
+                                      '${controller.text}-${controller2.text}-${controller3.text}';
+                                  final deviceToken =
+                                      context.read<UserStore>().deviceToken;
+                                  print(widget.user['userEmail']);
+                                  print(widget.user['userPwd']);
+                                  print(birthday);
+                                  print(selectedGenderString);
+                                  print(selectedVeganNumber);
+                                  print(selectedAllergieNumber);
+                                  print(deviceToken);
 
-                            print(widget.birthday);
-                            print(widget.user);
-                            print(widget.gender);
-                            print(widget.selectedVegan);
-
-                            final response = pageapi.signup(
-                                widget.user['userEmail'],
-                                widget.user['userPwd'],
-                                widget.birthday,
-                                widget.gender,
-                                widget.selectedVegan,
-                                widget.selectedVegan);
-                          },
+                                  final loginres = await pageapi.signup(
+                                      widget.user['userEmail'].toString(),
+                                      widget.user['userPwd'].toString(),
+                                      birthday,
+                                      selectedGenderString,
+                                      selectedVeganNumber,
+                                      selectedAllergieNumber,
+                                      deviceToken.toString());
+                                  print('여기 회원가입 요청 ');
+                                  print('여기 리턴값 $loginres');
+                                  if (loginres is Map &&
+                                      loginres.containsKey('accessToken')) {
+                                    final accessToken = loginres['accessToken'];
+                                    final refreshToken =
+                                        loginres['refreshToken'];
+                                    print(accessToken);
+                                    print(refreshToken);
+                                    await widget.storage.write(
+                                        key: "login",
+                                        value:
+                                            "accessToken $accessToken refreshToken $refreshToken");
+                                    print(await widget.storage
+                                        .read(key: "login"));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Main()),
+                                    );
+                                  }
+                                }
+                              : null,
                           style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll(Color(0xffA1CBA1))),
+                              backgroundColor: yearcheck &&
+                                      monthcheck &&
+                                      daycheck
+                                  ? MaterialStatePropertyAll(Color(0xffA1CBA1))
+                                  : MaterialStatePropertyAll(Colors.grey)),
                           child: SizedBox(
                             height: 30,
                             child: Row(
