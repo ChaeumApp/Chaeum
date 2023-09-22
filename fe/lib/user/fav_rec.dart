@@ -10,10 +10,10 @@ class FavRec extends StatefulWidget {
   ];
 
   @override
-  State<FavRec> createState() => _FavFoodState();
+  State<FavRec> createState() => _FavRecState();
 }
 
-class _FavFoodState extends State<FavRec> {
+class _FavRecState extends State<FavRec> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,14 +21,10 @@ class _FavFoodState extends State<FavRec> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '좋아요한 레시피',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
           Expanded(
             child: GridView.count(
                 crossAxisCount: 2, // 열 개수
-                childAspectRatio: 7 / 5,
+                childAspectRatio: 5 / 5,
                 // mainAxisSpacing: 10,
                 // crossAxisSpacing: 25,
                 children:

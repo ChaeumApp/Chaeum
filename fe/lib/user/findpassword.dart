@@ -256,7 +256,7 @@ class _FindPasswordState extends State<FindPassword> {
                             focusColor: Color(0xffA1CBA1)),
                       )),
                   Flexible(
-                      child: Text(' 일 ',
+                      child: Text(' 일',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w400,
