@@ -13,24 +13,39 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView>{
-  var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : true};
+  var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : false};
 
 
   Dio dio = Dio(BaseOptions(
     baseUrl: 'http://j9c204.p.ssafy.io:8080',
   ));
 
+  bool isSet = false;
 
   Future<dynamic> getProductInfo() async {
     var accessToken = context.read<UserStore>().accessToken;
     try {
-      final response = await dio.get('/ingr/detail/${widget.category}',
-      queryParameters: {'ingrId' : widget.category},
-        options: Options(
-          headers: {
-            'Authorization': '$accessToken',
-          },
-        ));
+      Response response;
+      if (accessToken != '') {
+        response = await dio.get(
+          '/ingr/detail/${widget.category}',
+          queryParameters: {'ingrId' : widget.category},
+          options: Options(
+            headers: {'Authorization': '$accessToken'},
+          ),
+        );
+      } else {
+        response = await dio.get(
+          '/ingr/detail/${widget.category}',
+          queryParameters: {'ingrId' : widget.category},
+        );
+      }
+      if (!isSet) {
+        setState(() {
+          data['like'] = response.data['savedIngredient'];
+          isSet = true;
+        });
+      }
       print(response.data);
       return response.data;
     } catch (e) {
@@ -39,8 +54,27 @@ class _ProfileViewState extends State<ProfileView>{
   }
 
 
-
-  Future<bool?> toggleLike(bool isLiked) async {}
+  Future<bool?> toggleLike(bool isLiked) async {
+    bool liked = false;
+    var accessToken = context.read<UserStore>().accessToken;
+    print('카테고리임 ${widget.category}');
+    await dio.post(
+      '/ingr/favorite',
+      data: {'ingrId' : widget.category},
+      options: Options(
+        headers: {'Authorization': '$accessToken'},
+      ),
+    );
+    setState(() {
+      if (data.containsKey('like') && data['like'] is bool) {
+        data['like'] = !(data['like'] as bool);
+        liked = data['like'] as bool;
+      } else {
+        data['like'] = false;
+      }
+    });
+    return Future.value(liked);
+  }
 
 
   @override
@@ -75,7 +109,7 @@ class _ProfileViewState extends State<ProfileView>{
               Container(
                 margin: EdgeInsets.only(right: 10),
                 child: LikeButton(
-                  isLiked: snapshot.data['savedIngredient'], // 초기 좋아요 상태
+                  isLiked: data['like'] as bool,
                   onTap: (isLiked) {
                     return toggleLike(isLiked);
                   },
