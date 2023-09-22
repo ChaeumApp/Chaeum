@@ -116,8 +116,28 @@ class PageApi {
     }
   }
 
+  Future<dynamic> updateuserinfo(
+      token, selectedVeganNumber, selectedAllergieNumber) async {
+    try {
+      final response = await dio.put('$serverURL/user',
+          data: {
+            'veganId': selectedVeganNumber,
+            'allergyList': selectedAllergieNumber
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('유저 정보 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<dynamic> findPassword(id, birth) async {
-    print('$id,$birth');
     try {
       final response = await dio.post('$serverURL/user/find/pwd',
           data: {'userBirthday': birth, 'userEmail': id});
