@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserIngrVO {
-
+    String userEmail;
     int ingrId;
 }

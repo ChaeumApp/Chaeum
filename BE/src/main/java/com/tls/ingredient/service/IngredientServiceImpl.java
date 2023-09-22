@@ -9,7 +9,6 @@ import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
-import com.tls.ingredient.vo.UserIngrVO;
 import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
@@ -31,7 +30,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final UserIngrLogRepository userIngrLogRepository;
-    private final IngredientConverter ingredientConverter = new IngredientConverter();
+    private final IngredientConverter ingredientConverter;
 
     @Override
     public List<IngredientDto> getIngredients() {
@@ -73,21 +72,26 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public IngredientDto getIngredient(int ingrId) {
+    public IngredientDto getIngredient(String userEmail, int ingrId) {
         try {
-            return ingredientConverter.entityToDto(
-                ingrRepository.findByIngrId(ingrId).orElseThrow());
+            if (userEmail != null) {
+                return ingredientConverter.entityToDto(userEmail,
+                    ingrRepository.findByIngrId(ingrId).orElseThrow());
+            } else {
+                return ingredientConverter.entityToDto(
+                    ingrRepository.findByIngrId(ingrId).orElseThrow());
+            }
         } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public int selectIngredient(String userEmail, UserIngrVO userIngrVO) {
+    public int selectIngredient(String userEmail, IngredientVO ingredientVO) {
         try {
             UserIngrLog userIngrLog = UserIngrLog.builder()
                 .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                .ingrId(ingrRepository.findByIngrId(userIngrVO.getIngrId()).orElseThrow())
+                .ingrId(ingrRepository.findByIngrId(ingredientVO.getIngrId()).orElseThrow())
                 .build();
             userIngrLogRepository.save(userIngrLog);
             return 1;
