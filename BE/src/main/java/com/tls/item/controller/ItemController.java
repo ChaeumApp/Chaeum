@@ -102,5 +102,23 @@ public class ItemController {
         }
     }
 
+    @PostMapping("/purchased")
+    @Operation(summary = "상품 구매 후 호출 메서드", description = "사용자의 상품 구매 내역을 저장한다.", tags = "상품 API")
+    public ResponseEntity<?> purchaseItem(@RequestHeader("Authorization") String tokenWithPrefix, @RequestBody ItemVO itemVO) {
+        log.info("purchased Item call :: ");
+        try{
+            Authentication authentication = jwtTokenProvider.getAuthentication(
+                tokenWithPrefix.substring(7));
+            int n = itemService.purchaseItem(authentication.getName(), itemVO);
+            if (n == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e){
+            log.warn("User authentication failed");
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
 
 }
