@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import './fav_food.dart';
-import './fav_rec.dart';
 
-class FavoriteMore extends StatelessWidget {
-  FavoriteMore({super.key});
+class FavoriteMoreFood extends StatelessWidget {
+  FavoriteMoreFood({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
             title: Text(
-              '즐겨찾기',
+              '좋아하는 식재료',
               style: TextStyle(
                   fontSize: 22,
                   color: Colors.black,
                   fontWeight: FontWeight.w700),
             ),
             elevation: 0.0,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey[50],
             centerTitle: true,
-            toolbarHeight: 65),
+            toolbarHeight: 65,
+            foregroundColor: Colors.black),
         body: FavFood());
   }
 }

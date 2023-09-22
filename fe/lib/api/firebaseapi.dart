@@ -61,11 +61,12 @@ void initializeNotification(context) async {
   });
 }
 
-void getMyDeviceToken() async {
+getMyDeviceToken() async {
   final firebaseMessaging = FirebaseMessaging.instance;
   await firebaseMessaging.requestPermission();
   final token = await firebaseMessaging.getToken();
-  print("내 디바이스 토큰: $token");
+
+  return token.toString();
 }
 
 void foregroundMessage(RemoteMessage message) {
