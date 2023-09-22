@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../detail/detail.dart';
@@ -214,6 +215,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                     itemBuilder: (c, i) {
                       return InkWell(
                         onTap: () {
+                          clickIngr();
                           Navigator.push(
                               context,
                               MaterialPageRoute(
