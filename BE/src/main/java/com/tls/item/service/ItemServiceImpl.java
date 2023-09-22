@@ -10,6 +10,7 @@ import com.tls.item.repository.ItemRepository;
 import com.tls.item.repository.UserItemLogRepository;
 import com.tls.item.vo.ItemVO;
 import com.tls.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,19 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getItems(int ingrId) {
         try {
             List<ItemDto> results = new ArrayList<>();
-            itemRepository.findByIngredient(ingrRepository.findByIngrId(ingrId).orElseThrow())
+            // 가장 최근 갱신된 업데이트 날짜 가져온다.
+            LocalDate recentUpdatedDate = itemRepository.findTopByIngrIdOrderByItemCrawlingDateDesc(
+                    ingrRepository.findByIngrId(ingrId).orElseThrow())
+                .orElseThrow().get(0).getItemCrawlingDate();
+
+            itemRepository.findByIngredientAndItemCrawlingDate(
+                    ingrRepository.findByIngrId(ingrId).orElseThrow(), recentUpdatedDate)
                 .orElseThrow().forEach(item ->
                     results.add(itemConverter.entityToDto(item))
                 );
             return results;
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
