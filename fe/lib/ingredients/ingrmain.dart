@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
 import 'package:fe/detail/detail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
@@ -74,19 +75,24 @@ class _IngrMainState extends State<IngrMain> {
     }
   }
 
+  ClickApi clickApi = ClickApi();
+
 
   // 클릭
   Future<dynamic> clickIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;
     print(accessToken);
-    try {
-      final response = await dio.post('ingr/selected', data: {'ingrId' : ingrId},
-        options: Options(
-          headers: {'Authorization': '$accessToken'},
-        ),);
-      return response.data;
-    } catch (e) {
-      print(e);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/ingr/selected', data: {'ingrId' : ingrId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 

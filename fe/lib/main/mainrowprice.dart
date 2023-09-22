@@ -215,7 +215,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                     itemBuilder: (c, i) {
                       return InkWell(
                         onTap: () {
-                          clickIngr();
+                          // clickIngr();
                           Navigator.push(
                               context,
                               MaterialPageRoute(

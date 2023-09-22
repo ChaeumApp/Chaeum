@@ -16,30 +16,38 @@ class _ProfileViewState extends State<ProfileView>{
   var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : false};
 
 
-  Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://j9c204.p.ssafy.io:8080',
-  ));
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
   bool isSet = false;
 
   Future<dynamic> getProductInfo() async {
     var accessToken = context.read<UserStore>().accessToken;
+    print('토큰은 $accessToken');
     try {
-      Response response;
-      if (accessToken != '') {
-        response = await dio.get(
-          '/ingr/detail/${widget.category}',
-          queryParameters: {'ingrId' : widget.category},
-          options: Options(
-            headers: {'Authorization': '$accessToken'},
-          ),
-        );
-      } else {
-        response = await dio.get(
-          '/ingr/detail/${widget.category}',
-          queryParameters: {'ingrId' : widget.category},
-        );
-      }
+      final response = await dio.get(
+        '$serverURL/ingr/detail/${widget.category}',
+        queryParameters: {'ingrId' : widget.category},
+        options: Options(
+          headers: {'Authorization': accessToken != '' ? 'Bearer $accessToken' : ''},
+        ),
+      );
+
+      // Response response;
+      // if (accessToken != '') {
+      //   response = await dio.get(
+      //     '$serverURL/ingr/detail/${widget.category}',
+      //     queryParameters: {'ingrId' : widget.category},
+      //     options: Options(
+      //       headers: {'Authorization': 'Bearer $accessToken'},
+      //     ),
+      //   );
+      // } else {
+      //   response = await dio.get(
+      //     '$serverURL/ingr/detail/${widget.category}',
+      //     queryParameters: {'ingrId' : widget.category},
+      //   );
+      // }
       if (!isSet) {
         setState(() {
           data['like'] = response.data['savedIngredient'];
@@ -58,22 +66,26 @@ class _ProfileViewState extends State<ProfileView>{
     bool liked = false;
     var accessToken = context.read<UserStore>().accessToken;
     print('카테고리임 ${widget.category}');
-    await dio.post(
-      '/ingr/favorite',
-      data: {'ingrId' : widget.category},
-      options: Options(
-        headers: {'Authorization': '$accessToken'},
-      ),
-    );
-    setState(() {
-      if (data.containsKey('like') && data['like'] is bool) {
-        data['like'] = !(data['like'] as bool);
-        liked = data['like'] as bool;
-      } else {
-        data['like'] = false;
-      }
-    });
-    return Future.value(liked);
+    if (accessToken != ''){
+      final response =await dio.post(
+        '$serverURL/ingr/favorite',
+        data: {'ingrId' : widget.category},
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+      setState(() {
+        if (data.containsKey('like') && data['like'] is bool) {
+          data['like'] = !(data['like'] as bool);
+          liked = data['like'] as bool;
+        } else {
+          data['like'] = false;
+        }
+      });
+      return Future.value(liked);
+    } else () {
+      print('로그인이 필요합니다');
+    };
   }
 
 
