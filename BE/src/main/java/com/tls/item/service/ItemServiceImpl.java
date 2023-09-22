@@ -3,7 +3,9 @@ package com.tls.item.service;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.item.converter.ItemConverter;
 import com.tls.item.dto.ItemDto;
+import com.tls.item.entity.composite.ItemPurchaseLog;
 import com.tls.item.entity.composite.UserItemLog;
+import com.tls.item.repository.ItemPurchaseLogRepository;
 import com.tls.item.repository.ItemRepository;
 import com.tls.item.repository.UserItemLogRepository;
 import com.tls.item.vo.ItemVO;
@@ -21,6 +23,7 @@ public class ItemServiceImpl implements ItemService {
     private final IngrRepository ingrRepository;
     private final UserRepository userRepository;
     private final UserItemLogRepository userItemLogRepository;
+    private final ItemPurchaseLogRepository itemPurchaseLogRepository;
     private final ItemConverter itemConverter = new ItemConverter();
 
     @Override
@@ -64,6 +67,20 @@ public class ItemServiceImpl implements ItemService {
                 .itemId(itemRepository.findByItemId(itemVO.getItemId()).orElseThrow())
                 .build();
             userItemLogRepository.save(userItemLog);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
+    public int purchaseItem(String userEmail, ItemVO itemVO) {
+        try {
+            ItemPurchaseLog itemPurchaseLog = ItemPurchaseLog.builder()
+                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
+                .itemId(itemRepository.findByItemId(itemVO.getItemId()).orElseThrow())
+                .build();
+            itemPurchaseLogRepository.save(itemPurchaseLog);
             return 1;
         } catch (Exception e) {
             return -1;

@@ -156,7 +156,7 @@ CREATE TABLE `recipe_process_tb`
 
 CREATE TABLE `recipe_select_log_tb`
 (
-    `recipe_select_pk`	BIGINT	NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `recipe_select_pk`   BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`            INT       NOT NULL,
     `recipe_id`          INT       NOT NULL,
     `recipe_select_time` TIMESTAMP NOT NULL
@@ -164,7 +164,7 @@ CREATE TABLE `recipe_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `ingredient_select_log_tb`
 (
-    `ingr_select_pk`	BIGINT	NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ingr_select_pk`   BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `ingr_id`          INT       NOT NULL,
     `ingr_select_time` TIMESTAMP NOT NULL
@@ -220,6 +220,21 @@ CREATE TABLE `user_devtoken_tb`
     `token_id` VARCHAR(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+CREATE TABLE `item_purchased_log_tb`
+(
+    `item_purchased_log_pk` BIGINT    NOT NULL,
+    `user_id`               INT       NOT NULL,
+    `item_id`               BIGINT    NOT NULL,
+    `item_purchased_time`   TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+ DEFAULT CHARSET = utf8;
+
+ALTER TABLE `item_purchased_log_tb`
+    ADD CONSTRAINT `PK_ITEM_PURCHASED_LOG_TB`
+        PRIMARY KEY (
+            `item_purchased_log_pk`
+        );
 
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
