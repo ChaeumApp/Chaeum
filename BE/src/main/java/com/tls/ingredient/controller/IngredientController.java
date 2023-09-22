@@ -33,14 +33,27 @@ public class IngredientController {
 
     @GetMapping
     @Operation(summary = "전체 소분류를 조회하는 메서드", description = "저장된 전체 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredients() {
+    public ResponseEntity<?> getIngredients(
+        @RequestHeader(value = "Authorization", required = false) String tokenWithPrefix) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients();
-        if (ingredientDtoList != null) {
-            return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
-        } else {
+        try {
+            List<IngredientDto> ingredientDtoList;
+            if (tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                    .getName();
+                ingredientDtoList = ingredientService.getIngredients(userEmail);
+            } else {
+                ingredientDtoList = ingredientService.getIngredients(null);
+            }
+            if (ingredientDtoList != null) {
+                return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
+
     }
 
     @GetMapping("category")
