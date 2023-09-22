@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     private final UserRecipeRepository userRecipeRepository;
     private final AllergyRepository allergyRepository;
 
-    private final UserConverter userConverter = new UserConverter();
+    private final UserConverter userConverter;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -194,7 +194,7 @@ public class UserServiceImpl implements UserService {
             List<UserAllergy> userAllergyList = new ArrayList<>();
             userVO.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
-                        .userId(updateUser.get())
+                        .userId(updateUser.orElse(null))
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
@@ -202,6 +202,7 @@ public class UserServiceImpl implements UserService {
             userAllergyRepository.saveAll(userAllergyList);
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
