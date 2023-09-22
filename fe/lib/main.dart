@@ -98,9 +98,11 @@ class _MainState extends State<Main> {
     //(데이터가 없을때는 null을 반환을 합니다.)
 
     userToken = await storage.read(key: "login");
+    await context
+        .read<UserStore>()
+        .changeAccessToken(userToken.toString().split(" ")[1].toString());
 
     final devicetoken = await getMyDeviceToken();
-
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }
 
