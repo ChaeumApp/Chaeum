@@ -34,6 +34,8 @@ import 'package:provider/provider.dart';
 import 'store/userstore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import './search/detail/recipedetail.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -56,6 +58,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<LikeButtonState>(
+            create: (c) => LikeButtonState()),
         ChangeNotifierProvider(create: (c) => UserStore()),
         ChangeNotifierProvider(create: (c) => SearchStore()),
       ],
