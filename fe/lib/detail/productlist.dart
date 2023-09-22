@@ -93,8 +93,8 @@ class _ProductListState extends State<ProductList> {
                       onTap: (){
                         // 상품클릭함수 상품 나오면 전달하는거 바꿔줘!!!!
                         clickItem(index);
-                        // 웹뷰페이지에 전달하는 주소도!!
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                        // 웹뷰페이지에 전달하는 주소도!! 아이디도!!!
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -177,8 +177,8 @@ class _MainBestState extends State<MainBest> {
                       return GestureDetector(
                         onTap: (){
                           clickItem(ranking[i]['rank']);
-                          // 웹뷰페이지에 전달하는 주소도!!
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                          // 웹뷰페이지에 전달하는 주소도!! 아이템아이디도 보내야됨!!!!!
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
                         },
                         child: Container(
                           width: 120,
