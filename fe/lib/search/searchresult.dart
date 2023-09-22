@@ -14,9 +14,7 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<SearchResult> {
-
   TextEditingController word = TextEditingController();
-  String _textFieldValue = '';
 
 
   @override
@@ -32,11 +30,6 @@ class _SearchResultState extends State<SearchResult> {
     super.dispose();
   }
 
-  void _refresh(value) {
-    setState(() {
-      _textFieldValue = value;
-    });
-  }
 
 
   @override
@@ -58,8 +51,10 @@ class _SearchResultState extends State<SearchResult> {
                 onSubmitted: (value){
                   context.read<UserStore>().addSearchList(value);
                   print(context.read<UserStore>().searchList);
-                  _refresh(value);
-                  setState(() {});
+
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                    SearchResult(searchWord : value)
+                  ));
                 },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),

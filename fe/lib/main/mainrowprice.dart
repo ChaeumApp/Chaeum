@@ -260,8 +260,8 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                         '${ranking[i]['rank']}',
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15),
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 15,),
                                       ),
                                     ),
                                   )
