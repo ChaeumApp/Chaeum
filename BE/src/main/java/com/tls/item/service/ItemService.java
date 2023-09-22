@@ -16,4 +16,6 @@ public interface ItemService {
 
     int selectItem(String userEmail, ItemVO itemVO);
 
+    int purchaseItem(String userEmail, ItemVO itemVO);
+
 }
