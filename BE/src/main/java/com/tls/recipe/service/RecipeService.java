@@ -8,7 +8,7 @@ public interface RecipeService {
 
     int updateRecipe();
 
-    RecipeDto viewRecipe(int recipeId);
+    RecipeDto viewRecipe(String userEmail, int recipeId);
 
     List<Recipe> suggestedRecipes(String userEmail);
 
