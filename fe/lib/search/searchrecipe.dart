@@ -99,7 +99,7 @@ class _SearchRecipeState extends State<SearchRecipe> {
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
                                         ),softWrap: true,),
-                                      Text('출처 : 만개의 레시피',
+                                      Text('만개의 레시피',
                                       style: TextStyle(
                                         color: Colors.black54
                                       ),
