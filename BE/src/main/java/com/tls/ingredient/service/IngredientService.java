@@ -15,7 +15,7 @@ public interface IngredientService {
 
     IngredientDto getIngredient(int ingrId);
 
-    int selectIngredient(UserIngrVO userIngrVO);
+    int selectIngredient(String userEmail, UserIngrVO userIngrVO);
 
     int dislikeIngredient(IngredientVO ingredientVO);
 

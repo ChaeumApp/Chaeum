@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserIngrVO {
 
-    String userEmail;
     int IngrId;
 }
