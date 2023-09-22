@@ -1,18 +1,29 @@
 package com.tls.user.service;
 
-import com.tls.allergy.composite.UserAllergy;
+import com.tls.allergy.entity.composite.UserAllergy;
+import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
 import com.tls.mail.MailService;
+import com.tls.recipe.entity.composite.UserRecipe;
+import com.tls.recipe.entity.single.Recipe;
+import com.tls.ingredient.entity.composite.UserIngr;
+import com.tls.recipe.repository.UserRecipeRepository;
+import com.tls.user.dto.UserProfileDto;
+import com.tls.user.converter.UserConverter;
+import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
 import com.tls.user.util.RedisUtil;
 import com.tls.user.vo.UserPwdVO;
+import com.tls.user.vo.UserSignInVO;
 import com.tls.user.vo.UserSignUpVO;
+import com.tls.ingredient.repository.UserIngrRepository;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +57,11 @@ public class UserServiceImpl implements UserService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final UserAllergyRepository userAllergyRepository;
+    private final UserIngrRepository userIngrRepository;
+    private final UserRecipeRepository userRecipeRepository;
+    private final AllergyRepository allergyRepository;
+
+    private UserConverter userConverter = new UserConverter();
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -53,6 +70,9 @@ public class UserServiceImpl implements UserService {
     public int signUp(UserSignUpVO userDto) {
         try {
             // user 정보 먼저 저장한다.
+            if (userDto.getUserEmail().startsWith("[S]") && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
+                return 200;
+            }
             User user = User.builder()
                 .userEmail(userDto.getUserEmail())
                 .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
@@ -68,7 +88,7 @@ public class UserServiceImpl implements UserService {
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                     .userId(user)
-                    .algyId(allergy)
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                     .build();
                 userAllergyList.add(userAllergy);
             });
@@ -81,11 +101,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto signIn(String userEmail, String userPwd) {
+    public TokenDto signIn(UserSignInVO userSignInVO) {
+        String userEmail = userSignInVO.getUserEmail();
+        String userPwd = userSignInVO.getUserPwd();
         try {
-            if (userEmail.equals("[S]") && userRepository.findByUserEmail(userEmail).isPresent()) {
-                userPwd = userRepository.findByUserEmail(userEmail).get().getPassword();
-            }
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -104,6 +123,9 @@ public class UserServiceImpl implements UserService {
                 redisTemplate.opsForValue()
                     .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
                         TimeUnit.MILLISECONDS);
+
+                // user_notification_token table에 저장
+
             }
             return tokenDto;
         } catch (Exception e) {
@@ -158,8 +180,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
+        try {
+            Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
+            updateUser.ifPresent(selectUser -> {
+                UserDto userDto = userConverter.entityToDto(selectUser);
+                userDto.setVeganId(userVO.getVeganId());
+                userRepository.save(userConverter.dtoToEntity(userDto));
+            });
+            List<UserAllergy> userAllergyList = new ArrayList<>();
+            userVO.getAllergyList().forEach(allergy -> {
+                UserAllergy userAllergy = UserAllergy.builder()
+                    .userId(updateUser.get())
+                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
+                    .build();
+                userAllergyList.add(userAllergy);
+            });
+            userAllergyRepository.saveAll(userAllergyList);
+            return 1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    @Override
     @Transactional
-    public int updateUser(String userEmail, UserPwdVO userDto) {
+    public int updateUserPwd(String userEmail, UserPwdVO userDto) {
         try {
             User updateUser = userRepository.findByUserEmail(userEmail).orElseThrow();
             if (passwordEncoder.matches(userDto.getCurpassword(), updateUser.getUserPwd())) {
@@ -264,14 +310,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int readProfile(String userEmail) {
-        // TODO: serviceCode 작성해야함.
-        // TODO: 좋아요한 식재료, 좋아요한 레시피
+    public UserProfileDto readProfile(String userEmail) {
         try {
-            // 좋아요 한 레시피, 좋아요 한 식재료 반환해줘야 한다.
-            return (int) (Math.random() % 2);
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            List<Ingredient> ingrList = new ArrayList<>();
+            List<Recipe> recipeList = new ArrayList<>();
+            if (userIngrRepository.findAllByUserId(user).isPresent()) {
+                ingrList = userIngrRepository.findAllByUserId(user).get().stream()
+                    .map(UserIngr::getIngrId).collect(Collectors.toList());
+            }
+            if (userRecipeRepository.findAllByUserId(user).isPresent()) {
+                recipeList = userRecipeRepository.findAllByUserId(user).get().stream()
+                    .map(UserRecipe::getRecipeId).collect(Collectors.toList());
+            }
+            return new UserProfileDto(ingrList, recipeList);
         } catch (Exception e) {
-            return -1;
+            return null;
         }
     }
 }
