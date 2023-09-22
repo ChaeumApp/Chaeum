@@ -19,8 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "ingredient_select_log_tb")
 public class UserIngrLog {
 
@@ -37,7 +37,7 @@ public class UserIngrLog {
     private Ingredient ingrId;
 
     @CreationTimestamp
-    @Column(name = "item_select_time")
+    @Column(name = "ingr_select_time")
     private LocalDateTime itemSelectTime;
 
 }

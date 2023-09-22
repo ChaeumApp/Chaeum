@@ -19,8 +19,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "item_select_log_tb")
 public class UserItemLog {
 
