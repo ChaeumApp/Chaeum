@@ -27,7 +27,7 @@ import './user/mypage.dart';
 import './user/login.dart';
 import './user/signup.dart';
 import './user/addinfo.dart';
-import './user/my_more.dart';
+import 'user/my_more_food.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';

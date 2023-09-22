@@ -21,10 +21,6 @@ class _FavFoodState extends State<FavFood> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '좋아요한 식재료',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
           Expanded(
             child: GridView.count(
                 crossAxisCount: 2, // 열 개수
