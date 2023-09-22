@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -69,36 +70,42 @@ class _DetailRecipeState extends State<DetailRecipe> {
               child: ListView.builder(
                   itemCount: recipes.length,
                   itemBuilder: (BuildContext context, int index){
-                    return Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
-                          )
-                      ),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            flex: 3,
-                            child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
-                                height: 100),
-                          ),
-                          Flexible(
-                            flex: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(recipes[index]['title'] as String, style: TextStyle(
-                                      fontSize: 15
-                                  )),
-                                  Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
-                                ],
-                              ),
+                    return GestureDetector(
+                      onTap: (){
+                        // 연결후 추가
+                        // clickRecipe();
+                      },
+                      child: Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
+                            )
+                        ),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
+                                  height: 100),
                             ),
-                          )
-                        ],
+                            Flexible(
+                              flex: 4,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(recipes[index]['title'] as String, style: TextStyle(
+                                        fontSize: 15
+                                    )),
+                                    Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }),

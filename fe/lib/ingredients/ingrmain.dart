@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fe/detail/detail.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class IngrMain extends StatefulWidget {
@@ -18,14 +20,11 @@ class _IngrMainState extends State<IngrMain> {
   final ScrollController scrollController = ScrollController();
   bool isFabVisible = false;
 
-
-  void _scrollToTop() {
-    setState(() {
-      scrollController.jumpTo(0);
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
-
-
 
   @override
   void dispose() {
@@ -34,16 +33,21 @@ class _IngrMainState extends State<IngrMain> {
   }
 
 
-
-
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
   // 받아오기
   Future<dynamic> getIngr() async {
     try {
-      final response = await dio.get('$serverURL/recipe');
-      return response.data;
+      if(widget.subCatId == null){
+        final response = await dio.get('$serverURL/ingr/category',
+            queryParameters: {'catId' : widget.catId});
+        return response.data;
+      } else {
+        final response = await dio.get('$serverURL/ingr/category',
+            queryParameters: {'catId' : widget.catId, 'subCatId' : widget.subCatId});
+        return response.data;
+      }
     } catch (e) {
       print(e);
     }
@@ -70,10 +74,12 @@ class _IngrMainState extends State<IngrMain> {
     }
   }
 
+
   // 클릭
-  Future<dynamic> clickIngr() async {
+  Future<dynamic> clickIngr(ingrId) async {
     try {
-      final response = await dio.get('ingr/selected');
+      final response = await dio.post('ingr/selected',
+      queryParameters: {'ingrId' : ingrId, 'userEmail' : context.read<UserStore>().userId});
       return response.data;
     } catch (e) {
       print(e);
@@ -84,8 +90,8 @@ class _IngrMainState extends State<IngrMain> {
     selectedVal = sort[0];
   }
 
-  var sort = ['전체보기', '추천순'];
-  String? selectedVal = "전체보기";
+  var sort = ['추천순', '가나다순'];
+  String? selectedVal = "추천순";
 
   @override
   Widget build(BuildContext context) {
@@ -222,19 +228,24 @@ class _IngrMainState extends State<IngrMain> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
+                                    clickIngr(snapshot.data[index]['ingrId']);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => Detail(
-                                                category: '여기데이터들어오면바꿔줘')));
+                                                category: snapshot.data[index]['ingrId'])));
                                   },
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(3),
-                                    child: Image.network(
-                                      snapshot.data[index]['recipeThumbnail'],
-                                      height: 250,
-                                      fit: BoxFit.fill,
-                                    ),
+                                    child: Image.asset('assets/images/repeat/bottom_logo.png',
+                                        height: 250,
+                                        fit: BoxFit.fill,
+                                    )
+                                    // Image.network(
+                                    //   snapshot.data[index]['recipeThumbnail'],
+                                    //   height: 250,
+                                    //   fit: BoxFit.fill,
+                                    // ),
                                   ),
                                 ),
                                 GestureDetector(
@@ -277,15 +288,16 @@ class _IngrMainState extends State<IngrMain> {
                                       margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       child: GestureDetector(
                                         onTap: () {
+                                          clickIngr(snapshot.data[index]['ingrId']);
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) => Detail(
                                                       category:
-                                                          '여기데이터들어오면바꿔줘')));
+                                                      snapshot.data[index]['ingrId'])));
                                         },
                                         child: Text(
-                                          '${snapshot.data[index]['recipeId']}',
+                                          '${snapshot.data[index]['ingrName']}',
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700),

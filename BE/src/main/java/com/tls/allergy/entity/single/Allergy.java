@@ -24,5 +24,5 @@ public class Allergy {
     private int algyId;
 
     @Column(name = "algy_name")
-    private int algyName;
+    private String algyName;
 }

@@ -17,12 +17,25 @@ class _RecipeMainListState extends State<RecipeMainList> {
   Future<dynamic> getCategory() async {
     try {
       final response = await dio.get('$serverURL/recipe');
-      print(response.data.runtimeType);
       return response.data;
     } catch (e) {
       print(e);
     }
   }
+
+  Future<dynamic> clickRecipe(recipeId) async {
+    // 헤더추가해야함!!!!
+    try {
+      final response = await dio.get('$serverURL/recipe/selected/$recipeId');
+      // print(response.data.runtimeType);
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +115,7 @@ class _RecipeMainListState extends State<RecipeMainList> {
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: (){
+                          clickRecipe(snapshot.data[index]['recipeId']);
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(

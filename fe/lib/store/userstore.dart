@@ -6,6 +6,11 @@ class UserStore extends ChangeNotifier {
     deviceToken = token;
   }
 
+  String accessToken = '';
+  changeAccessToken(accessToken) {
+    accessToken = accessToken;
+  }
+
   String userId = '';
   changeUserInfo(userInfo) {
     userId = userInfo;

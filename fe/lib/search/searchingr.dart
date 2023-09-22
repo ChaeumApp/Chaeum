@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -78,6 +79,16 @@ class _SearchIngrState extends State<SearchIngr> {
     }
   }
 
+  // 상품아이디!!!!!
+  Future<dynamic> clickItem() async {
+    try {
+      final response = await dio.get('$serverURL/item/selected');
+      return response.data;
+    } catch (e) {
+      print(e);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +116,7 @@ class _SearchIngrState extends State<SearchIngr> {
           }
           else {
             return ListView.builder(
-              itemCount: (product.length + 1) ~/ 2 + 2, // 변경된 itemCount
+              itemCount: (product.length + 1) ~/ 2 + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return Container(
@@ -130,58 +141,70 @@ class _SearchIngrState extends State<SearchIngr> {
                   if (productIndex2 >= product.length) {
                     return Container(
                       margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 2, 0, 6),
-                            child: Image.asset(
-                              '${product[productIndex1]['image']}',
+                      child: GestureDetector(
+                        onTap: (){
+                          // 상품클릭함수 추가해야할거있음!!!
+                          clickItem();
+                          // 웹뷰페이지에 전달하는 주소도!!
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 2, 0, 6),
+                              child: Image.asset(
+                                '${product[productIndex1]['image']}',
+                                width: MediaQuery.of(context).size.width / 2 - 30,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(
                               width: MediaQuery.of(context).size.width / 2 - 30,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2 - 30,
-                            child: Text(
-                              '소분류명',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2 - 30,
-                            height: 35,
-                            child: Text(
-                              '${product[productIndex1]['title'].toString().length > 25 ? product[productIndex1]['title'].toString().substring(0, 25) : product[productIndex1]['title']}'
-                                  '${product[productIndex1]['title'].toString().length > 25 ? "..." : ""}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2 - 30,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${NumberFormat('#,###').format(product[productIndex1]['price'])}원',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              child: Text(
+                                '소분류명',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black54,
                                 ),
-                                Icon(Icons.favorite_border),
-                              ],
+                              ),
                             ),
-                          )
-                        ],
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2 - 30,
+                              height: 35,
+                              child: Text(
+                                '${product[productIndex1]['title'].toString().length > 25 ? product[productIndex1]['title'].toString().substring(0, 25) : product[productIndex1]['title']}'
+                                    '${product[productIndex1]['title'].toString().length > 25 ? "..." : ""}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2 - 30,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${NumberFormat('#,###').format(product[productIndex1]['price'])}원',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 5),
+                                    child: Image.asset('${product[productIndex1]['site'] == 'naver'? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                    height: 10,),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   } else {
@@ -192,98 +215,125 @@ class _SearchIngrState extends State<SearchIngr> {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 2, 0, 6),
-                                    child: Image.asset(
-                                      '${product[productIndex1]['image']}',
-                                      height: 200,
-                                      fit: BoxFit.cover,
+                              child: GestureDetector(
+                                onTap: (){
+                                  // 상품클릭함수 추가해야할거있음!!!
+                                  clickItem();
+                                  // 웹뷰페이지에 전달하는 주소도!!
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 2, 0, 6),
+                                      child: Image.asset(
+                                        '${product[productIndex1]['image']}',
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '소분류명',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 35,
-                                    child: Text(
-                                      '${product[productIndex1]['title'].toString().length > 25 ? product[productIndex1]['title'].toString().substring(0, 25) : product[productIndex1]['title']}' '${product[productIndex1]['title'].toString().length > 25 ? "..." : ""}',
+                                    Text(
+                                      '소분류명',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
+                                        color: Colors.black54,
                                       ),
                                     ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${NumberFormat('#,###').format(product[productIndex1]['price'])}원',
+                                    SizedBox(
+                                      height: 35,
+                                      child: Text(
+                                        '${product[productIndex1]['title'].toString().length > 25 ? product[productIndex1]['title'].toString().substring(0, 25) : product[productIndex1]['title']}' '${product[productIndex1]['title'].toString().length > 25 ? "..." : ""}',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Icon(Icons.favorite_border),
-                                    ],
-                                  )
-                                ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '${NumberFormat('#,###').format(product[productIndex1]['price'])}원',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(right: 5),
+                                          child: Image.asset('${product[productIndex2]['site'] == 'naver'? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                            height: 10,),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
-                                    child: Image.asset(
-                                      '${product[productIndex2]['image']}',
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Text(
-                                    '소분류명',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 35,
-                                    child: Text(
-                                      '${product[productIndex2]['title'].toString().length > 25 ? product[productIndex2]['title'].toString().substring(0, 25) : product[productIndex2]['title']}' '${product[productIndex2]['title'].toString().length > 25 ? "..." : ""}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                              margin: EdgeInsets.fromLTRB(10, 2, 0, 0),
+                              child: GestureDetector(
+                                onTap: (){
+                                  // 상품클릭함수 추가해야할거있음!!!
+                                  clickItem();
+                                  // 웹뷰페이지에 전달하는 주소도!!
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 3),
+                                      child: Image.asset(
+                                        '${product[productIndex2]['image']}',
+                                        height: 200,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${NumberFormat('#,###').format(product[productIndex2]['price'])}원',
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        '소분류명',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black54,
                                         ),
                                       ),
-                                      Icon(Icons.favorite_border),
-                                    ],
-                                  )
-                                ],
+                                    ),
+                                    SizedBox(
+                                      height: 35,
+                                      child: Text(
+                                        '${product[productIndex2]['title'].toString().length > 25 ? product[productIndex2]['title'].toString().substring(0, 25) : product[productIndex2]['title']}' '${product[productIndex2]['title'].toString().length > 25 ? "..." : ""}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '${NumberFormat('#,###').format(product[productIndex2]['price'])}원',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(right: 5),
+                                          child: Image.asset('${product[productIndex2]['site'] == 'naver'? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                          height: 10,),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),

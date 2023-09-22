@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserProfileDto {
 
+    String userEmail;
     List<Ingredient> ingredientList;
     List<Recipe> recipeList;
 }
