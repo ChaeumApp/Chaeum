@@ -18,7 +18,10 @@ class MyPage extends StatefulWidget {
   State<MyPage> createState() => _MyPageState();
 }
 
-class _MyPageState extends State<MyPage> {
+class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final PageApi pageapi = PageApi();
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
@@ -103,6 +106,8 @@ class _MyPageState extends State<MyPage> {
                                   onChanged: (dynamic value) {
                                     setState(() {
                                       selectedVegan = value;
+                                      Navigator.of(context).pop();
+                                      openDialog();
                                     });
                                     for (int i = 0; i < veganList.length; i++) {
                                       if (veganList[i] == selectedVegan) {
@@ -183,7 +188,6 @@ class _MyPageState extends State<MyPage> {
                                 ),
                                 initialChildSize: 0.4,
                                 listType: MultiSelectListType.CHIP,
-                                searchable: true,
                                 buttonText: Text("Allergy foods"),
                                 title: Text(""),
                                 items: allergieNameList
@@ -215,19 +219,6 @@ class _MyPageState extends State<MyPage> {
                                 chipDisplay: MultiSelectChipDisplay(
                                   chipColor: Color(0xffA1CBA1),
                                   textStyle: TextStyle(color: Colors.white),
-                                  onTap: (value) {
-                                    setState(() {
-                                      selectedAllergie.remove(value);
-                                    });
-                                    for (int i = 0;
-                                        i < allergieNameList.length;
-                                        i++) {
-                                      if (allergieNameList[i] == value) {
-                                        selectedAllergieNumber.remove(i);
-                                        print(selectedAllergieNumber);
-                                      }
-                                    }
-                                  },
                                 ),
                               ),
                               selectedAllergie.isEmpty
@@ -296,11 +287,15 @@ class _MyPageState extends State<MyPage> {
   }
 
   getuserinfo() async {
-    print('이게 토큰');
     print(context.read<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
-    final info = await pageapi.getinfo(context.read<UserStore>().userId,
-        token.toString().split(" ")[1].toString());
+    final info =
+        await pageapi.getinfo(token.toString().split(" ")[1].toString());
+    print(info);
+    await context
+        .watch<UserStore>()
+        .changeUserInfo(info != null ? info['userEmail'] : '');
+    setState(() {});
   }
 
   @override

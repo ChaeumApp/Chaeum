@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://10.0.2.2:8080';
 
   Future<dynamic> login(id, password, deviceToken) async {
     try {
@@ -74,16 +74,11 @@ class PageApi {
     }
   }
 
-  Future<dynamic> getinfo(id, token) async {
-    print(id);
-    print(id.runtimeType);
+  Future<dynamic> getinfo(token) async {
     print(token);
     print(token.runtimeType);
     try {
       final response = await dio.post('$serverURL/user/mypage',
-          data: {
-            'userEmail': id,
-          },
           options: Options(
             headers: {
               'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
@@ -112,7 +107,7 @@ class PageApi {
   Future<dynamic> naverlogin(token) async {
     try {
       print('받은토큰$token');
-      final response = await dio.get('$serverURL/user/oAuth/kakao',
+      final response = await dio.get('$serverURL/user/oAuth/naver',
           queryParameters: {'token': token});
       print('네이버 로그인 여부 ${response.data}');
       return response.data;
