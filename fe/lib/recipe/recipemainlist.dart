@@ -17,7 +17,6 @@ class _RecipeMainListState extends State<RecipeMainList> {
   Future<dynamic> getCategory() async {
     try {
       final response = await dio.get('$serverURL/recipe');
-      print(response.data.runtimeType);
       return response.data;
     } catch (e) {
       print(e);

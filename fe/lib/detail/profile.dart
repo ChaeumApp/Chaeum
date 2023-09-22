@@ -13,12 +13,18 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView>{
   var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : true};
 
-  Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+
+  Dio dio = Dio(BaseOptions(
+    baseUrl: 'http://j9c204.p.ssafy.io:8080',
+    // headers: {'Authorization': 'Bearer Token'},
+  ));
+
 
   Future<dynamic> getProductInfo() async {
+    // final token = await widget.storage.read(key: 'login');
+    // final accessToken = token.toString().split(" ")[1].toString());
     try {
-      final response = await dio.get('$serverURL/ingr/detail/${widget.category}',
+      final response = await dio.get('/ingr/detail/${widget.category}',
       queryParameters: {'ingrId' : widget.category});
       print(response.data);
       return response.data;
