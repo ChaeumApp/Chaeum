@@ -1,4 +1,6 @@
 import 'package:fe/main.dart';
+import 'package:fe/user/my_more_food.dart';
+import 'package:fe/user/my_more_rec.dart';
 import 'package:fe/user/pageapi.dart';
 
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:dio/dio.dart';
 
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class MyPage extends StatefulWidget {
   MyPage({super.key, this.storage});
@@ -22,6 +25,253 @@ class _MyPageState extends State<MyPage> {
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
   TextEditingController controller3 = TextEditingController();
+
+  List<String> veganList = [
+    'none',
+    'vegan',
+    'lacto',
+    'ovo',
+    'lacto-ovo',
+    'pesco',
+    'pollo',
+    'flexi',
+  ];
+  String selectedVegan = 'none';
+  int selectedVeganNumber = 0;
+  List<String> allergieList = ['없음', '있음'];
+  String havAllergie = '없음';
+  List<dynamic> allergieNameList = [
+    '난류',
+    '우유',
+    '메밀',
+    '땅콩',
+    '대두',
+    '밀',
+    '고등어',
+    '게',
+    '새우',
+    '돼지고기',
+    '복숭아',
+    '토마토',
+    '호두',
+    '닭고기',
+    '쇠고기',
+    '오징어',
+    '조개류'
+  ];
+  List<Object?> selectedAllergie = [];
+  List<dynamic> selectedAllergieNumber = [];
+
+  bool algdropdown = false;
+  openDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: ((context) {
+          return AlertDialog(
+            title: Text("회원 정보 수정"),
+            content: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 40),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '비건여부',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                DropdownButton(
+                                  alignment: Alignment.bottomLeft,
+                                  value: selectedVegan,
+                                  items: veganList.map((String item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Text(item),
+                                    );
+                                  }).toList(),
+                                  onChanged: (dynamic value) {
+                                    setState(() {
+                                      selectedVegan = value;
+                                    });
+                                    for (int i = 0; i < veganList.length; i++) {
+                                      if (veganList[i] == selectedVegan) {
+                                        selectedVeganNumber = i;
+                                      }
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '알러지여부',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                DropdownButton(
+                                  alignment: Alignment.bottomLeft,
+                                  value: havAllergie,
+                                  items: allergieList.map((String item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Text(item),
+                                    );
+                                  }).toList(),
+                                  onChanged: (dynamic value) {
+                                    setState(() {
+                                      havAllergie = value;
+                                    });
+                                    if (value == '있음') {
+                                      setState(() {
+                                        algdropdown = true;
+                                        Navigator.of(context).pop();
+                                        openDialog();
+                                      });
+                                      print(havAllergie);
+                                      print(havAllergie.runtimeType);
+                                    } else {
+                                      setState(() {
+                                        algdropdown = false;
+                                        Navigator.of(context).pop();
+                                        openDialog();
+                                      });
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: algdropdown
+                          ? <Widget>[
+                              MultiSelectBottomSheetField(
+                                backgroundColor: Colors.white,
+                                confirmText: Text('선택하기'),
+                                cancelText: Text(
+                                  '취소하기',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                selectedColor: Color(0xffA1CBA1),
+                                checkColor: Colors.white,
+                                selectedItemsTextStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0x00ffffff),
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                initialChildSize: 0.4,
+                                listType: MultiSelectListType.CHIP,
+                                searchable: true,
+                                buttonText: Text("Allergy foods"),
+                                title: Text(""),
+                                items: allergieNameList
+                                    .map((allergie) => MultiSelectItem<String>(
+                                        allergie, allergie))
+                                    .toList(),
+                                onConfirm: (values) async {
+                                  print(values);
+                                  setState(() {
+                                    selectedAllergie = values;
+                                  });
+                                  List<int> resultList = [];
+
+                                  for (int i = 0;
+                                      i < selectedAllergie.length;
+                                      i++) {
+                                    for (int j = 0;
+                                        j < allergieNameList.length;
+                                        j++) {
+                                      if (selectedAllergie[i] ==
+                                          allergieNameList[j]) {
+                                        resultList.add(j);
+                                      }
+                                    }
+                                  }
+                                  selectedAllergieNumber = resultList;
+                                  print(selectedAllergieNumber);
+                                },
+                                chipDisplay: MultiSelectChipDisplay(
+                                  chipColor: Color(0xffA1CBA1),
+                                  textStyle: TextStyle(color: Colors.white),
+                                  onTap: (value) {
+                                    setState(() {
+                                      selectedAllergie.remove(value);
+                                    });
+                                    for (int i = 0;
+                                        i < allergieNameList.length;
+                                        i++) {
+                                      if (allergieNameList[i] == value) {
+                                        selectedAllergieNumber.remove(i);
+                                        print(selectedAllergieNumber);
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                              selectedAllergie.isEmpty
+                                  ? Container(
+                                      padding: EdgeInsets.all(10),
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "None selected",
+                                        style: TextStyle(color: Colors.black54),
+                                      ))
+                                  : Container(),
+                            ]
+                          : [],
+                    ),
+                  ]),
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStatePropertyAll(Color(0xffA1CBA1))),
+                        onPressed: null,
+                        child: Text("변경하기")),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Color(0xffA1CBA1))),
+                      onPressed: () {
+                        Navigator.of(context).pop(); //창 닫기
+                      },
+                      child: Text("취소하기"),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          );
+        }));
+  }
 
   Dio dio = Dio();
 
@@ -47,9 +297,9 @@ class _MyPageState extends State<MyPage> {
 
   getuserinfo() async {
     print('이게 토큰');
-    print(context.watch<UserStore>().userId);
+    print(context.read<UserStore>().userId);
     final token = await widget.storage.read(key: 'login');
-    final info = await pageapi.getinfo(context.watch<UserStore>().userId,
+    final info = await pageapi.getinfo(context.read<UserStore>().userId,
         token.toString().split(" ")[1].toString());
   }
 
@@ -154,26 +404,45 @@ class _MyPageState extends State<MyPage> {
                                       fontWeight: FontWeight.w600),
                                 ),
                               ]),
-                              Text('더보기')
+                              GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              FavoriteMoreRec()),
+                                    );
+                                  },
+                                  child: Text('더보기'))
                             ],
                           ),
                         ),
                         Expanded(
-                          child: GridView.count(
-                              crossAxisCount: 2, // 열 개수
-                              children:
-                                  List<Widget>.generate(foodlist.length, (idx) {
-                                return Container(
-                                  color: Colors.amber,
-                                  padding: const EdgeInsets.all(30),
-                                  margin: const EdgeInsets.all(8),
-                                  child: Image.asset(
-                                    'assets/images/main/${foodlist[idx]}',
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                );
-                              }).toList()),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        FavoriteMoreRec()),
+                              );
+                            },
+                            child: GridView.count(
+                                crossAxisCount: 2, // 열 개수
+                                children: List<Widget>.generate(foodlist.length,
+                                    (idx) {
+                                  return Container(
+                                    color: Colors.amber,
+                                    padding: const EdgeInsets.all(30),
+                                    margin: const EdgeInsets.all(8),
+                                    child: Image.asset(
+                                      'assets/images/main/${foodlist[idx]}',
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                  );
+                                }).toList()),
+                          ),
                         ),
                         SizedBox(
                           child: Row(
@@ -194,26 +463,45 @@ class _MyPageState extends State<MyPage> {
                                       fontWeight: FontWeight.w600),
                                 ),
                               ]),
-                              Text('더보기')
+                              GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              FavoriteMoreFood()),
+                                    );
+                                  },
+                                  child: Text('더보기'))
                             ],
                           ),
                         ),
                         Expanded(
-                          child: GridView.count(
-                              crossAxisCount: 2, // 열 개수
-                              children:
-                                  List<Widget>.generate(foodlist.length, (idx) {
-                                return Container(
-                                  color: Colors.amber,
-                                  padding: const EdgeInsets.all(40),
-                                  margin: const EdgeInsets.all(8),
-                                  child: Image.asset(
-                                    'assets/images/main/${foodlist[idx]}',
-                                    width: 100,
-                                    height: 100,
-                                  ),
-                                );
-                              }).toList()),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        FavoriteMoreFood()),
+                              );
+                            },
+                            child: GridView.count(
+                                crossAxisCount: 2, // 열 개수
+                                children: List<Widget>.generate(foodlist.length,
+                                    (idx) {
+                                  return Container(
+                                    color: Colors.amber,
+                                    padding: const EdgeInsets.all(40),
+                                    margin: const EdgeInsets.all(8),
+                                    child: Image.asset(
+                                      'assets/images/main/${foodlist[idx]}',
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                  );
+                                }).toList()),
+                          ),
                         ),
                       ],
                     ),
@@ -221,144 +509,11 @@ class _MyPageState extends State<MyPage> {
                 ],
               ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               TextButton(
                 child: Text('회원정보 수정'),
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: ((context) {
-                        return AlertDialog(
-                          title: Text("회원 정보 수정"),
-                          content: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                                  child: TextField(
-                                    maxLength: 20,
-                                    controller: controller,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    obscureText: true, // 비밀번호 안보이도록 하는 것
-                                    decoration: InputDecoration(
-                                        counterText: '',
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 16.0, horizontal: 10.0),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                width: 1.5,
-                                                color: Color(0xffA1CBA1))),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide()),
-                                        labelText: '현재 비밀번호',
-                                        focusColor: Color(0xffA1CBA1)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                                  child: TextField(
-                                    maxLength: 20,
-
-                                    controller: controller2,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    obscureText: true, // 비밀번호 안보이도록 하는 것
-                                    decoration: InputDecoration(
-                                        counterText: '',
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 16.0, horizontal: 10.0),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                width: 1.5,
-                                                color: Color(0xffA1CBA1))),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide()),
-                                        labelText: '새로운 비밀번호',
-                                        focusColor: Color(0xffA1CBA1)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(1, 0, 1, 0),
-                                  child: TextField(
-                                    maxLength: 20,
-
-                                    controller: controller3,
-                                    obscureText: true, // 비밀번호 안보이도록 하는 것
-                                    decoration: InputDecoration(
-                                        counterText: '',
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 16.0, horizontal: 10.0),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                width: 1.5,
-                                                color: Color(0xffA1CBA1))),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide()),
-                                        labelText: '비밀번호 확인',
-                                        focusColor: Color(0xffA1CBA1)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton(
-                                      style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStatePropertyAll(
-                                                  Color(0xffA1CBA1))),
-                                      child: Text("변경하기"),
-                                      onPressed: () async {
-                                        if (RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                .hasMatch(controller2.text) &&
-                                            RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                                .hasMatch(controller3.text) &&
-                                            controller2.text ==
-                                                controller3.text) {
-                                          final response =
-                                              await changepassword();
-                                        } else if (!RegExp(
-                                                r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                            .hasMatch(controller2.text)) {
-                                          showSnackBar(
-                                              context,
-                                              Text(
-                                                  '비밀번호는 특수문자,영어, 숫자를 포함해 주세요'));
-                                        } else if (controller2.text !=
-                                            controller3.text) {
-                                          showSnackBar(context,
-                                              Text('비밀번호화 비밀번호 확인이 다릅니다.'));
-                                        } else {
-                                          showSnackBar(context,
-                                              Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
-                                        }
-                                      }),
-                                  ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStatePropertyAll(
-                                                Color(0xffA1CBA1))),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(); //창 닫기
-                                    },
-                                    child: Text("취소하기"),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        );
-                      }));
+                  openDialog();
                 },
               ),
               Text('|'),
