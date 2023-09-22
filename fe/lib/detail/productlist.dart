@@ -73,7 +73,7 @@ class _ProductListState extends State<ProductList> {
                     return GestureDetector(
                       onTap: (){
                         // 상품클릭함수 추가해야할거있음!!!
-                        clickItem();
+                        // clickItem();
                         // 웹뷰페이지에 전달하는 주소도!!
                         Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
                       },
