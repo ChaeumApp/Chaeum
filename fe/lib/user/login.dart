@@ -236,6 +236,7 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token =
                                                         await UserApi.instance
                                                             .loginWithKakaoTalk();
+                                                    print(token.accessToken);
                                                     final sociallogininfo =
                                                         await pageapi
                                                             .kakaologin(token
@@ -254,10 +255,11 @@ class _LogInState extends State<LogIn> {
                                                       await widget.storage.write(
                                                           key: "login",
                                                           value:
-                                                              "accessToken $accessToken refreshToken $refreshToken id ${sociallogininfo["userEmail"]}");
-                                                      print(await widget.storage
+                                                              "accessToken $accessToken refreshToken $refreshToken");
+                                                      print(widget.storage
                                                           .read(key: "login"));
-                                                      Navigator.push(
+
+                                                      Navigator.pushReplacement(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (BuildContext
@@ -272,7 +274,9 @@ class _LogInState extends State<LogIn> {
                                                                     context) =>
                                                                 AddInfo(
                                                                     user:
-                                                                        sociallogininfo)),
+                                                                        sociallogininfo,
+                                                                    storage: widget
+                                                                        .storage)),
                                                       );
                                                     }
                                                     print(token.accessToken);
@@ -294,6 +298,7 @@ class _LogInState extends State<LogIn> {
                                                       OAuthToken token =
                                                           await UserApi.instance
                                                               .loginWithKakaoAccount();
+                                                      print(token.accessToken);
                                                       final sociallogininfo =
                                                           await pageapi
                                                               .kakaologin(token
@@ -312,12 +317,13 @@ class _LogInState extends State<LogIn> {
                                                         await widget.storage.write(
                                                             key: "login",
                                                             value:
-                                                                "accessToken $accessToken refreshToken $refreshToken id ${sociallogininfo["userEmail"]}");
-                                                        print(await widget
-                                                            .storage
+                                                                "accessToken $accessToken refreshToken $refreshToken");
+                                                        print(widget.storage
                                                             .read(
                                                                 key: "login"));
-                                                        Navigator.push(
+
+                                                        Navigator
+                                                            .pushReplacement(
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (BuildContext
@@ -332,7 +338,10 @@ class _LogInState extends State<LogIn> {
                                                                       context) =>
                                                                   AddInfo(
                                                                       user:
-                                                                          sociallogininfo)),
+                                                                          sociallogininfo,
+                                                                      storage:
+                                                                          widget
+                                                                              .storage)),
                                                         );
                                                       }
                                                       print(token.accessToken);
@@ -366,7 +375,9 @@ class _LogInState extends State<LogIn> {
                                                       await widget.storage.write(
                                                           key: "login",
                                                           value:
-                                                              "accessToken $accessToken refreshToken $refreshToken id ${sociallogininfo["userEmail"]}");
+                                                              "accessToken $accessToken refreshToken $refreshToken");
+                                                      print(widget.storage
+                                                          .read(key: "login"));
 
                                                       Navigator.pushReplacement(
                                                         context,
