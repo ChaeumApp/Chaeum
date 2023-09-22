@@ -19,9 +19,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "reipce_select_log_tb")
+@NoArgsConstructor
+@Table(name = "recipe_select_log_tb")
 public class UserRecipeLog {
 
     @Id
