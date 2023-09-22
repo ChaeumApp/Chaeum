@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
+import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -68,48 +70,56 @@ class _ProductListState extends State<ProductList> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
-                          child: Image.asset(
-                            '${widget.product[index]['image']}',
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 35,
-                          child: Text(
-                            '${widget.product[index]['title']!.length > 25 ? widget.product[index]['title']?.substring(0, 25) : widget.product[index]['title']}'
-                                '${widget.product[index]['title']!.length > 25 ? "..." : ""}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                    return GestureDetector(
+                      onTap: (){
+                        // 상품클릭함수 추가해야할거있음!!!
+                        clickItem();
+                        // 웹뷰페이지에 전달하는 주소도!!
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                            child: Image.asset(
+                              '${widget.product[index]['image']}',
+                              height: 200,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${NumberFormat('#,###').format(widget.product[index]['price'])}원',
+                          SizedBox(
+                            height: 35,
+                            child: Text(
+                              '${widget.product[index]['title']!.length > 25 ? widget.product[index]['title']?.substring(0, 25) : widget.product[index]['title']}'
+                                  '${widget.product[index]['title']!.length > 25 ? "..." : ""}',
                               style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xff73324C),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(
-                              width: 45,
-                              child: Image.asset(
-                                '${widget.product[index]['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${NumberFormat('#,###').format(widget.product[index]['price'])}원',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff73324C),
+                                ),
                               ),
-                            )
-                          ],
-                        )
-                      ],
+                              SizedBox(
+                                width: 45,
+                                child: Image.asset(
+                                  '${widget.product[index]['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     );
                   },
                   childCount: widget.product.length,
