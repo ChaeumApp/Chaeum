@@ -56,10 +56,23 @@ public class RecipeController {
     @Operation(summary = "레시피 상세 조회 메서드", description = "레시피 번호에 대한 상세 조회", tags = "레시피 API")
     @ApiResponse(responseCode = "200", description = "레시피 상세 조회 시 해당 레시피 정보를 반환한다.\n"
         + "해당 레시피 번호가 없을 경우 fail 을 반환한다.")
-    public ResponseEntity<?> viewRecipe(@PathVariable("recipeId") int recipeId) {
-        log.info("{} recipe detail view", recipeId);
-        RecipeDto recipe = recipeService.viewRecipe(recipeId);
-        return new ResponseEntity<>(recipe, HttpStatus.OK);
+    public ResponseEntity<?> viewRecipe(
+        @RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
+        @PathVariable("recipeId") int recipeId) {
+        try {
+            log.info("{} recipe detail view", recipeId);
+            RecipeDto recipe;
+            if (tokenWithPrefix != null) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                    .getName();
+                 recipe = recipeService.viewRecipe(userEmail, recipeId);
+            } else {
+                recipe = recipeService.viewRecipe(null, recipeId);
+            }
+            return new ResponseEntity<>(recipe, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
     }
 
     @GetMapping("/selected/{recipeId}")

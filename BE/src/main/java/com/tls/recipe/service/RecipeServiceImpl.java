@@ -71,7 +71,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDto viewRecipe(int recipeId) {
+    public RecipeDto viewRecipe(String userEmail, int recipeId) {
         try {
             List<String> process = new ArrayList<>();
             Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
@@ -85,12 +85,18 @@ public class RecipeServiceImpl implements RecipeService {
                 info[1] = recipeIngr.getRecipeIngrAmount();
                 ingredients.add(info);
             });
+            boolean saved = false;
+            if(userEmail != null){
+                User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                saved = userRecipeRepository.findByUserIdAndRecipeId(user, recipe).isPresent();
+            }
             return RecipeDto.builder()
                 .recipeName(recipe.getRecipeName())
                 .recipeThumbnail(recipe.getRecipeThumbnail())
                 .recipeLink(recipe.getRecipeLink())
                 .recipeProcess(process)
                 .recipeIngredients(ingredients)
+                .savedRecipe(saved)
                 .build();
         } catch (Exception e) {
             e.printStackTrace();
