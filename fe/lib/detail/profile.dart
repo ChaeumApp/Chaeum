@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 
 class ProfileView extends StatefulWidget {
   ProfileView({super.key, this.category});
@@ -16,16 +18,19 @@ class _ProfileViewState extends State<ProfileView>{
 
   Dio dio = Dio(BaseOptions(
     baseUrl: 'http://j9c204.p.ssafy.io:8080',
-    // headers: {'Authorization': 'Bearer Token'},
   ));
 
 
   Future<dynamic> getProductInfo() async {
-    // final token = await widget.storage.read(key: 'login');
-    // final accessToken = token.toString().split(" ")[1].toString());
+    var accessToken = context.read<UserStore>().accessToken;
     try {
       final response = await dio.get('/ingr/detail/${widget.category}',
-      queryParameters: {'ingrId' : widget.category});
+      queryParameters: {'ingrId' : widget.category},
+        options: Options(
+          headers: {
+            'Authorization': '$accessToken',
+          },
+        ));
       print(response.data);
       return response.data;
     } catch (e) {
@@ -35,22 +40,13 @@ class _ProfileViewState extends State<ProfileView>{
 
 
 
-  Future<bool?> toggleLike(bool isLiked) async {
-    bool liked = false;
-    setState(() {
-      if (data.containsKey('like') && data['like'] is bool) {
-        data['like'] = !(data['like'] as bool);
-        liked = data['like'] as bool;
-      } else {
-        data['like'] = false;
-      }
-    });
-    return Future.value(liked);
-  }
+  Future<bool?> toggleLike(bool isLiked) async {}
 
 
   @override
   Widget build(BuildContext context) {
+
+
     return FutureBuilder(future: getProductInfo(), builder: (BuildContext context, AsyncSnapshot snapshot){
       if (snapshot.hasData == false) {
         return SizedBox.shrink();
@@ -79,7 +75,7 @@ class _ProfileViewState extends State<ProfileView>{
               Container(
                 margin: EdgeInsets.only(right: 10),
                 child: LikeButton(
-                  isLiked: data['like'] as bool, // 초기 좋아요 상태
+                  isLiked: snapshot.data['savedIngredient'], // 초기 좋아요 상태
                   onTap: (isLiked) {
                     return toggleLike(isLiked);
                   },
