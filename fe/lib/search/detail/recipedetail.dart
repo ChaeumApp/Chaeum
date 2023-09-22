@@ -725,11 +725,10 @@ import './youtube.dart';
 import './similarrecipe.dart';
 import './process.dart';
 import 'package:dio/dio.dart';
-import 'package:like_button/like_button.dart';
+// import 'package:like_button/like_button.dart';
 import 'package:marquee/marquee.dart';
 
-import '../heart/heartpro.dart';
-import 'package:provider/provider.dart';
+import './toggleheart.dart';
 
 class Recipedetail extends StatefulWidget {
   Recipedetail({super.key, this.recipeId});
@@ -743,20 +742,47 @@ class _RecipedetailState extends State<Recipedetail> {
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io:8080';
 
-  // var ddata = {'like': true};
+  // var data = {'like': false};
 
   // Future<bool?> toggleLike(bool isLiked) async {
   //   bool liked = false;
   //   setState(() {
-  //     if (ddata.containsKey('like') && ddata['like'] is bool) {
-  //       ddata['like'] = !(ddata['like'] as bool);
-  //       liked = ddata['like'] as bool;
+  //     if (data.containsKey('like') && data['like'] is bool) {
+  //       data['like'] = !(data['like'] as bool);
+  //       liked = data['like'] as bool;
   //     } else {
-  //       ddata['like'] = false;
+  //       data['like'] = false;
   //     }
   //   });
   //   return Future.value(liked);
   // }
+
+  var data = {'like': false};
+
+  // Future<void> toggleLike(bool isLiked) async {
+  //   if (data['like'] != null) {
+  //     final liked = !data['like']!;
+  //     setState(() {
+  //       data['like'] = liked;
+  //     });
+  //   }
+  // }
+
+  // Future<bool> toggleLike(bool isLiked) async {
+  //   final liked = !data['like'];
+  //   setState(() {
+  //     data['like'] = liked;
+  //   });
+  //   return liked; // Future<bool>을 반환
+  // }
+
+  bool isLiked = false;
+
+  void toggleLike() {
+    setState(() {
+      isLiked = !isLiked;
+    });
+  }
 
 // 레시피 상세 조회
 
@@ -834,33 +860,48 @@ class _RecipedetailState extends State<Recipedetail> {
                             // Container(
                             //   margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
                             //   child: LikeButton(
-                            //     isLiked:
-                            //         Provider.of<LikeButtonProvider>(context)
-                            //             .isLiked,
+                            //     isLiked: data['like'] as bool, // 초기 좋아요 상태
                             //     onTap: (isLiked) {
-                            //       Provider.of<LikeButtonProvider>(context,
-                            //               listen: false)
-                            //           .toggleLike();
                             //       return toggleLike(isLiked);
                             //     },
                             //     circleColor: CircleColor(
-                            //       start: Color(0xffff0044),
-                            //       end: Color(0xffff4c7c),
-                            //     ),
+                            //         start: Color(0xffff0044),
+                            //         end: Color(0xffff4c7c)),
                             //     bubblesColor: BubblesColor(
                             //       dotPrimaryColor: Color(0xffff3333),
                             //       dotSecondaryColor: Color(0xffff9999),
                             //     ),
                             //     likeBuilder: (bool isLiked) {
                             //       return Icon(
-                            //         ddata['like'] as bool
+                            //         data['like'] as bool
                             //             ? Icons.favorite
                             //             : Icons.favorite_border,
-                            //         color: ddata['like'] as bool
+                            //         color: data['like'] as bool
                             //             ? Colors.red
                             //             : Colors.black,
                             //       );
                             //     },
+                            //   ),
+                            // )
+
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
+                              child: LikeButton(
+                                isLiked: false,
+                                onTap: toggleLike,
+                              ),
+                            ),
+
+                            // Container(
+                            //   margin: EdgeInsets.fromLTRB(0, 12, 20, 0),
+                            //   child: IconButton(
+                            //     icon: Icon(
+                            //       isFavorited
+                            //           ? Icons.favorite
+                            //           : Icons.favorite_border,
+                            //       color: Colors.red[500],
+                            //     ),
+                            //     onPressed: toggleFavorite,
                             //   ),
                             // )
                           ]),
@@ -1001,3 +1042,36 @@ class _RecipedetailState extends State<Recipedetail> {
     );
   }
 }
+
+// class CustomLikeButton extends StatelessWidget {
+//   final bool isLiked;
+//   final void Function(bool) onTap; // onTap 함수의 반환 타입을 수정
+
+//   CustomLikeButton({
+//     super.key,
+//     required this.isLiked,
+//     required this.onTap,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return LikeButton(
+//       isLiked: isLiked,
+//       onTap: onTap,
+//       circleColor: CircleColor(
+//         start: Color(0xffff0044),
+//         end: Color(0xffff4c7c),
+//       ),
+//       bubblesColor: BubblesColor(
+//         dotPrimaryColor: Color(0xffff3333),
+//         dotSecondaryColor: Color(0xffff9999),
+//       ),
+//       likeBuilder: (bool isLiked) {
+//         return Icon(
+//           isLiked ? Icons.favorite : Icons.favorite_border,
+//           color: isLiked ? Colors.red : Colors.black,
+//         );
+//       },
+//     );
+//   }
+// }
