@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/click.dart';
+import 'package:fe/recipe/recipedetail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -93,6 +94,10 @@ class _DetailRecipeState extends State<DetailRecipe> {
                       onTap: (){
                         // 연결후 추가
                         clickRecipe(index);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => RecipeDetailPage(recipeId : recipes[index]['recipeId'])));
                       },
                       child: Container(
                         height: 100,
