@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/recipe/recipedetail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -119,11 +120,10 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                   return GestureDetector(
                     onTap: () {
                       clickRecipe(snapshot.data[index]['recipeId']);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             ));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
                     },
                     child: Container(
                       margin: EdgeInsets.fromLTRB(20, 0, 20, 10),

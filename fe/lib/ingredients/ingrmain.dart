@@ -315,7 +315,8 @@ class _IngrMainState extends State<IngrMain> {
                                                       snapshot.data[index]['ingrId'])));
                                         },
                                         child: Text(
-                                          '${snapshot.data[index]['ingrName']}',
+                                              '${snapshot.data[index]['ingrName']!.length > 8 ? snapshot.data[index]['ingrName']?.substring(0, 8) : snapshot.data[index]['ingrName']}'
+                                              '${snapshot.data[index]['ingrName']!.length > 8 ? "..." : ""}',
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700),
