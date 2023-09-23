@@ -49,15 +49,12 @@ class _SearchState extends State<Search> {
               controller: searchController,
               onSubmitted: (value){
                 addWordToList(value);
-                // context.read<UserStore>().addSearchList(value);
-                // print(context.read<UserStore>().searchList);
+                context.read<SearchStore>().watchSearch();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
                             SearchResult(searchWord: value)));
-                context.read<SearchStore>().watchSearch();
-                print(context.read<SearchStore>().doSearch);
             },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),
