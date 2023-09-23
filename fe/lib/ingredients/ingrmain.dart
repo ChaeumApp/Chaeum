@@ -333,7 +333,7 @@ class _IngrMainState extends State<IngrMain> {
                                       },
                                       child: Container(
                                         height: 36,
-                                        width: 48,
+                                        width: 18,
                                         alignment: Alignment.centerRight,
                                         child: Icon(Icons.more_vert),
                                       ),
