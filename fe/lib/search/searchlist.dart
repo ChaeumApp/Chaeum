@@ -1,3 +1,4 @@
+import 'package:fe/store/searchstore.dart';
 import 'package:flutter/material.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +34,7 @@ class SearchListState extends State<SearchList> {
 
   @override
   Widget build(BuildContext context) {
-    var searchList = context.read<UserStore>().searchList;
-
+    bool dosearch = context.watch<SearchStore>().doSearch;
     return FutureBuilder(future: getSavedWordList(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData == false) {
