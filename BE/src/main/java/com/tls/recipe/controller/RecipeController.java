@@ -106,8 +106,7 @@ public class RecipeController {
     public ResponseEntity<?> likeRecipe(@PathVariable("recipeId") int recipeId,
         @RequestHeader("Authorization") String tokenWithPrefix) {
         try {
-            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
-                .getName();
+            String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
             int resultCode = recipeService.likeRecipe(userEmail, recipeId);
             if (resultCode == 1) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
