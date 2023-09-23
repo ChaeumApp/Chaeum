@@ -1,3 +1,5 @@
+import 'package:fe/search/searchresult.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:flutter/material.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +35,7 @@ class SearchListState extends State<SearchList> {
 
   @override
   Widget build(BuildContext context) {
-    var searchList = context.read<UserStore>().searchList;
-
+    bool dosearch = context.watch<SearchStore>().doSearch;
     return FutureBuilder(future: getSavedWordList(),
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if (snapshot.hasData == false) {
@@ -69,16 +70,25 @@ class SearchListState extends State<SearchList> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('${snapshot.data[index]}'),
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SearchResult(searchWord: snapshot.data[index])));
+                            },
+                              child: Text('${snapshot.data[index]}')),
                           GestureDetector(
                             onTap: (){
                               removeItemFromWordList(index);
                               setState(() {});
                             },
                             child: Container(
-                                margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                margin: EdgeInsets.fromLTRB(3, 0, 0, 0),
                                 child: Icon(Icons.close,
-                                  color: Colors.black45,)),
+                                  color: Colors.black45,
+                                size: 18,)),
                           ),
                         ],
                       ),
