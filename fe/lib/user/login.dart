@@ -123,48 +123,53 @@ class _LogInState extends State<LogIn> {
                                   child: ButtonTheme(
                                       child: TextButton(
                                           onPressed: () async {
-                                            final response =
-                                                await pageapi.login(
-                                                    controller.text.toString(),
-                                                    controller2.text,
-                                                    context
-                                                        .read<UserStore>()
-                                                        .deviceToken
-                                                        .toString());
-                                            if (response["accessToken"] !=
-                                                null) {
-                                              final accessToken =
-                                                  await response["accessToken"];
-                                              final refreshToken =
-                                                  response["refreshToken"];
-                                              await widget.storage.write(
-                                                  key: "login",
-                                                  value:
-                                                      "accessToken $accessToken refreshToken $refreshToken");
+                                            try {
+                                              final response =
+                                                  await pageapi.login(
+                                                      controller.text
+                                                          .toString(),
+                                                      controller2.text,
+                                                      context
+                                                          .read<UserStore>()
+                                                          .deviceToken
+                                                          .toString());
+                                              print(1);
+                                              if (response["accessToken"] !=
+                                                  null) {
+                                                print(2);
+                                                final accessToken =
+                                                    await response[
+                                                        "accessToken"];
+                                                final refreshToken =
+                                                    response["refreshToken"];
+                                                await widget.storage.write(
+                                                    key: "login",
+                                                    value:
+                                                        "accessToken $accessToken refreshToken $refreshToken");
 
-                                              print('여기는 로그인 버튼');
-                                              await context
-                                                  .read<UserStore>()
-                                                  .changeAccessToken(
-                                                      accessToken);
-                                              final ok = context
-                                                  .read<UserStore>()
-                                                  .accessToken;
-                                              print('ggggg');
-                                              print('kkk$ok');
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        Main()),
-                                              );
-                                              // write 함수를 통하여 key에 맞는 정보를 적게 됩니다.
-                                              //{"login" : "id id_value password password_value"}
-                                              //와 같은 형식으로 저장이 된다고 생각을 하면 됩니다.
-                                            } else {
+                                                print('여기는 로그인 버튼');
+                                                // await context
+                                                //     .read<UserStore>()
+                                                //     .changeAccessToken(
+                                                //         accessToken);
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          Main()),
+                                                );
+                                              } else if (response == "fail") {}
+                                              // else {;
+                                              //   showSnackBar(context,
+                                              //       Text('아이디 비밀번호를 확인해주세요'));
+                                              // }
+                                            } catch (e) {
                                               showSnackBar(context,
-                                                  Text('아이디 비밀번호를 확인해주세요'));
+                                                  Text('아이디 비밀번호를 확인 해주세요'));
+                                              // showSnackBar(context,
+                                              //     Text('제대로 요청이 안됐습니다.'));
                                             }
                                           },
                                           style: ButtonStyle(
@@ -260,8 +265,6 @@ class _LogInState extends State<LogIn> {
                                                           key: "login",
                                                           value:
                                                               "accessToken $accessToken refreshToken $refreshToken");
-                                                      print(widget.storage
-                                                          .read(key: "login"));
 
                                                       Navigator.pushReplacement(
                                                         context,
@@ -460,10 +463,10 @@ class _LogInState extends State<LogIn> {
                                                     await widget.storage.write(
                                                         key: "login",
                                                         value:
-                                                            "accessToken $accessToken refreshToken $refreshToken id ${sociallogininfo["userEmail"]}");
+                                                            "accessToken $accessToken refreshToken $refreshToken");
                                                     print(widget.storage
                                                         .read(key: "login"));
-                                                    Navigator.push(
+                                                    Navigator.pushReplacement(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (BuildContext
