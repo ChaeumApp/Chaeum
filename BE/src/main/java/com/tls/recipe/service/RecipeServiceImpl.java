@@ -91,6 +91,7 @@ public class RecipeServiceImpl implements RecipeService {
                 saved = userRecipeRepository.findByUserIdAndRecipeId(user, recipe).isPresent();
             }
             return RecipeDto.builder()
+                .recipeId(recipe.getRecipeId())
                 .recipeName(recipe.getRecipeName())
                 .recipeThumbnail(recipe.getRecipeThumbnail())
                 .recipeLink(recipe.getRecipeLink())
