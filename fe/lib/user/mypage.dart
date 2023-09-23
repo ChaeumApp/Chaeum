@@ -23,6 +23,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   final PageApi pageapi = PageApi();
+  dynamic usetStore;
 
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
@@ -66,6 +67,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   List<dynamic> selectedAllergieNumber = [];
 
   bool algdropdown = false;
+
   openDialog() {
     showDialog(
         context: context,
@@ -291,19 +293,20 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    getuserinfo();
-  }
-
-  getuserinfo() async {
-    print(context.read<UserStore>().userId);
-    final token = await widget.storage.read(key: 'login');
-    final info =
-        await pageapi.getinfo(token.toString().split(" ")[1].toString());
-    print(info);
-    await context
-        .watch<UserStore>()
-        .changeUserInfo(info != null ? info['userEmail'] : '');
-    setState(() {});
+    Future.delayed(Duration.zero, () async {
+      final userStore = Provider.of<UserStore>(context, listen: false);
+      print(userStore.accessToken);
+      final accessToken = userStore.accessToken;
+      print(accessToken);
+      final info = await pageapi.getinfo(accessToken);
+      print(info);
+      if (info != null) {
+        await userStore.changeUserInfo(info['userEmail']);
+      }
+      setState(() {});
+      // 이제 userStore를 사용할 수 있습니다.
+      // ...
+    });
   }
 
   @override
