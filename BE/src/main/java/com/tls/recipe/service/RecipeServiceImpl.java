@@ -149,7 +149,6 @@ public class RecipeServiceImpl implements RecipeService {
             }
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
             return -1;
         }
     }
