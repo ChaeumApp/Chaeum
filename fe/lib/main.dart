@@ -104,6 +104,8 @@ class _MainState extends State<Main> {
       await context
           .read<UserStore>()
           .changeAccessToken(userToken.toString().split(" ")[1].toString());
+    } else {
+      await context.read<UserStore>().changeAccessToken('');
     }
 
     final storetoken = context.read<UserStore>().accessToken;
