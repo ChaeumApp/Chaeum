@@ -54,7 +54,7 @@ class _ProfileViewState extends State<ProfileView>{
           isSet = true;
         });
       }
-      print(response.data);
+      // print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -74,18 +74,21 @@ class _ProfileViewState extends State<ProfileView>{
           headers: {'Authorization': 'Bearer $accessToken'},
         ),
       );
-      setState(() {
-        if (data.containsKey('like') && data['like'] is bool) {
-          data['like'] = !(data['like'] as bool);
-          liked = data['like'] as bool;
-        } else {
-          data['like'] = false;
-        }
-      });
+      if(response.data == 'success'){
+        setState(() {
+          if (data.containsKey('like') && data['like'] is bool) {
+            data['like'] = !(data['like'] as bool);
+            liked = data['like'] as bool;
+          } else {
+            data['like'] = false;
+          }
+        });
+      }
+      print(response.data);
       return Future.value(liked);
-    } else () {
+    } else {
       print('로그인이 필요합니다');
-    };
+    }
   }
 
 
