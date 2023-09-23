@@ -16,6 +16,7 @@ import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -91,6 +92,7 @@ public class RecipeServiceImpl implements RecipeService {
                 saved = userRecipeRepository.findByUserIdAndRecipeId(user, recipe).isPresent();
             }
             return RecipeDto.builder()
+                .recipeId(recipe.getRecipeId())
                 .recipeName(recipe.getRecipeName())
                 .recipeThumbnail(recipe.getRecipeThumbnail())
                 .recipeLink(recipe.getRecipeLink())
@@ -130,6 +132,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Transactional
     public int likeRecipe(String userEmail, int recipeId) {
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -146,6 +149,7 @@ public class RecipeServiceImpl implements RecipeService {
             }
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
