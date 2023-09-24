@@ -1,6 +1,7 @@
 package com.tls.user.service;
 
 import com.tls.allergy.entity.composite.UserAllergy;
+import com.tls.allergy.entity.single.Allergy;
 import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
@@ -26,10 +27,7 @@ import com.tls.user.vo.UserSignUpVO;
 import com.tls.ingredient.repository.UserIngrRepository;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -317,8 +315,10 @@ public class UserServiceImpl implements UserService {
     public UserProfileDto readProfile(String userEmail) {
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            int veganId = Objects.requireNonNull(userRepository.findByUserEmail(userEmail).orElse(null)).getVegan().getVeganId();
             List<Ingredient> ingrList = new ArrayList<>();
             List<Recipe> recipeList = new ArrayList<>();
+            List<Allergy> allergyList = new ArrayList<>();
             if (userIngrRepository.findAllByUserId(user).isPresent()) {
                 ingrList = userIngrRepository.findAllByUserId(user).get().stream()
                         .map(UserIngr::getIngrId).collect(Collectors.toList());
@@ -327,7 +327,11 @@ public class UserServiceImpl implements UserService {
                 recipeList = userRecipeRepository.findAllByUserId(user).get().stream()
                         .map(UserRecipe::getRecipeId).collect(Collectors.toList());
             }
-            return new UserProfileDto(userEmail, ingrList, recipeList);
+            if (userAllergyRepository.findAllByUserId(user).isPresent()) {
+                allergyList = userAllergyRepository.findAllByUserId(user).get().stream()
+                        .map(UserAllergy::getAlgyId).collect(Collectors.toList());
+            }
+            return new UserProfileDto(userEmail, veganId, ingrList, recipeList, allergyList);
         } catch (Exception e) {
             return null;
         }
