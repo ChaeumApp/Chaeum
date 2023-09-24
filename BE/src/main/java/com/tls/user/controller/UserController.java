@@ -235,7 +235,7 @@ public class UserController {
     public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
         log.info("findUserPwd call :: {}", userDto.getUserBirthday());
         int resultCode = userService.findUserPwd(userDto.getUserEmail(),
-                new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
+                new SimpleDateFormat("yyyy-MM-dd").format(userDto.getUserBirthday()));
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {
