@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //카카오로그인
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -19,14 +18,9 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
-import './category/ingrecate.dart';
-import './search/searchpage.dart';
 //유저
 import './user/mypage.dart';
 import './user/login.dart';
-import './user/signup.dart';
-import './user/addinfo.dart';
-import 'user/my_more_food.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
@@ -80,32 +74,36 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     super.initState();
-
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
     });
     initializeNotification(context);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _asyncMethod();
       setState(() {});
     });
-    super.initState();
   }
 
   _asyncMethod() async {
     //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
     //(데이터가 없을때는 null을 반환을 합니다.)
-
+    var key = await KakaoSdk.origin;
+    print('kakaokey$key');
     userToken = await storage.read(key: "login");
     print(userToken);
-    userToken == null
-        ? () async {
-            await context.read<UserStore>().changeAccessToken(
-                userToken.toString().split(" ")[1].toString());
-          }
-        : null;
+    if (userToken != null) {
+      await context
+          .read<UserStore>()
+          .changeAccessToken(userToken.toString().split(" ")[1].toString());
+    } else {
+      await context.read<UserStore>().changeAccessToken('');
+    }
 
+    final storetoken = context.read<UserStore>().accessToken;
+    print('이닛 다시 하나요?');
+    print(storetoken);
     final devicetoken = await getMyDeviceToken();
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }

@@ -88,6 +88,8 @@ class _AddInfoState extends State<AddInfo> {
         controller.text = widget.user['birth'].toString().substring(0, 4);
         if (controller.text != '0000') {
           yearcheck = true;
+        } else {
+          controller.text = '';
         }
         controller2.text = widget.user['birth'].toString().substring(4, 6);
         monthcheck = true;
@@ -539,14 +541,13 @@ class _AddInfoState extends State<AddInfo> {
                                         key: "login",
                                         value:
                                             "accessToken $accessToken refreshToken $refreshToken");
-                                    print(await widget.storage
-                                        .read(key: "login"));
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Main()),
-                                    );
+
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Main()),
+                                        (route) => false);
                                   }
                                 }
                               : null,
