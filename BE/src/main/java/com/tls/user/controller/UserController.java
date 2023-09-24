@@ -202,7 +202,7 @@ public class UserController {
     }
 
     @PutMapping("/pwd")
-    @Operation(summary = "비밀번호 수정 메서드", description = "내 비밀번호 정보를 수정할 수 있습니다.", tags = "유저 API")
+    @Operation(summary = "비밀번호 변경 메서드", description = "내 비밀번호를 변경할 수 있습니다.", tags = "유저 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경에 성공하면 success 를 반환한다.\n"
                     + "비밀번호 변경에 실패하면 fail 을 반환한다.")
