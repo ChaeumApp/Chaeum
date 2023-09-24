@@ -180,6 +180,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
         try {
