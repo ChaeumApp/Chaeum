@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Player extends StatefulWidget {
@@ -45,24 +44,13 @@ class _PlayerState extends State<Player> {
       child: YoutubePlayer(
         key: ObjectKey(_controller),
         controller: _controller,
-        actionsPadding: const EdgeInsets.only(left: 16.0),
-        bufferIndicator: SpinKitPulse(
-          itemBuilder: (BuildContext context, int index) {
-            return Center(
-              child: Image.asset('assets/images/repeat/bottom_logo.png',
-                  height: 40),
-            );
-          },
+        showVideoProgressIndicator: true,
+        width: double.infinity,
+        progressColors: ProgressBarColors(
+          playedColor: Color(0xff4C8C4C),
+          handleColor: Color(0xff4C8C4C)
         ),
-        progressIndicatorColor: Color(0xffA1CBA1),
-        bottomActions: [
-          CurrentPosition(),
-          const SizedBox(width: 10.0),
-          ProgressBar(isExpanded: true),
-          const SizedBox(width: 10.0),
-          RemainingDuration(),
-          //FullScreenButton(),
-        ],
+        progressIndicatorColor: Color(0xff164D16),
       ),
     );
   }
