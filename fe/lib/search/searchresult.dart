@@ -1,5 +1,6 @@
 import 'package:fe/search/searchingr.dart';
 import 'package:fe/search/searchrecipe.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +59,7 @@ class _SearchResultState extends State<SearchResult> {
                 controller: word,
                 onSubmitted: (value){
                   addWordToList(value);
+                  context.read<SearchStore>().watchSearch();
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
                     SearchResult(searchWord : value)
                   ));

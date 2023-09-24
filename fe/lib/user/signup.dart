@@ -335,12 +335,33 @@ class _SignUpState extends State<SignUp> {
                                       setState(() {
                                         passwordError = passwordMessage;
                                         passwordCheck = false;
+                                        if (controller2.text ==
+                                            controller3.text) {
+                                          setState(() {
+                                            samepasswordError = null;
+                                            samepasswordCheck = true;
+                                          });
+                                        } else {
+                                          samepasswordError =
+                                              samepasswordMessage;
+                                          samepasswordCheck = false;
+                                        }
                                       });
                                     } else {
                                       setState(() {
                                         passwordError = null; // 에러 없음
                                         passwordCheck = true;
                                       });
+                                      if (controller2.text ==
+                                          controller3.text) {
+                                        setState(() {
+                                          samepasswordError = null;
+                                          samepasswordCheck = true;
+                                        });
+                                      } else {
+                                        samepasswordError = samepasswordMessage;
+                                        samepasswordCheck = false;
+                                      }
                                     }
                                   },
 
