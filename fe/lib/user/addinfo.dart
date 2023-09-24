@@ -546,7 +546,7 @@ class _AddInfoState extends State<AddInfo> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              Main(initialTabIndex : 2)),
+                                              Main()),
                                     );
                                   }
                                 }
