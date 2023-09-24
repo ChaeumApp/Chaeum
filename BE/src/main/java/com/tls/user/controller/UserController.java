@@ -16,8 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -42,6 +44,7 @@ public class UserController {
     private final UserService userService;
     private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate redisTemplate;
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.", tags = "유저 API")
@@ -282,7 +285,13 @@ public class UserController {
     public ResponseEntity<?> checkToken(@RequestHeader("Authorization") String tokenWithPrefix) {
         log.info("checkToken call");
         try {
-            if (jwtTokenProvider.validateToken(tokenWithPrefix.substring(7))) {
+            if (jwtTokenProvider.validateToken(tokenWithPrefix.substring(7)) ) {
+                if(redisTemplate.opsForValue().get(tokenWithPrefix.substring(7)) == null){
+                    return getResponseEntity(0);
+                } else if (Objects.equals(
+                    redisTemplate.opsForValue().get(tokenWithPrefix.substring(7)), "logout")){
+                    return getResponseEntity(0);
+                }
                 return getResponseEntity(1);
             } else {
                 return getResponseEntity(0);
