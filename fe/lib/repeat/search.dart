@@ -20,6 +20,9 @@ class _SearchState extends State<Search> {
   Future<void> addWordToList(String word) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> wordList = prefs.getStringList('wordList') ?? [];
+    if (wordList.length >= 10) {
+      wordList.removeLast();
+    }
     wordList.insert(0, word);
     await prefs.setStringList('wordList', wordList);
   }
