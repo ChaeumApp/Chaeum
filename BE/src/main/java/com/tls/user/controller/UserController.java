@@ -44,8 +44,6 @@ public class UserController {
     private final UserService userService;
     private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
-    private final RandomStringCreator rsc = new RandomStringCreator();
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.", tags = "유저 API")
