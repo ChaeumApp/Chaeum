@@ -542,12 +542,12 @@ class _AddInfoState extends State<AddInfo> {
                                         value:
                                             "accessToken $accessToken refreshToken $refreshToken");
 
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Main()),
-                                    );
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Main()),
+                                        (route) => false);
                                   }
                                 }
                               : null,
