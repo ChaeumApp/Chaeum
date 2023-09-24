@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
@@ -54,7 +55,7 @@ class _ProfileViewState extends State<ProfileView>{
           isSet = true;
         });
       }
-      print(response.data);
+      // print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -74,18 +75,21 @@ class _ProfileViewState extends State<ProfileView>{
           headers: {'Authorization': 'Bearer $accessToken'},
         ),
       );
-      setState(() {
-        if (data.containsKey('like') && data['like'] is bool) {
-          data['like'] = !(data['like'] as bool);
-          liked = data['like'] as bool;
-        } else {
-          data['like'] = false;
-        }
-      });
+      if(response.data == 'success'){
+        setState(() {
+          if (data.containsKey('like') && data['like'] is bool) {
+            data['like'] = !(data['like'] as bool);
+            liked = data['like'] as bool;
+          } else {
+            data['like'] = false;
+          }
+        });
+      }
+      print(response.data);
       return Future.value(liked);
-    } else () {
-      print('로그인이 필요합니다');
-    };
+    } else {
+      Alertlogin().needLogin(context);
+    }
   }
 
 
