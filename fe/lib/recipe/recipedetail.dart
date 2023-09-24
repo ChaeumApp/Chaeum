@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fe/recipe/player.dart';
+import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -86,7 +87,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       print(response.data);
       return Future.value(tmpSaved);
     } else {
-      print('로그인이 필요합니다');
+      Alertlogin().needLogin(context);
     }
   }
 
