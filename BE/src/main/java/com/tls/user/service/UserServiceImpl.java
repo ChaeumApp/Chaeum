@@ -188,6 +188,7 @@ public class UserServiceImpl implements UserService {
                 UserDto userDto = userConverter.entityToDto(selectUser);
                 userDto.setVeganId(userVO.getVeganId());
                 userRepository.save(userConverter.dtoToEntity(userDto));
+                userAllergyRepository.deleteByUserId(selectUser);
             });
             List<UserAllergy> userAllergyList = new ArrayList<>();
             userVO.getAllergyList().forEach(allergy -> {
