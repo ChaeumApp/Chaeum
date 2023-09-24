@@ -50,14 +50,14 @@ void initializeNotification(context) async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Detail(category: message.data['name'])));
+            builder: (context) => Detail(category: message.data['id'])));
   }
 
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Detail(category: event.data['name'])));
+            builder: (context) => Detail(category: event.data['id'])));
   });
 }
 
@@ -85,7 +85,7 @@ void foregroundMessage(RemoteMessage message) {
           ),
         ),
         // local notification에 메세지 전달은 이걸로
-        payload: message.data['name']);
+        payload: message.data['id']);
   }
 }
 
