@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <title>Chaeum</title>
+  <style>
+    @font-face {
+      font-family: 'Pretendard-Regular';
+      src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .material-symbols-sharp {
+      color: #fff;
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 24
+    }
+
+    html,
+    body {
+      font-family: 'Pretendard-Regular';
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+
+    .box {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+
+    .box:nth-child(7) {
+      background: purple
+    }
+
+    .box1 {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bg-video {
+      position: absolute;
+      object-fit: fill;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    .box1 .name {
+      position: absolute;
+      right: 2rem;
+      bottom: 0;
+      z-index: 2;
+    }
+
+    .box1 .title {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .box1 .title .subtitle {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .box1 .title .info {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 0.5;
+    }
+
+    @media (max-width: 1087px) {
+      .box1 .title .info {
+        font-size: 1.8rem;
+        line-height: 0.5;
+      }
+    }
+
+    @media (max-width: 659px) {
+      .box1 .title .info {
+        font-size: 1.2rem;
+      }
+    }
+
+
+    @media (max-width: 412px) {
+      .box1 .title .info {
+        font-size: 16px;
+        line-height: 1;
+      }
+    }
+
+
+
+
+
+
+    .box1 .title img {
+      width: 5rem;
+    }
+
+    .box1 .title img {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 3s forwards;
+    }
+
+    .box1 .title p {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 3s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+
+    .cover {
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      background-color: #000;
+      opacity: 0.4;
+    }
+
+    .container {
+      position: absolute;
+      bottom: 5rem;
+      width: 24px;
+      height: 24px;
+    }
+
+    .chevron {
+      position: absolute;
+      width: 28px;
+      height: 8px;
+      opacity: 0;
+      transform: scale3d(0.5, 0.5, 0.5);
+      animation: move 3s ease-out infinite;
+    }
+
+    .chevron:first-child {
+      animation: move 3s ease-out 1s infinite;
+    }
+
+    .chevron:nth-child(2) {
+      animation: move 3s ease-out 2s infinite;
+    }
+
+    .chevron:before,
+    .chevron:after {
+      content: ' ';
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 51%;
+      background: #fff;
+    }
+
+    .chevron:before {
+      left: 0;
+      transform: skew(0deg, 30deg);
+    }
+
+    .chevron:after {
+      right: 0;
+      width: 50%;
+      transform: skew(0deg, -30deg);
+    }
+
+    @keyframes move {
+      25% {
+        opacity: 1;
+
+      }
+
+      33% {
+        opacity: 1;
+        transform: translateY(30px);
+      }
+
+      67% {
+        opacity: 1;
+        transform: translateY(40px);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(55px) scale3d(0.5, 0.5, 0.5);
+      }
+    }
+
+    .text {
+      display: block;
+      margin-left: -30px;
+      font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+      font-size: 12px;
+      color: #fff;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: .25;
+      animation: pulse 2s linear alternate infinite;
+    }
+
+
+    @keyframes pulse {
+      to {
+        opacity: 1;
+      }
+    }
+
+
+    .appinfo {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    .appinfo p {
+      margin: 0;
+      /* 기본 마진을 제거합니다. */
+    }
+
+    .appinfo div {
+      width: 23rem;
+    }
+
+    .appinfo img {
+      /* height: 40rem; */
+      width: 18rem;
+    }
+
+    .appinfo p {
+      /* margin: 0; */
+      /* 기본 마진을 제거합니다. */
+    }
+
+    .appinfo .infoTitle {
+      font-size: 2.8rem;
+      font-weight: 700;
+    }
+
+
+    .appinfo .infoDetail {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .appinfo div.fadeInFromLeft {
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: fadeInFromLeft 1s forwards;
+    }
+
+    @keyframes fadeInFromLeft {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+
+    .box2 {
+      height: 65%;
+      background-color: rgb(236, 236, 236);
+      display: flex;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lastp {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 0.3;
+    }
+
+    .lasttitle {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+
+    .download {
+      width: 9rem;
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 15px 8px 20px;
+      font-size: 15px;
+      background-color: #282828;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .download p {
+      margin: 0;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+    .download span {
+      margin: 0 0 0 5px;
+    }
+
+    footer {
+      padding: 35px;
+      background-color: rgb(236, 236, 236);
+      border-top: #D0D0D0 solid 1px;
+      text-align: end;
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    footer img {
+      width: 30px;
+    }
+
+
+  </style>
+</head>
+
+<body>
+  <div class="box1">
+    <video autoplay loop muted class="bg-video">
+      <source src="main.mp4" type="video/mp4">
+    </video>
+    <p class="name">Video by Jack Sparrow</p>
+    <div class="cover"></div>
+    <div class="container" onclick="goToScroll('boxstart')">
+      <div class="chevron"></div>
+      <div class="chevron"></div>
+      <div class="chevron"></div>
+      <span class="text">Scroll down</span>
+    </div>
+    <div class="title">
+      <img src="logo.png" alt="">
+      <p class="subtitle">채움</p>
+      <p class="info">당신의 냉장고를 가득 채워줄</p>
+      <p class="info">단 하나의 어플</p>
+    </div>
+  </div>
+  <div class="box boxstart">
+    <div class="appinfo">
+      <div class="fadeInFromLeft">
+        <p class="infoTitle">오늘의 채움</p>
+        <p class="infoDetail">매일매일 업데이트되는</p>
+        <p class="infoDetail">베스트 상품과 할인율을 확인하세요</p>
+      </div>
+      <div>
+        <img src="mockup.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="appinfo">
+      <div>
+        <p class="infoTitle">채움의 추천상품</p>
+        <p class="infoDetail">채움의 알고리즘을 기반으로 한</p>
+        <p class="infoDetail">추천 목록을 제공합니다</p>
+      </div>
+      <div>
+        <img src="mockup.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="appinfo">
+      <div>
+        <p class="infoTitle">카테고리</p>
+        <p class="infoDetail">복잡한 상품 정보들은</p>
+        <p class="infoDetail">카테고리별로 확인하세요</p>
+      </div>
+      <div>
+        <img src="mockup.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="appinfo">
+      <div>
+        <p class="infoTitle">좋아요</p>
+        <p class="infoDetail">마음에 드는 카테고리와 레시피를</p>
+        <p class="infoDetail">좋아요 해 보세요</p>
+      </div>
+      <div>
+        <img src="mockup.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="appinfo">
+      <div>
+        <p class="infoTitle">레시피</p>
+        <p class="infoDetail">카테고리 관련 레시피를</p>
+        <p class="infoDetail">영상과 함께 제공합니다</p>
+      </div>
+      <div>
+        <img src="mockup.png" alt="">
+      </div>
+    </div>
+  </div>
+  <div class="box2">
+    <div class="lastbox">
+      <p class="lastp">매일을</p>
+      <p class="lastp">지혜로운 소비와 함께하세요</p>
+      <p class="lasttitle">채움</p>
+      <div class="buttons">
+        <button class="download">
+          <p>APK 다운
+            <span class="material-symbols-sharp">
+              download
+            </span>
+          </p>
+        </button>
+        <button class="download">
+          <p>원스토어
+            <span class="material-symbols-sharp">
+              open_in_new
+            </span>
+          </p>
+        </button>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p>
+      <img src="logo.png" alt=""><br>
+      <span class="footertitle">채움</span><br>
+      <span>Copyright 2023, the legend six. All Rights Reserved.</span><br>
+    </p>
+  </footer>
+</body>
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+  $(".box").each(function () {
+    // 개별적으로 Wheel 이벤트 적용 mousewheel(IE/chrome/opera) DOMMouseScroll(FF)
+    $(this).on("mousewheel DOMMouseScroll", function (e) {
+      e.preventDefault();
+      var delta = 0;
+      /* IE */
+      if (!event) event = window.event;
+      //휠에 대한 정보 얻기 파이어폭스 외 IE/Chrome/Opera = wheelDelta
+      if (event.wheelDelta) {
+        delta = event.wheelDelta / 50;
+        //평균 50~120 사이로 요소의 인식높이에 따라 다름(한 화면(height100%)기준일떄는 120
+        if (window.opera) delta = -delta;
+        //휠에 대한 정보 얻기 Mozilla FF = detail
+      } else if (event.detail) delta = -event.detail / 3;
+      var moveTop = null;
+      // 마우스휠을 위에서 아래로
+      if (delta < 0) {
+        if ($(this).next() != undefined) {
+          moveTop = $(this).next().offset().top;
+        }
+        // 마우스휠을 아래에서 위로
+      } else {
+        if ($(this).prev() != undefined) {
+          moveTop = $(this).prev().offset().top;
+        }
+      }
+      // 화면 이동 0.8초(800)
+      $("html,body").stop().animate({
+        scrollTop: moveTop + 'px'
+      }, {
+        duration: 800, complete: function () {
+        }
+      });
+    });
+  });
+
+  function goToScroll(name) {
+    var location = document.querySelector("." + name).offsetTop;
+    window.scrollTo({ top: location, behavior: 'smooth' });
+  }
+
+  $(document).ready(function () {
+    $(window).on("scroll", function () {
+      var windowHeight = $(window).height();
+      var scrollPos = $(window).scrollTop();
+
+      $(".appinfo div").each(function () {
+        var offsetTop = $(this).offset().top;
+        if (scrollPos + windowHeight > offsetTop) {
+          $(this).addClass("fadeInFromLeft");
+        }
+      });
+    });
+  });
+
+
+</script>
+
+</html>
