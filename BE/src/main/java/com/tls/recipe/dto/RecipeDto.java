@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 @Data
 public class RecipeDto {
-
+    int recipeId;
     String recipeName;
     String recipeThumbnail;
     String recipeLink;

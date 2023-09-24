@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import './repeat/bottom.dart';
 //카카오로그인
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -19,14 +18,9 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 //메인페이지
 import './main/mainbody.dart';
 import './main/splash.dart';
-import './category/ingrecate.dart';
-import './search/searchpage.dart';
 //유저
 import './user/mypage.dart';
 import './user/login.dart';
-import './user/signup.dart';
-import './user/addinfo.dart';
-import 'user/my_more_food.dart';
 //스토어
 import 'package:provider/provider.dart';
 import 'store/userstore.dart';
@@ -80,7 +74,6 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     super.initState();
-
     getMyDeviceToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       foregroundMessage(message);
