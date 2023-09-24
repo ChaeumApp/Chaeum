@@ -669,7 +669,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => Main()),
+                          builder: (BuildContext context) => Main(initialTabIndex : 2)),
                     );
                   }),
               Text('|'),

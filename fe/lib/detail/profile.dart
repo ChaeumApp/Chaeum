@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
@@ -87,7 +88,7 @@ class _ProfileViewState extends State<ProfileView>{
       print(response.data);
       return Future.value(liked);
     } else {
-      print('로그인이 필요합니다');
+      NeedLogin(context);
     }
   }
 

@@ -62,7 +62,8 @@ void main() async {
 }
 
 class Main extends StatefulWidget {
-  const Main({super.key});
+  const Main({super.key, this.initialTabIndex});
+  final initialTabIndex;
 
   @override
   State<Main> createState() => _MainState();
@@ -129,7 +130,7 @@ class _MainState extends State<Main> {
     return WillPopScope(
       onWillPop: onWillPop,
       child: DefaultTabController(
-          initialIndex: 2,
+          initialIndex: widget.initialTabIndex,
           length: 5,
           child: Scaffold(
             body: SafeArea(
