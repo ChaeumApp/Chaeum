@@ -679,11 +679,11 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                   onPressed: () async {
                     await widget.storage.delete(key: "login");
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => Main()),
-                    );
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Main()),
+                        (route) => false);
                   }),
               Text('|'),
               TextButton(

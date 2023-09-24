@@ -152,14 +152,13 @@ class _LogInState extends State<LogIn> {
                                                 //     .read<UserStore>()
                                                 //     .changeAccessToken(
                                                 //         accessToken);
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          Main()),
-                                                );
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            Main()),
+                                                    (route) => false);
                                               } else if (response == "fail") {}
                                               // else {;
                                               //   showSnackBar(context,
@@ -266,13 +265,13 @@ class _LogInState extends State<LogIn> {
                                                           value:
                                                               "accessToken $accessToken refreshToken $refreshToken");
 
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                Main()),
-                                                      );
+                                                      Navigator.pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  Main()),
+                                                          (route) => false);
                                                     } else {
                                                       Navigator.push(
                                                         context,
@@ -329,14 +328,14 @@ class _LogInState extends State<LogIn> {
                                                             .read(
                                                                 key: "login"));
 
-                                                        Navigator
-                                                            .pushReplacement(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (BuildContext
-                                                                      context) =>
-                                                                  Main()),
-                                                        );
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (BuildContext
+                                                                            context) =>
+                                                                        Main()),
+                                                            (route) => false);
                                                       } else {
                                                         Navigator.push(
                                                           context,
@@ -386,13 +385,13 @@ class _LogInState extends State<LogIn> {
                                                       print(widget.storage
                                                           .read(key: "login"));
 
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (BuildContext
-                                                                    context) =>
-                                                                Main()),
-                                                      );
+                                                      Navigator.pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (BuildContext
+                                                                      context) =>
+                                                                  Main()),
+                                                          (route) => false);
                                                     } else {
                                                       Navigator.push(
                                                         context,
@@ -466,13 +465,13 @@ class _LogInState extends State<LogIn> {
                                                             "accessToken $accessToken refreshToken $refreshToken");
                                                     print(widget.storage
                                                         .read(key: "login"));
-                                                    Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (BuildContext
-                                                                  context) =>
-                                                              Main()),
-                                                    );
+                                                    Navigator.pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                Main()),
+                                                        (route) => false);
                                                   } else {
                                                     Navigator.push(
                                                       context,
