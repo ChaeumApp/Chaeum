@@ -1,10 +1,8 @@
 package com.tls.user.controller;
 
-import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserProfileDto;
-import com.tls.user.repository.UserRepository;
 import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
 import com.tls.user.vo.UserEmailVO;
