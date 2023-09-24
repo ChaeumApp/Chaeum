@@ -87,7 +87,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       print(response.data);
       return Future.value(tmpSaved);
     } else {
-      NeedLogin(context);
+      Alertlogin().needLogin(context);
     }
   }
 

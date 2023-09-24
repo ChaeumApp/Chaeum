@@ -38,7 +38,7 @@ class _SearchState extends State<Search> {
               child: GestureDetector(
                   onTap: (){
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
-                        Main(initialTabIndex : 2)
+                        Main()
                     ));
                   },
                   child: Center(child: Image.asset('assets/images/repeat/top_logo.png'))),

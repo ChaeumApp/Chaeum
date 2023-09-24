@@ -158,7 +158,7 @@ class _LogInState extends State<LogIn> {
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
-                                                          Main(initialTabIndex : 2)),
+                                                          Main()),
                                                 );
                                               } else if (response == "fail") {}
                                               // else {;
@@ -271,7 +271,7 @@ class _LogInState extends State<LogIn> {
                                                         MaterialPageRoute(
                                                             builder: (BuildContext
                                                                     context) =>
-                                                                Main(initialTabIndex: 2,)),
+                                                                Main()),
                                                       );
                                                     } else {
                                                       Navigator.push(
@@ -335,7 +335,7 @@ class _LogInState extends State<LogIn> {
                                                           MaterialPageRoute(
                                                               builder: (BuildContext
                                                                       context) =>
-                                                                  Main(initialTabIndex: 2,)),
+                                                                  Main()),
                                                         );
                                                       } else {
                                                         Navigator.push(
@@ -391,7 +391,7 @@ class _LogInState extends State<LogIn> {
                                                         MaterialPageRoute(
                                                             builder: (BuildContext
                                                                     context) =>
-                                                                Main(initialTabIndex: 2,)),
+                                                                Main()),
                                                       );
                                                     } else {
                                                       Navigator.push(
@@ -471,7 +471,7 @@ class _LogInState extends State<LogIn> {
                                                       MaterialPageRoute(
                                                           builder: (BuildContext
                                                                   context) =>
-                                                              Main(initialTabIndex : 2)),
+                                                              Main()),
                                                     );
                                                   } else {
                                                     Navigator.push(

@@ -88,7 +88,7 @@ class _ProfileViewState extends State<ProfileView>{
       print(response.data);
       return Future.value(liked);
     } else {
-      NeedLogin(context);
+      Alertlogin().needLogin(context);
     }
   }
 
