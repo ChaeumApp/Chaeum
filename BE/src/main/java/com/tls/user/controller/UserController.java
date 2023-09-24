@@ -192,7 +192,7 @@ public class UserController {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
-        log.info("findUserPwd call :: {}", authentication.getName());
+        log.info("updateUserInfo call :: {}", authentication.getName());
         int responseCode = userService.updateUserInfo(authentication.getName(), userVO);
         if (responseCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -212,7 +212,7 @@ public class UserController {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
-        log.info("findUserPwd call :: {}", authentication.getName());
+        log.info("updateUserPwd call :: {}", authentication.getName());
         int responseCode = userService.updateUserPwd(authentication.getName(), userPwdVO);
         if (responseCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
