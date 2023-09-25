@@ -24,7 +24,7 @@ CREATE TABLE `vegan_tb`
 CREATE TABLE `item_tb`
 (
     `item_id`        BIGINT       NOT NULL primary key auto_increment,
-    `item_name`      varchar(20)  NOT NULL,
+    `item_name`      varchar(256)  NOT NULL,
     `item_image`     varchar(512) NULL,
     `item_price`     INT          NOT NULL,
     `item_store`     varchar(20)  NOT NULL,
@@ -74,6 +74,7 @@ CREATE TABLE `saved_recipe_tb`
 
 CREATE TABLE `ingredient_price_tb`
 (
+	`ingr_price_id`        INT NOT NULL primary key auto_increment,
     `ingr_id` INT  NOT NULL,
     `date`    DATE NOT NULL,
     `price`   INT  NOT NULL
@@ -128,6 +129,7 @@ CREATE TABLE `saved_ingredient_tb`
 
 CREATE TABLE `ingredient_preference_tb`
 (
+	`ingr_pref_pk`	INT	NOT NULL primary key auto_increment,
     `user_id`     INT    NOT NULL,
     `ingr_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NULL
@@ -189,6 +191,7 @@ CREATE TABLE `recipe_recommend_tb`
 
 CREATE TABLE `ingredient_recommend_tb`
 (
+	`ingr_recommend_pk`	INT	NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`              INT   NOT NULL,
     `ingr_id`              INT   NOT NULL,
     `ingr_recommend_score` FLOAT NOT NULL
@@ -196,7 +199,7 @@ CREATE TABLE `ingredient_recommend_tb`
   DEFAULT CHARSET = utf8;
 
 ALTER TABLE `ingredient_recommend_tb`
-    ADD CONSTRAINT `PK_INGREDIENT_RECOMMEND_TB` PRIMARY KEY (
+    ADD CONSTRAINT  UNIQUE (
                                                              `user_id`,
                                                              `ingr_id`
         );
@@ -351,7 +354,7 @@ ALTER TABLE `saved_ingredient_tb`
         );
 
 ALTER TABLE `ingredient_preference_tb`
-    ADD CONSTRAINT `PK_INGREDIENT_PREFERENCE_TB` PRIMARY KEY (
+    ADD CONSTRAINT UNIQUE (
                                                               `user_id`,
                                                               `ingr_id`
         );
@@ -445,7 +448,11 @@ ALTER TABLE `ingredient_price_tb`
         )
         REFERENCES `ingredient_tb` (
                                     `ingr_id`
-            );
+            ),
+    ADD CONSTRAINT UNIQUE (
+                                                              `ingr_id`,
+                                                              `date`
+        );
 
 ALTER TABLE `saved_item_tb`
     ADD CONSTRAINT `FK_user_tb_TO_saved_item_tb_1` FOREIGN KEY (

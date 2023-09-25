@@ -102,14 +102,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         future: loadRecipe(widget.recipeId),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return Center(child: SpinKitPulse(
-                itemBuilder: (BuildContext context, int index) {
-                  return Center(
-                    child: Image.asset('assets/images/repeat/bottom_logo.png',
-                        height: 40),
-                  );
-                },
-              ));
+            return Scaffold(
+              body: Center(child: SpinKitPulse(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                      child: Image.asset('assets/images/repeat/bottom_logo.png',
+                          height: 40),
+                    );
+                  },
+                )),
+            );
           } else if (snapshot.hasError) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
