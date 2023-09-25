@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 
 import './fav_rec.dart';
 
-class FavoriteMoreRec extends StatelessWidget {
-  FavoriteMoreRec({super.key});
+class FavoriteMoreRec extends StatefulWidget {
+  FavoriteMoreRec({super.key, this.favorRec});
+  final favorRec;
 
+  @override
+  State<FavoriteMoreRec> createState() => _FavoriteMoreRecState();
+}
+
+class _FavoriteMoreRecState extends State<FavoriteMoreRec> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +27,6 @@ class FavoriteMoreRec extends StatelessWidget {
             centerTitle: true,
             toolbarHeight: 65,
             foregroundColor: Colors.black),
-        body: FavRec());
+        body: FavRec(favorRec: widget.favorRec));
   }
 }
