@@ -2,8 +2,9 @@ import 'package:fe/recipe/recipedetail.dart';
 import 'package:flutter/material.dart';
 
 class FavRec extends StatefulWidget {
-  FavRec({super.key, this.favorRec});
+  FavRec({super.key, this.favorRec, this.scrollController});
   final favorRec;
+  final scrollController;
 
   @override
   State<FavRec> createState() => _FavRecState();
@@ -13,6 +14,7 @@ class _FavRecState extends State<FavRec> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        controller: widget.scrollController,
         itemCount: widget.favorRec.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
@@ -48,15 +50,21 @@ class _FavRecState extends State<FavRec> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            widget.favorRec[index]['recipeName'] as String,
-                            maxLines: 2, style: TextStyle(fontSize: 15),
-                            overflow: TextOverflow.visible, // 생략 기호 추가
+                          Flexible(
+                            flex: 4,
+                            child: Text(
+                              widget.favorRec[index]['recipeName'] as String,
+                              maxLines: 2, style: TextStyle(fontSize: 15),
+                              overflow: TextOverflow.visible, // 생략 기호 추가
+                            ),
                           ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                            color: Color(0xff868E96),
+                          Flexible(
+                            flex: 1,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                              color: Color(0xff868E96),
+                            ),
                           )
                         ],
                       ),

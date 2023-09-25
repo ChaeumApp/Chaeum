@@ -390,41 +390,47 @@ class _MyPageState extends State<MyPage> {
                     child: Column(
                       children: [
                         SizedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(children: [
-                                Text(
-                                  '레시피 ',
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  '(${favorrecipe.length}건)',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ]),
-                              favorrecipe.isNotEmpty
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  FavoriteMoreRec(
-                                                      favorRec: favorrecipe)),
-                                        );
-                                      },
-                                      child: Text('더보기'))
-                                  : Text('')
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(children: [
+                                  Text(
+                                    '레시피 ',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    '(${favorrecipe.length}건)',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ]),
+                                favorrecipe.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        FavoriteMoreRec(
+                                                            favorRec:
+                                                                favorrecipe)),
+                                          );
+                                        },
+                                        child: Text('더보기'))
+                                    : Text('')
+                              ],
+                            ),
                           ),
                         ),
-                        Expanded(
+                        SizedBox(
+                          height: 200,
                           child: GestureDetector(
                               onTap: favorrecipe.isNotEmpty
                                   ? () {
@@ -441,7 +447,10 @@ class _MyPageState extends State<MyPage> {
                                   ? GridView.count(
                                       crossAxisCount: 2,
                                       childAspectRatio: 2 / 1.1,
-                                      children: List<Widget>.generate(4, (idx) {
+                                      children: List<Widget>.generate(
+                                          favorrecipe.length > 4
+                                              ? 4
+                                              : favorrecipe.length, (idx) {
                                         return Container(
                                           margin: const EdgeInsets.all(5),
                                           child: Image.network(
@@ -451,7 +460,8 @@ class _MyPageState extends State<MyPage> {
                                       }).toList())
                                   : Center(child: Text('좋아하는 레시피를 추가해 보세요'))),
                         ),
-                        SizedBox(
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -503,13 +513,14 @@ class _MyPageState extends State<MyPage> {
                                   : null,
                               child: favoringredient.isNotEmpty
                                   ? GridView.count(
-                                      crossAxisCount: 2, // 열 개수
+                                      crossAxisCount: 3, // 열 개수
                                       children: List<Widget>.generate(
-                                          favoringredient.length, (idx) {
+                                          favorrecipe.length > 3
+                                              ? 3
+                                              : favorrecipe.length, (idx) {
                                         return Container(
                                           color: Colors.amber,
-                                          padding: const EdgeInsets.all(30),
-                                          margin: const EdgeInsets.all(8),
+                                          margin: const EdgeInsets.all(3),
                                           child: Image.asset(
                                             'assets/images/main/bakery.png',
                                             width: 100,
