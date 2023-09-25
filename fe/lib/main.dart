@@ -4,6 +4,7 @@ import 'package:fe/category/categorymain.dart';
 import 'package:fe/recipe/recipemain.dart';
 import 'package:fe/search/searchmain.dart';
 import 'package:fe/store/searchstore.dart';
+import 'package:fe/user/pageapi.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
@@ -71,6 +72,7 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   static String? userToken; //user의 정보를 저장하기 위한 변수;
   static final storage = FlutterSecureStorage();
+  final PageApi pageapi = PageApi();
   @override
   void initState() {
     super.initState();
@@ -93,6 +95,12 @@ class _MainState extends State<Main> {
     print('kakaokey$key');
     userToken = await storage.read(key: "login");
     print(userToken);
+    if (userToken != null) {
+      final response = await pageapi
+          .tokenValidation(userToken.toString().split(" ")[1].toString());
+      print(response);
+    }
+
     if (userToken != null) {
       await context
           .read<UserStore>()
