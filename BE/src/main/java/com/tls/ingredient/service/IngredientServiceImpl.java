@@ -1,11 +1,13 @@
 package com.tls.ingredient.service;
 
 import com.tls.ingredient.dto.IngredientDto;
+import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.converter.IngredientConverter;
+import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
@@ -14,6 +16,7 @@ import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final SubCategoryRepository subCategoryRepository;
     private final UserIngrLogRepository userIngrLogRepository;
     private final IngredientConverter ingredientConverter;
+    private final IngredientRecommendRepository ingredientRecommendRepository;
 
     @Override
     public List<IngredientDto> getIngredients(String userEmail) {
@@ -79,6 +83,53 @@ public class IngredientServiceImpl implements IngredientService {
                             subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
                         .forEach(
                             ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId, String userEmail) {
+        List<IngredientDto> results = new ArrayList<>();
+        try {
+            if (subCatId == 0) {
+                if(userEmail != null){
+                    User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                    List<IngredientRecommend> recommendedIngredients =
+                        ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
+                    for (IngredientRecommend recommend : recommendedIngredients) {
+                        Ingredient ingredient = recommend.getIngredient();
+                        if(ingredient.getCategory().getCatId() != catId) continue;
+                        results.add(ingredientConverter.entityToDto(userEmail, ingredient));
+                    }
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                    Collections.shuffle(results);
+                }
+            } else {
+                if(userEmail != null){
+                    User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                    List<IngredientRecommend> recommendedIngredients =
+                        ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
+                    for (IngredientRecommend recommend : recommendedIngredients) {
+                        Ingredient ingredient = recommend.getIngredient();
+                        if(ingredient.getCategory().getCatId() != catId) continue;
+                        if(ingredient.getSubCategory().getSubCatId() != subCatId) continue;
+                        results.add(ingredientConverter.entityToDto(userEmail, ingredient));
+                    }
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                    Collections.shuffle(results);
                 }
             }
             return results;
