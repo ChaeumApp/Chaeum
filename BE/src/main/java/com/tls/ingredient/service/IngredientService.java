@@ -8,7 +8,7 @@ public interface IngredientService {
 
     List<IngredientDto> getIngredients(String userEmail);
 
-    List<IngredientDto> getIngredients(int catId, int subcatId);
+    List<IngredientDto> getIngredients(int catId, int subcatId, String userEmail);
 
     List<IngredientDto> getBestIngredients();
 
