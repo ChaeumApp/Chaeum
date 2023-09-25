@@ -34,7 +34,7 @@ class _IngrMainState extends State<IngrMain> {
 
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   // 받아오기
   Future<dynamic> getIngr() async {

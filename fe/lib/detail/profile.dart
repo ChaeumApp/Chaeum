@@ -15,7 +15,7 @@ class _ProfileViewState extends State<ProfileView>{
 
 
   Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://j9c204.p.ssafy.io:8080',
+    baseUrl: 'http://j9c204.p.ssafy.io',
     // headers: {'Authorization': 'Bearer Token'},
   ));
 
