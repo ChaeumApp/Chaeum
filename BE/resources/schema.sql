@@ -121,6 +121,12 @@ CREATE TABLE `subcat_tb`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
+CREATE TABLE `ingredient_group_tb` (
+	`ingr_group_id`	INT	NOT NULL primary key auto_increment,
+	`ingr_id`	INT	NOT NULL,
+	`group_id`	INT	NOT NULL
+);
+
 CREATE TABLE `saved_ingredient_tb`
 (
     `user_id` INT NOT NULL,
@@ -276,6 +282,14 @@ ALTER TABLE `ingredient_select_log_tb`
         )
         REFERENCES `ingredient_tb` (
                                     `ingr_id`
+            );
+
+ALTER TABLE `ingredient_group_tb`
+    ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_group_tb_1` FOREIGN KEY (
+                                                                          `ingr_id`
+        )
+        REFERENCES `ingredient_tb` (
+                              `ingr_id`
             );
 
 

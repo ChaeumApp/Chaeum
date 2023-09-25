@@ -92,3 +92,18 @@ class IngredientPrice(models.Model):
                 name = 'ingredient date id'
             )
         ]
+
+class IngredientGroup(models.Model):
+    ingr_group_id = models.IntegerField(primary_key=True)
+    ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
+    group_id = models.IntegerField()
+
+    class Meta:
+        db_table = "ingredient_group_tb"
+        constraints = [
+            models.UniqueConstraint(
+                fields = ['ingr_id', 'group_id'],
+                name = 'ingredient group id'
+            )
+        ]
+
