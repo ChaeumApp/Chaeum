@@ -6,6 +6,7 @@ import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,17 +57,27 @@ public class IngredientController {
 
     }
 
-    @GetMapping("category")
+    @GetMapping("category/{catId}/{subCatId}")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredientsByCatAndSubCat(
-        @RequestParam int catId, @RequestParam(required = false) String subCatId) {
+    public ResponseEntity<?> getIngredientsByCatAndSubCat(@RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
+        @PathVariable int catId, @PathVariable(required = false) String subCatId) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId,
-            subCatId == null ? 0 : Integer.parseInt(subCatId));
-        if (ingredientDtoList != null) {
+        try {
+            List<List<IngredientDto>> ingredientDtoList = new ArrayList<>();
+            int subCatIdInteger = subCatId == null ? 0 : Integer.parseInt(subCatId);
+            if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
+                ingredientDtoList.add(ingredientService
+                    .getIngredients(catId, subCatIdInteger, userEmail));
+                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, userEmail));
+            } else {
+                ingredientDtoList.add(ingredientService.getIngredients(catId, subCatIdInteger, null));
+                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, null));
+            }
             return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
