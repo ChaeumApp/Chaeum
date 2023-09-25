@@ -193,33 +193,9 @@ class _LogInState extends State<LogIn> {
                                           ))),
                                 ),
                               ),
-                              SizedBox(
-                                height: 20.0,
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        child: Text('비밀번호 찾기'),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          FindPassword()));
-                                        },
-                                      ),
-                                    ]),
-                              ),
                               Container(
                                 margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: Column(children: [
-                                  Text(
-                                    '소셜 로그인',
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600),
-                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -497,14 +473,20 @@ class _LogInState extends State<LogIn> {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text('아직 회원이 아니신가요?  '),
-                                      TextButton(
-                                          onPressed: () {
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '아직 회원이 아니신가요?      ',
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -519,10 +501,31 @@ class _LogInState extends State<LogIn> {
                                           child: Text(
                                             '회원가입',
                                             style: TextStyle(
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w700,
                                             ),
-                                          ))
-                                    ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 40.0,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            child: Text('비밀번호 찾기'),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          FindPassword()));
+                                            },
+                                          ),
+                                        ]),
                                   ),
                                 ]),
                               )
