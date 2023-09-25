@@ -333,6 +333,8 @@ public class UserServiceImpl implements UserService {
                 allergyList = userAllergyRepository.findAllByUserId(user).get().stream()
                         .map(UserAllergy::getAlgyId).collect(Collectors.toList());
             }
+            ingrList.sort(Collections.reverseOrder());
+            recipeList.sort(Collections.reverseOrder());
             return new UserProfileDto(userEmail, veganId, ingrList, recipeList, allergyList);
         } catch (Exception e) {
             return null;
