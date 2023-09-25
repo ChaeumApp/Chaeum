@@ -18,7 +18,7 @@ public interface IngredientService {
 
     int selectIngredient(String userEmail, IngredientVO ingredientVO);
 
-    int dislikeIngredient(IngredientVO ingredientVO);
+    int dislikeIngredient(String userEmail, IngredientVO ingredientVO);
 
     int favoriteIngredient(String userEmail, int ingrId);
 
