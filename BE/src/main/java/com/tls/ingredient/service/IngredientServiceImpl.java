@@ -19,7 +19,6 @@ import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientRecommendRepository ingredientRecommendRepository;
     private final IngredientPriceRepository ingredientPriceRepository;
     private final int TERM = 7;
-    private final int NUMBERS = 10;
+    private final int NUMBERS = 12;
 
     @Override
     public List<IngredientDto> getIngredients(String userEmail) {
