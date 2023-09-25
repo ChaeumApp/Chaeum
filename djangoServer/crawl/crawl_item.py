@@ -7,6 +7,18 @@ from datetime import datetime
 import pandas as pd
 import os
 import time
+import sys
+import django
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
+sys.path.append(parent_dir)
+
+# settings_module_path = os.path.abspath(os.path.join(current_dir, "../djangoServer/settings.py"))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoServer.settings")
+django.setup()
+from recommend.models import Item
+from djangoServer import settings
 
 url = "https://www.coupang.com/np/search"
 base_url = "https://www.coupang.com/"
@@ -93,6 +105,15 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
 
                 price = item.select_one('strong.price-value').text.strip()
                 price = ''.join(price.split(','))
+
+                # item_obj = Item(
+                #     item_name = item_name,
+                #     item_image = thumbnail,
+                #     item_price = int(price),
+                #     item_store = "Coupang",
+                #     item_storelink = link,
+                #     item_crawling_date = datetime.now().date()
+                # )
                 result_list.append([id, item_name, price, link, thumbnail])
             except Exception as e:
                 print(e)
