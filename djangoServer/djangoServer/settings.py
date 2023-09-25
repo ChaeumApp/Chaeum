@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'crawl',
     'recommend',
     'django_extensions',
     'django.contrib.admin',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_apscheduler'
 
 ]
 
@@ -89,6 +91,14 @@ DATABASES = {
         }
     }
 }
+
+
+## apscheduler
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 2100    # Seconds
+
+SCHEDULER_DEFAULT = True
 
 
 # Password validation
