@@ -1,5 +1,6 @@
 package com.tls.ingredient.service;
 
+import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.vo.IngredientVO;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface IngredientService {
     int dislikeIngredient(IngredientVO ingredientVO);
 
     int favoriteIngredient(String userEmail, int ingrId);
+
+    List<IngredientPriceVO> getPriceList(int ingrId);
 }

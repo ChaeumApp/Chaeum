@@ -1,12 +1,15 @@
 package com.tls.ingredient.service;
 
+import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
+import com.tls.ingredient.entity.single.IngredientPrice;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.converter.IngredientConverter;
+import com.tls.ingredient.repository.IngredientPriceRepository;
 import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
@@ -15,6 +18,9 @@ import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +41,9 @@ public class IngredientServiceImpl implements IngredientService {
     private final UserIngrLogRepository userIngrLogRepository;
     private final IngredientConverter ingredientConverter;
     private final IngredientRecommendRepository ingredientRecommendRepository;
+    private final IngredientPriceRepository ingredientPriceRepository;
+    private final int TERM = 7;
+    private final int NUMBERS = 10;
 
     @Override
     public List<IngredientDto> getIngredients(String userEmail) {
@@ -196,5 +205,30 @@ public class IngredientServiceImpl implements IngredientService {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    @Override
+    public List<IngredientPriceVO> getPriceList(int ingrId) {
+        try{
+            List<IngredientPriceVO> ingredientPriceVOs = new ArrayList<>();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingrId).orElseThrow();
+            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient).orElseThrow();
+            for(int i = 0 ; i < list.size(); i++) {
+                IngredientPrice ingredientPrice = list.get(i);
+                if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM != 0){
+                    continue;
+                }
+                IngredientPriceVO ingredientPriceVO = IngredientPriceVO.builder()
+                    .price(ingredientPrice.getPrice())
+                    .date(ingredientPrice.getDate())
+                    .build();
+                ingredientPriceVOs.add(ingredientPriceVO);
+                if( i+1 == NUMBERS) break;
+            }
+            return ingredientPriceVOs;
+        } catch (Exception e){
+            return null;
+        }
+
     }
 }

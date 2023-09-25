@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -90,14 +89,14 @@ public class IngredientController {
         log.info("getIngredient call :: {}", ingrId);
         try {
             IngredientDto ingredientDto;
-            if (tokenWithPrefix.split(" ")[0].equals("Bearer")) {
-                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+            if (tokenWithPrefix!= null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider
+                    .getAuthentication(tokenWithPrefix.substring(7))
                     .getName();
                 ingredientDto = ingredientService.getIngredient(userEmail, ingrId);
             } else {
                 ingredientDto = ingredientService.getIngredient(null, ingrId);
             }
-
             if (ingredientDto != null) {
                 return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
             } else {
@@ -106,7 +105,17 @@ public class IngredientController {
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
+    }
 
+    @GetMapping("price/{ingrId}")
+    @Operation(summary = "소분류 가격정보를 조회하는 메서드", description = "소분류의 기간에 따른 가격 정보 리스트를 반환합니다.", tags = "소분류 API")
+    public ResponseEntity<?> getPriceList(@PathVariable(name = "ingrId") int ingrId){
+        log.info("getPriceList call :: {}", ingrId);
+        try {
+            return new ResponseEntity<>(ingredientService.getPriceList(ingrId), HttpStatus.OK);
+        } catch (Exception e){
+            return getResponseEntity(-1);
+        }
     }
 
     @GetMapping("/best")
