@@ -248,8 +248,9 @@ class _DetailState extends State<Detail> {
                 SliverPersistentHeader(
                   delegate: MyDelegate(TabBar(
                       labelColor: Colors.black,
+                      indicatorWeight: 3,
                       unselectedLabelColor: Color(0xffD0D0D0),
-                      labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16
@@ -267,7 +268,7 @@ class _DetailState extends State<Detail> {
               ];
             },
             body: TabBarView(children: [
-              RecommendProduct(),
+              RecommendProduct(ingrId : widget.category),
               PriceInfo(),
               DetailRecipe(),
             ]),

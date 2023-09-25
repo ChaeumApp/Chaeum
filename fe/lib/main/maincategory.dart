@@ -29,7 +29,7 @@ class MainCategory extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        IngrMain(catId : category[i]['catId'], subCatId : category[i]['subCatId'], catName : category[i]['catName'])));
+                        IngrMain(catId : category[i]['catId'], subCatId : category[i]['subCatId'], catName : category[i]['catName'], sortNum : 0)));
           },
           child: Center(
             child: Column(
