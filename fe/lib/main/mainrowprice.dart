@@ -13,7 +13,7 @@ class MainRowPrice extends StatefulWidget {
 
 class _MainRowPriceState extends State<MainRowPrice> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getLowPrice() async {
     try {

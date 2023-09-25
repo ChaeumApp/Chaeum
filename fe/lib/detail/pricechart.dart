@@ -12,7 +12,7 @@ class PriceChart extends StatefulWidget {
 
 class _PriceChartState extends State<PriceChart> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getPriceChart() async {
     try {
