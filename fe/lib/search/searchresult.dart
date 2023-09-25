@@ -1,8 +1,10 @@
 import 'package:fe/search/searchingr.dart';
 import 'package:fe/search/searchrecipe.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchResult extends StatefulWidget {
   const SearchResult({super.key, this.searchWord});
@@ -30,6 +32,13 @@ class _SearchResultState extends State<SearchResult> {
     super.dispose();
   }
 
+  Future<void> addWordToList(String word) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> wordList = prefs.getStringList('wordList') ?? [];
+    wordList.insert(0, word);
+    await prefs.setStringList('wordList', wordList);
+  }
+
 
 
   @override
@@ -49,9 +58,8 @@ class _SearchResultState extends State<SearchResult> {
               title: TextField(
                 controller: word,
                 onSubmitted: (value){
-                  context.read<UserStore>().addSearchList(value);
-                  print(context.read<UserStore>().searchList);
-
+                  addWordToList(value);
+                  context.read<SearchStore>().watchSearch();
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
                     SearchResult(searchWord : value)
                   ));

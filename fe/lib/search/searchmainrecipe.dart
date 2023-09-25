@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:fe/recipe/recipedetail.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SearchMainRecipe extends StatefulWidget {
@@ -20,6 +23,23 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
       return response.data;
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<dynamic> clickRecipe(recipeId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -99,11 +119,11 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                     (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             ));
+                      clickRecipe(snapshot.data[index]['recipeId']);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
                     },
                     child: Container(
                       margin: EdgeInsets.fromLTRB(20, 0, 20, 10),

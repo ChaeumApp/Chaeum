@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:fe/repeat/needlogin.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 
 class ProfileView extends StatefulWidget {
   ProfileView({super.key, this.category});
@@ -11,22 +14,48 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView>{
-  var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : true};
+  var data = {'saleper': 10, 'salewon': 300, 'salerank': 1, 'like' : false};
 
 
-  Dio dio = Dio(BaseOptions(
-    baseUrl: 'http://j9c204.p.ssafy.io',
-    // headers: {'Authorization': 'Bearer Token'},
-  ));
+  Dio dio = Dio();
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
+  bool isSet = false;
 
   Future<dynamic> getProductInfo() async {
-    // final token = await widget.storage.read(key: 'login');
-    // final accessToken = token.toString().split(" ")[1].toString());
+    var accessToken = context.read<UserStore>().accessToken;
+    print('토큰은 $accessToken');
     try {
-      final response = await dio.get('/ingr/detail/${widget.category}',
-      queryParameters: {'ingrId' : widget.category});
-      print(response.data);
+      final response = await dio.get(
+        '$serverURL/ingr/detail/${widget.category}',
+        queryParameters: {'ingrId' : widget.category},
+        options: Options(
+          headers: {'Authorization': accessToken != '' ? 'Bearer $accessToken' : ''},
+        ),
+      );
+
+      // Response response;
+      // if (accessToken != '') {
+      //   response = await dio.get(
+      //     '$serverURL/ingr/detail/${widget.category}',
+      //     queryParameters: {'ingrId' : widget.category},
+      //     options: Options(
+      //       headers: {'Authorization': 'Bearer $accessToken'},
+      //     ),
+      //   );
+      // } else {
+      //   response = await dio.get(
+      //     '$serverURL/ingr/detail/${widget.category}',
+      //     queryParameters: {'ingrId' : widget.category},
+      //   );
+      // }
+      if (!isSet) {
+        setState(() {
+          data['like'] = response.data['savedIngredient'];
+          isSet = true;
+        });
+      }
+      // print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -34,23 +63,40 @@ class _ProfileViewState extends State<ProfileView>{
   }
 
 
-
   Future<bool?> toggleLike(bool isLiked) async {
     bool liked = false;
-    setState(() {
-      if (data.containsKey('like') && data['like'] is bool) {
-        data['like'] = !(data['like'] as bool);
-        liked = data['like'] as bool;
-      } else {
-        data['like'] = false;
+    var accessToken = context.read<UserStore>().accessToken;
+    print('카테고리임 ${widget.category}');
+    if (accessToken != ''){
+      final response =await dio.post(
+        '$serverURL/ingr/favorite',
+        data: {'ingrId' : widget.category},
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+      if(response.data == 'success'){
+        setState(() {
+          if (data.containsKey('like') && data['like'] is bool) {
+            data['like'] = !(data['like'] as bool);
+            liked = data['like'] as bool;
+          } else {
+            data['like'] = false;
+          }
+        });
       }
-    });
-    return Future.value(liked);
+      print(response.data);
+      return Future.value(liked);
+    } else {
+      Alertlogin().needLogin(context);
+    }
   }
 
 
   @override
   Widget build(BuildContext context) {
+
+
     return FutureBuilder(future: getProductInfo(), builder: (BuildContext context, AsyncSnapshot snapshot){
       if (snapshot.hasData == false) {
         return SizedBox.shrink();
@@ -79,7 +125,7 @@ class _ProfileViewState extends State<ProfileView>{
               Container(
                 margin: EdgeInsets.only(right: 10),
                 child: LikeButton(
-                  isLiked: data['like'] as bool, // 초기 좋아요 상태
+                  isLiked: data['like'] as bool,
                   onTap: (isLiked) {
                     return toggleLike(isLiked);
                   },
