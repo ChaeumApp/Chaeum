@@ -4,8 +4,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import './productlist.dart';
 
 class RecommendProduct extends StatefulWidget {
-  const RecommendProduct({super.key, this.ingrId});
+  const RecommendProduct({super.key, this.ingrId, this.scrollController});
   final ingrId;
+  final scrollController;
 
   @override
   State<RecommendProduct> createState() => _RecommendProductState();
@@ -120,57 +121,57 @@ class _RecommendProductState extends State<RecommendProduct> {
                       margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('총 ${snapshot.data.length}개',
+                          Text('${snapshot.data.length}개 상품',
                           style: TextStyle(fontSize: 15),),
-                          SizedBox(
-                            height: 30,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xffA1CBA1), width: 1.5),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: DropdownButton(
-                                  underline: Container(),
-                                  icon: Icon(Icons.keyboard_arrow_down,
-                                  color: Color(0xffA1CBA1),
-                                  size: 25),
-                                  padding: EdgeInsets.fromLTRB(15, 0, 7, 0),
-                                  style: TextStyle(color: Colors.black,
-                                  fontSize: 14),
-                                  value: selectedVal,
-                                  items: sort.map((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Container(
-                                        width: 55,
-                                        child: Text(e),),
-                                          ))
-                                      .toList(),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      selectedVal = val as String;
-                                    });
-                                  },
-                                  selectedItemBuilder: (BuildContext context){
-                                    return sort.map((String value){
-                                      return Center(
-                                        child: Text(
-                                          selectedVal ?? "", style: TextStyle(
-                                            color: Color(0xffA1CBA1),
-                                        fontWeight: FontWeight.w700),
-                                        ),
-                                      );
-                                    }).toList();
-                                  },
-                              itemHeight: 50),
-                            ),
-                          )
+                          // SizedBox(
+                          //   height: 30,
+                          //   child: DecoratedBox(
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(color: Color(0xffA1CBA1), width: 1.5),
+                          //       borderRadius: BorderRadius.circular(30),
+                          //     ),
+                          //     child: DropdownButton(
+                          //         underline: Container(),
+                          //         icon: Icon(Icons.keyboard_arrow_down,
+                          //         color: Color(0xffA1CBA1),
+                          //         size: 25),
+                          //         padding: EdgeInsets.fromLTRB(15, 0, 7, 0),
+                          //         style: TextStyle(color: Colors.black,
+                          //         fontSize: 14),
+                          //         value: selectedVal,
+                          //         items: sort.map((e) => DropdownMenuItem(
+                          //           value: e,
+                          //           child: Container(
+                          //               width: 55,
+                          //               child: Text(e),),
+                          //                 ))
+                          //             .toList(),
+                          //         onChanged: (val) {
+                          //           setState(() {
+                          //             selectedVal = val as String;
+                          //           });
+                          //         },
+                          //         selectedItemBuilder: (BuildContext context){
+                          //           return sort.map((String value){
+                          //             return Center(
+                          //               child: Text(
+                          //                 selectedVal ?? "", style: TextStyle(
+                          //                   color: Color(0xffA1CBA1),
+                          //               fontWeight: FontWeight.w700),
+                          //               ),
+                          //             );
+                          //           }).toList();
+                          //         },
+                          //     itemHeight: 50),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
                   ),
-                  ProductList(product : snapshot.data)
+                  ProductList(product : snapshot.data, scrollController : widget.scrollController)
                 ],
               );
           }
