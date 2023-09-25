@@ -105,9 +105,9 @@ class _AddInfoState extends State<AddInfo> {
         }
 
         controller3.text = widget.user['birth'].toString().substring(6, 8);
-        print(controller2.text);
-        print(controller2.text.runtimeType);
-        if (controller2.text != 'll') {
+        print(controller3.text);
+        print(controller3.text.runtimeType);
+        if (controller3.text != 'll') {
           daycheck = true;
         } else {
           controller3.text = '';

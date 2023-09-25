@@ -270,13 +270,7 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 21), () {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => Main(),
-          ),
-          (route) => false);
-    });
+
     Future.delayed(Duration.zero, () async {
       final userStore = Provider.of<UserStore>(context, listen: false);
       final accessToken = userStore.accessToken;
@@ -421,7 +415,8 @@ class _MyPageState extends State<MyPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  FavoriteMoreRec()),
+                                                  FavoriteMoreRec(
+                                                      favorRec: favorrecipe)),
                                         );
                                       },
                                       child: Text('더보기'))
@@ -437,19 +432,18 @@ class _MyPageState extends State<MyPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
-                                                FavoriteMoreRec()),
+                                                FavoriteMoreRec(
+                                                    favorRec: favorrecipe)),
                                       );
                                     }
                                   : null,
                               child: favorrecipe.isNotEmpty
                                   ? GridView.count(
-                                      crossAxisCount: 2, // 열 개수
-                                      children: List<Widget>.generate(
-                                          favorrecipe.length, (idx) {
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 2 / 1.1,
+                                      children: List<Widget>.generate(4, (idx) {
                                         return Container(
-                                          color: Colors.amber,
-                                          padding: const EdgeInsets.all(30),
-                                          margin: const EdgeInsets.all(8),
+                                          margin: const EdgeInsets.all(5),
                                           child: Image.network(
                                             favorrecipe[idx]['recipeThumbnail'],
                                           ),
@@ -483,7 +477,9 @@ class _MyPageState extends State<MyPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  FavoriteMoreFood()),
+                                                  FavoriteMoreFood(
+                                                      favorIngr:
+                                                          favoringredient)),
                                         );
                                       },
                                       child: Text('더보기'))
@@ -499,7 +495,9 @@ class _MyPageState extends State<MyPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
-                                                FavoriteMoreFood()),
+                                                FavoriteMoreFood(
+                                                    favorIngr:
+                                                        favoringredient)),
                                       );
                                     }
                                   : null,
@@ -765,13 +763,130 @@ class _MyPageState extends State<MyPage> {
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
                 onPressed: () async {
-                  final response = await pageapi.deleteuser(
-                      context.read<UserStore>().accessToken,
-                      context.read<UserStore>().userId);
-                  // if (response )
-                  await UserApi.instance.unlink();
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            contentPadding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    child: Image.asset(
+                                      'assets/images/repeat/bottom_logo.png',
+                                      height: 50,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text('정말로 탈퇴하시겠습니까?',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700)),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            top: BorderSide(
+                                                width: 1,
+                                                color: Colors.black26))),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: InkWell(
+                                            onTap: () async {
+                                              try {
+                                                final response =
+                                                    await pageapi.deleteuser(
+                                                        context
+                                                            .read<UserStore>()
+                                                            .accessToken,
+                                                        context
+                                                            .read<UserStore>()
+                                                            .userId);
+                                                await widget.storage
+                                                    .delete(key: "login");
 
-                  print('연결 끊기 성공, SDK에서 토큰 삭제');
+                                                // if (response )
+                                                if (response == 'success') {
+                                                  if (context
+                                                          .read<UserStore>()
+                                                          .userId
+                                                          .substring(0, 3) ==
+                                                      '[K]') {
+                                                    await UserApi.instance
+                                                        .unlink();
+                                                    print('카카오 연동 해제 성공');
+                                                  } else if (context
+                                                          .read<UserStore>()
+                                                          .userId
+                                                          .substring(0, 3) ==
+                                                      '[N]') {
+                                                    print(
+                                                        '회원탈퇴 되었습니다. 네이버에서 정보 제공 동의를 제거하세요');
+                                                  }
+                                                  print(
+                                                      '연결 끊기 성공, SDK에서 토큰 삭제');
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Main()),
+                                                      (route) => false);
+                                                } else {
+                                                  print('서버 연결을 확인해주세요');
+                                                }
+                                              } catch (e) {
+                                                print('무슨 에러이니 ㅇ려줘 $e');
+                                              }
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 15, 0, 15),
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      right: BorderSide(
+                                                          width: 1,
+                                                          color:
+                                                              Colors.black26))),
+                                              child: Text(
+                                                '회원탈퇴',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 15, 0, 15),
+                                              child: Text(
+                                                '취소',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]));
+                      });
                 },
               ),
             ]),

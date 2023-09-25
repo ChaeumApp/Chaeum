@@ -97,24 +97,35 @@ class _MainState extends State<Main> {
     print(userToken);
     print('------');
     if (userToken != null) {
-      final response = await pageapi
-          .tokenValidation(userToken.toString().split(" ")[1].toString());
-      print(response);
+      try {
+        final response = await pageapi
+            .tokenValidation(userToken.toString().split(" ")[1].toString());
+        print(response);
 
-      if (response == 'success') {
-        await context
-            .read<UserStore>()
-            .changeAccessToken(userToken.toString().split(" ")[1].toString());
-        final storetoken = context.read<UserStore>().accessToken;
-        print('이닛 다시 하나요?');
-        print(storetoken);
-      } else {
-        print('토큰 제거 실행여부');
+        if (response == 'success') {
+          await context
+              .read<UserStore>()
+              .changeAccessToken(userToken.toString().split(" ")[1].toString());
+          final storetoken = context.read<UserStore>().accessToken;
+          print('이닛 다시 하나요?');
+          print(storetoken);
+        } else {
+          print('토큰 제거 실행여부');
+          await storage.delete(key: "login");
+          await context.read<UserStore>().changeAccessToken('');
+          setState(() {});
+        }
+      } catch (e) {
+        print('그냥 다 로그아웃');
         await storage.delete(key: "login");
         await context.read<UserStore>().changeAccessToken('');
         setState(() {});
       }
-    } else {}
+    } else {
+      await storage.delete(key: "login");
+      await context.read<UserStore>().changeAccessToken('');
+      setState(() {});
+    }
     final devicetoken = await getMyDeviceToken();
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }
