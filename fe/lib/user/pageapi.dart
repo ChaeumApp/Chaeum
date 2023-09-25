@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 class PageApi {
   final Dio dio = Dio(); // Dio HTTP 클라이언트 초기화
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
-  // final serverURL = 'http://10.0.2.2:8080';
+  // final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'http://10.0.2.2:8080';
 
   Future<dynamic> login(id, password, deviceToken) async {
     try {
@@ -192,6 +192,23 @@ class PageApi {
             },
           ));
       print('토큰유효 api ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> deleteuser(token, id) async {
+    try {
+      final response = await dio.delete('$serverURL/user',
+          data: {"userEmail": id},
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('회원탈퇴 api ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
