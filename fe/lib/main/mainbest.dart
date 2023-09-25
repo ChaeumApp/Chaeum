@@ -18,7 +18,7 @@ class MainBest extends StatefulWidget {
 class _MainBestState extends State<MainBest> {
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
   // 얻어오는거
   Future<dynamic> getMainBest() async {
     try {

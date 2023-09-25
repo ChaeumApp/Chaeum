@@ -14,7 +14,7 @@ class SearchRecipe extends StatefulWidget {
 
 class _SearchRecipeState extends State<SearchRecipe> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> searchRecipe() async {
     try {
