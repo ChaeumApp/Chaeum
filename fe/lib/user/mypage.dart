@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import '../store/userstore.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
 class MyPage extends StatefulWidget {
   MyPage({super.key, this.storage});
 
@@ -18,16 +20,12 @@ class MyPage extends StatefulWidget {
   State<MyPage> createState() => _MyPageState();
 }
 
-class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _MyPageState extends State<MyPage> {
   final PageApi pageapi = PageApi();
 
   List<dynamic> favoringredient = [];
   List<dynamic> favorrecipe = [];
 
-  List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
   TextEditingController controller3 = TextEditingController();
@@ -65,7 +63,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
     '오징어',
     '조개류'
   ];
-  List<Object?> selectedAllergie = [];
+  List<dynamic> selectedAllergie = [];
   List<dynamic> selectedAllergieNumber = [];
 
   bool algdropdown = false;
@@ -220,20 +218,12 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                   selectedAllergieNumber = resultList;
                                   print(selectedAllergieNumber);
                                 },
+                                initialValue: selectedAllergie,
                                 chipDisplay: MultiSelectChipDisplay(
                                   chipColor: Color(0xffA1CBA1),
                                   textStyle: TextStyle(color: Colors.white),
                                 ),
                               ),
-                              selectedAllergie.isEmpty
-                                  ? Container(
-                                      padding: EdgeInsets.all(10),
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "None selected",
-                                        style: TextStyle(color: Colors.black54),
-                                      ))
-                                  : Container(),
                             ]
                           : [],
                     ),
@@ -276,28 +266,11 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
         }));
   }
 
-  Dio dio = Dio();
-
-  changepassword() async {
-    try {
-      Response response =
-          await dio.post('http://10.0.2.2:8080/user/signin', data: {
-        'curpassword': controller.text.toString(),
-        'nextpassword': controller2.text.toString()
-      });
-      print('여기문제없어');
-      return response.data;
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
       final userStore = Provider.of<UserStore>(context, listen: false);
-      print(userStore.accessToken);
       final accessToken = userStore.accessToken;
       print(accessToken);
       final info = await pageapi.getinfo(accessToken);
@@ -305,9 +278,26 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
 
       if (info != null) {
         await userStore.changeUserInfo(info['userEmail']);
+        favoringredient = info['ingredientList'];
+        favorrecipe = info['recipeList'];
+        selectedVeganNumber = info['veganId'];
+        selectedVegan = veganList[selectedVeganNumber];
+
+        final resallergyList = (info['allergyList']);
+        print(resallergyList);
+        print(resallergyList.runtimeType);
+        if (resallergyList.isNotEmpty) {
+          print(1);
+          algdropdown = true;
+          havAllergie = '있음';
+        }
+        for (int i = 0; i < resallergyList.length; i++) {
+          selectedAllergieNumber.add(resallergyList[i]['algyId']);
+          selectedAllergie.add(resallergyList[i]['algyName']);
+        }
+        print(selectedAllergieNumber);
+        print(selectedAllergie);
       }
-      favoringredient = info['ingredientList'];
-      favorrecipe = info['recipeList'];
       setState(() {});
       // 이제 userStore를 사용할 수 있습니다.
       // ...
@@ -433,27 +423,27 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                         ),
                         Expanded(
                           child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          FavoriteMoreRec()),
-                                );
-                              },
+                              onTap: favorrecipe.isNotEmpty
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                FavoriteMoreRec()),
+                                      );
+                                    }
+                                  : null,
                               child: favorrecipe.isNotEmpty
                                   ? GridView.count(
                                       crossAxisCount: 2, // 열 개수
                                       children: List<Widget>.generate(
-                                          foodlist.length, (idx) {
+                                          favorrecipe.length, (idx) {
                                         return Container(
                                           color: Colors.amber,
                                           padding: const EdgeInsets.all(30),
                                           margin: const EdgeInsets.all(8),
-                                          child: Image.asset(
-                                            'assets/images/main/${foodlist[idx]}',
-                                            width: 100,
-                                            height: 100,
+                                          child: Image.network(
+                                            favorrecipe[idx]['recipeThumbnail'],
                                           ),
                                         );
                                       }).toList())
@@ -495,25 +485,27 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                         ),
                         Expanded(
                           child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          FavoriteMoreFood()),
-                                );
-                              },
+                              onTap: favoringredient.isNotEmpty
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                FavoriteMoreFood()),
+                                      );
+                                    }
+                                  : null,
                               child: favoringredient.isNotEmpty
                                   ? GridView.count(
                                       crossAxisCount: 2, // 열 개수
                                       children: List<Widget>.generate(
-                                          foodlist.length, (idx) {
+                                          favoringredient.length, (idx) {
                                         return Container(
                                           color: Colors.amber,
                                           padding: const EdgeInsets.all(30),
                                           margin: const EdgeInsets.all(8),
                                           child: Image.asset(
-                                            'assets/images/main/${foodlist[idx]}',
+                                            'assets/images/main/bakery.png',
                                             width: 100,
                                             height: 100,
                                           ),
@@ -543,7 +535,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                    barrierDismissible: false,
                     builder: ((context) {
                       return AlertDialog(
                         title: Text("비밀번호 변경"),
@@ -637,16 +629,84 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                               .hasMatch(controller3.text) &&
                                           controller2.text ==
                                               controller3.text) {
-                                        final response = await changepassword();
+                                        final response =
+                                            await pageapi.changepassword(
+                                                context
+                                                    .read<UserStore>()
+                                                    .accessToken,
+                                                controller.text,
+                                                controller2.text);
+
+                                        if (response == 'success') {
+                                          //메인페이지 이동 후 알림창 띄우고 토큰 삭제하기
+                                        } else if (response == 'fail') {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible:
+                                                  true, //바깥 영역 터치시 닫을지 여부 결정
+                                              builder: ((context) {
+                                                return AlertDialog(
+                                                    content:
+                                                        Text('현재 비밀번호와 다릅니다.'),
+                                                    actions: <Widget>[
+                                                      Container(
+                                                        child: TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); //창 닫기
+                                                          },
+                                                          child: Text("닫기"),
+                                                        ),
+                                                      )
+                                                    ]);
+                                              }));
+                                        }
                                       } else if (!RegExp(
                                               r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                           .hasMatch(controller2.text)) {
-                                        showSnackBar(context,
-                                            Text('비밀번호는 특수문자,영어, 숫자를 포함해 주세요'));
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                                true, //바깥 영역 터치시 닫을지 여부 결정
+                                            builder: ((context) {
+                                              return AlertDialog(
+                                                  content: Text(
+                                                      '특수문자,영어, 숫자를 포함해 주세요'),
+                                                  actions: <Widget>[
+                                                    Container(
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop(); //창 닫기
+                                                        },
+                                                        child: Text("닫기"),
+                                                      ),
+                                                    )
+                                                  ]);
+                                            }));
                                       } else if (controller2.text !=
                                           controller3.text) {
-                                        showSnackBar(context,
-                                            Text('비밀번호화 비밀번호 확인이 다릅니다.'));
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                                true, //바깥 영역 터치시 닫을지 여부 결정
+                                            builder: ((context) {
+                                              return AlertDialog(
+                                                  content: Text(
+                                                      '새로 입력한 비밀번호 같지 않습니다.'),
+                                                  actions: <Widget>[
+                                                    Container(
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop(); //창 닫기
+                                                        },
+                                                        child: Text("닫기"),
+                                                      ),
+                                                    )
+                                                  ]);
+                                            }));
                                       } else {
                                         showSnackBar(context,
                                             Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
@@ -658,6 +718,9 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                           Color(0xffA1CBA1))),
                                   onPressed: () {
                                     Navigator.of(context).pop(); //창 닫기
+                                    controller.text = '';
+                                    controller2.text = '';
+                                    controller3.text = '';
                                   },
                                   child: Text("취소하기"),
                                 ),
@@ -677,7 +740,9 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                   onPressed: () async {
-                    await widget.storage.delete(key: "login");
+                    // await widget.storage.delete(key: "login");
+                    await pageapi.logout(context.read<UserStore>().accessToken);
+                    await context.read<UserStore>().changeAccessToken('');
 
                     Navigator.pushAndRemoveUntil(
                         context,
