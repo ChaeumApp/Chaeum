@@ -7,8 +7,8 @@ class UserStore extends ChangeNotifier {
   }
 
   String accessToken = '';
-  changeAccessToken(accessToken) {
-    accessToken = accessToken;
+  changeAccessToken(accesstoken) {
+    accessToken = accesstoken;
   }
 
   String userId = '';

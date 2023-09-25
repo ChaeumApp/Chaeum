@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/click.dart';
+import 'package:fe/recipe/recipedetail.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailRecipe extends StatefulWidget {
@@ -21,6 +24,23 @@ class _DetailRecipeState extends State<DetailRecipe> {
       return response.data;
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<dynamic> clickRecipe(recipeId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -73,7 +93,11 @@ class _DetailRecipeState extends State<DetailRecipe> {
                     return GestureDetector(
                       onTap: (){
                         // 연결후 추가
-                        // clickRecipe();
+                        clickRecipe(index);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => RecipeDetailPage(recipeId : recipes[index]['recipeId'])));
                       },
                       child: Container(
                         height: 100,

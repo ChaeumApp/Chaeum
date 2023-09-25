@@ -1,10 +1,8 @@
 package com.tls.user.controller;
 
-import com.tls.config.RandomStringCreator;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.user.dto.UserProfileDto;
-import com.tls.user.repository.UserRepository;
 import com.tls.user.service.OAuthService;
 import com.tls.user.service.UserService;
 import com.tls.user.vo.UserEmailVO;
@@ -44,8 +42,6 @@ public class UserController {
     private final UserService userService;
     private final OAuthService oAuthService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
-    private final RandomStringCreator rsc = new RandomStringCreator();
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입 메서드", description = "회원 정보를 넘겨주면 회원가입을 처리합니다.", tags = "유저 API")
@@ -196,7 +192,7 @@ public class UserController {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
-        log.info("findUserPwd call :: {}", authentication.getName());
+        log.info("updateUserInfo call :: {}", authentication.getName());
         int responseCode = userService.updateUserInfo(authentication.getName(), userVO);
         if (responseCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -206,18 +202,17 @@ public class UserController {
     }
 
     @PutMapping("/pwd")
-    @Operation(summary = "회원정보 수정 메서드", description = "내 프로필의 정보를 수정할 수 있습니다.", tags = "유저 API")
+    @Operation(summary = "비밀번호 변경 메서드", description = "내 비밀번호를 변경할 수 있습니다.", tags = "유저 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "업데이트에 성공하면 success 를 반환한다.\n"
-                    + "업데이트할 정보와 현재 로그인한 정보가 일치하지 않으면 unauthorized 를 반환한다.\n"
-                    + "업데이트에 실패하면 fail 을 반환한다.")
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경에 성공하면 success 를 반환한다.\n"
+                    + "비밀번호 변경에 실패하면 fail 을 반환한다.")
     })
     public ResponseEntity<?> updateUserPwd(@RequestBody UserPwdVO userPwdVO,
                                            @RequestHeader("Authorization") String tokenWithPrefix) {
         // Token을 받아 인증 정보를 추출한다.(수정하려는 user정보와 현재 로그인한 user 정보가 일치할 경우에만 수정가능 하도록 하기 위함)
         Authentication authentication = jwtTokenProvider.getAuthentication(
                 tokenWithPrefix.substring(7));
-        log.info("findUserPwd call :: {}", authentication.getName());
+        log.info("updateUserPwd call :: {}", authentication.getName());
         int responseCode = userService.updateUserPwd(authentication.getName(), userPwdVO);
         if (responseCode == 1) {
             return new ResponseEntity<>("success", HttpStatus.OK);
@@ -236,7 +231,7 @@ public class UserController {
     public ResponseEntity<?> findUserPwd(@RequestBody UserFindPwdVO userDto) {
         log.info("findUserPwd call :: {}", userDto.getUserBirthday());
         int resultCode = userService.findUserPwd(userDto.getUserEmail(),
-                new SimpleDateFormat("YYYY-MM-dd").format(userDto.getUserBirthday()));
+                new SimpleDateFormat("yyyy-MM-dd").format(userDto.getUserBirthday()));
         if (resultCode == 0) {
             return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         } else if (resultCode == 1) {

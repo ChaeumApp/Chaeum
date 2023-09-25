@@ -24,6 +24,9 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
 
   final PageApi pageapi = PageApi();
 
+  List<dynamic> favoringredient = [];
+  List<dynamic> favorrecipe = [];
+
   List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
@@ -66,6 +69,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   List<dynamic> selectedAllergieNumber = [];
 
   bool algdropdown = false;
+
   openDialog() {
     showDialog(
         context: context,
@@ -245,7 +249,15 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll(Color(0xffA1CBA1))),
-                        onPressed: null,
+                        onPressed: () async {
+                          print(selectedVeganNumber);
+                          print(selectedAllergieNumber);
+
+                          await pageapi.updateuserinfo(
+                              context.read<UserStore>().accessToken,
+                              selectedVeganNumber,
+                              selectedAllergieNumber);
+                        },
                         child: Text("변경하기")),
                     ElevatedButton(
                       style: ButtonStyle(
@@ -283,19 +295,23 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    getuserinfo();
-  }
+    Future.delayed(Duration.zero, () async {
+      final userStore = Provider.of<UserStore>(context, listen: false);
+      print(userStore.accessToken);
+      final accessToken = userStore.accessToken;
+      print(accessToken);
+      final info = await pageapi.getinfo(accessToken);
+      print(info);
 
-  getuserinfo() async {
-    print(context.read<UserStore>().userId);
-    final token = await widget.storage.read(key: 'login');
-    final info =
-        await pageapi.getinfo(token.toString().split(" ")[1].toString());
-    print(info);
-    await context
-        .watch<UserStore>()
-        .changeUserInfo(info != null ? info['userEmail'] : '');
-    setState(() {});
+      if (info != null) {
+        await userStore.changeUserInfo(info['userEmail']);
+      }
+      favoringredient = info['ingredientList'];
+      favorrecipe = info['recipeList'];
+      setState(() {});
+      // 이제 userStore를 사용할 수 있습니다.
+      // ...
+    });
   }
 
   @override
@@ -307,6 +323,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
         title: Text('마이페이지'),
         centerTitle: true,
         elevation: 0,
+        leading: Text(''),
       ),
       body: Container(
         padding: EdgeInsets.all(30),
@@ -393,51 +410,54 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  '(${'3'}건)',
+                                  '(${favorrecipe.length}건)',
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ]),
-                              GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              FavoriteMoreRec()),
-                                    );
-                                  },
-                                  child: Text('더보기'))
+                              favorrecipe.isNotEmpty
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  FavoriteMoreRec()),
+                                        );
+                                      },
+                                      child: Text('더보기'))
+                                  : Text('')
                             ],
                           ),
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        FavoriteMoreRec()),
-                              );
-                            },
-                            child: GridView.count(
-                                crossAxisCount: 2, // 열 개수
-                                children: List<Widget>.generate(foodlist.length,
-                                    (idx) {
-                                  return Container(
-                                    color: Colors.amber,
-                                    padding: const EdgeInsets.all(30),
-                                    margin: const EdgeInsets.all(8),
-                                    child: Image.asset(
-                                      'assets/images/main/${foodlist[idx]}',
-                                      width: 100,
-                                      height: 100,
-                                    ),
-                                  );
-                                }).toList()),
-                          ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          FavoriteMoreRec()),
+                                );
+                              },
+                              child: favorrecipe.isNotEmpty
+                                  ? GridView.count(
+                                      crossAxisCount: 2, // 열 개수
+                                      children: List<Widget>.generate(
+                                          foodlist.length, (idx) {
+                                        return Container(
+                                          color: Colors.amber,
+                                          padding: const EdgeInsets.all(30),
+                                          margin: const EdgeInsets.all(8),
+                                          child: Image.asset(
+                                            'assets/images/main/${foodlist[idx]}',
+                                            width: 100,
+                                            height: 100,
+                                          ),
+                                        );
+                                      }).toList())
+                                  : Center(child: Text('좋아하는 레시피를 추가해 보세요'))),
                         ),
                         SizedBox(
                           child: Row(
@@ -452,51 +472,54 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  '(${'3'}건)',
+                                  '(${favoringredient.length}건)',
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ]),
-                              GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              FavoriteMoreFood()),
-                                    );
-                                  },
-                                  child: Text('더보기'))
+                              favoringredient.isNotEmpty
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  FavoriteMoreFood()),
+                                        );
+                                      },
+                                      child: Text('더보기'))
+                                  : Text('')
                             ],
                           ),
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        FavoriteMoreFood()),
-                              );
-                            },
-                            child: GridView.count(
-                                crossAxisCount: 2, // 열 개수
-                                children: List<Widget>.generate(foodlist.length,
-                                    (idx) {
-                                  return Container(
-                                    color: Colors.amber,
-                                    padding: const EdgeInsets.all(40),
-                                    margin: const EdgeInsets.all(8),
-                                    child: Image.asset(
-                                      'assets/images/main/${foodlist[idx]}',
-                                      width: 100,
-                                      height: 100,
-                                    ),
-                                  );
-                                }).toList()),
-                          ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          FavoriteMoreFood()),
+                                );
+                              },
+                              child: favoringredient.isNotEmpty
+                                  ? GridView.count(
+                                      crossAxisCount: 2, // 열 개수
+                                      children: List<Widget>.generate(
+                                          foodlist.length, (idx) {
+                                        return Container(
+                                          color: Colors.amber,
+                                          padding: const EdgeInsets.all(30),
+                                          margin: const EdgeInsets.all(8),
+                                          child: Image.asset(
+                                            'assets/images/main/${foodlist[idx]}',
+                                            width: 100,
+                                            height: 100,
+                                          ),
+                                        );
+                                      }).toList())
+                                  : Center(child: Text('좋아하는 식재료를 추가해 보세요'))),
                         ),
                       ],
                     ),
@@ -655,11 +678,12 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                   ),
                   onPressed: () async {
                     await widget.storage.delete(key: "login");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => Main()),
-                    );
+
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Main()),
+                        (route) => false);
                   }),
               Text('|'),
               TextButton(

@@ -135,7 +135,7 @@ CREATE TABLE `ingredient_preference_tb`
 
 CREATE TABLE `allergy_tb`
 (
-    `algy_id`   SMALLINT    NOT NULL primary key auto_increment,
+    `algy_id`   SMALLINT    NOT NULL primary key,
     `algy_name` varchar(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -608,3 +608,6 @@ values (0, '난류'),
        (14, '쇠고기'),
        (15, '오징어'),
        (16, '조개류(굴, 전복, 홍합)');
+
+ALTER TABLE `item_tb`
+    ADD COLUMN `item_crawling_date` DATE NOT NULL;

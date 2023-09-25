@@ -20,6 +20,9 @@ class _SearchState extends State<Search> {
   Future<void> addWordToList(String word) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> wordList = prefs.getStringList('wordList') ?? [];
+    if (wordList.length >= 10) {
+      wordList.removeLast();
+    }
     wordList.insert(0, word);
     await prefs.setStringList('wordList', wordList);
   }
@@ -49,15 +52,12 @@ class _SearchState extends State<Search> {
               controller: searchController,
               onSubmitted: (value){
                 addWordToList(value);
-                // context.read<UserStore>().addSearchList(value);
-                // print(context.read<UserStore>().searchList);
+                context.read<SearchStore>().watchSearch();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
                             SearchResult(searchWord: value)));
-                context.read<SearchStore>().watchSearch();
-                print(context.read<SearchStore>().doSearch);
             },
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 13.0),

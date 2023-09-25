@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:fe/recipe/recipedetail.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeMainList extends StatefulWidget {
@@ -23,14 +26,21 @@ class _RecipeMainListState extends State<RecipeMainList> {
     }
   }
 
+
   Future<dynamic> clickRecipe(recipeId) async {
-    // 헤더추가해야함!!!!
-    try {
-      final response = await dio.get('$serverURL/recipe/selected/$recipeId');
-      // print(response.data.runtimeType);
-      return response.data;
-    } catch (e) {
-      print(e);
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -116,11 +126,10 @@ class _RecipeMainListState extends State<RecipeMainList> {
                       return GestureDetector(
                         onTap: (){
                           clickRecipe(snapshot.data[index]['recipeId']);
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             ));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,11 +151,21 @@ class _RecipeMainListState extends State<RecipeMainList> {
                                     ),
                                     SizedBox(width: 15,),
                                     Expanded(
-                                      child: Text('${snapshot.data[index]['recipeName']}',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),softWrap: true,),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('${snapshot.data[index]['recipeName']}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                          ),softWrap: true,),
+                                          Text('만개의 레시피',
+                                            style: TextStyle(
+                                              color: Colors.black54
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ))
