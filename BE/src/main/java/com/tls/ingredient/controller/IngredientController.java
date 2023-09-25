@@ -59,14 +59,26 @@ public class IngredientController {
     @GetMapping("category")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredientsByCatAndSubCat(
+    public ResponseEntity<?> getIngredientsByCatAndSubCat(@RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
         @RequestParam int catId, @RequestParam(required = false) String subCatId) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId,
-            subCatId == null ? 0 : Integer.parseInt(subCatId));
-        if (ingredientDtoList != null) {
-            return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
-        } else {
+        try {
+            List<IngredientDto> ingredientDtoList;
+            if (tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                    .getName();
+                ingredientDtoList = ingredientService.getIngredients(catId,
+                    subCatId == null ? 0 : Integer.parseInt(subCatId), userEmail);
+            } else {
+                ingredientDtoList = ingredientService.getIngredients(catId,  subCatId == null ? 0 : Integer.parseInt(subCatId), null);
+            }
+
+            if (ingredientDtoList != null) {
+                return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
