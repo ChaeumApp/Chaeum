@@ -16,7 +16,7 @@ class DetailRecipe extends StatefulWidget {
 
 class _DetailRecipeState extends State<DetailRecipe> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getDetailRecipe() async {
     try {
