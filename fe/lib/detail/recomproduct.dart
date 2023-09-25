@@ -17,14 +17,13 @@ class _RecommendProductState extends State<RecommendProduct> {
 
   Future<dynamic> getProductList() async {
     try {
-      final response = await dio.get('$serverURL/recipe');
-      // final response = await dio.get('$serverURL/item/$ingrId');
+      final response = await dio.get('$serverURL/item/${widget.ingrId}');
+      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
     }
   }
-
 
   var product = [
     {
@@ -123,7 +122,7 @@ class _RecommendProductState extends State<RecommendProduct> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('총 ${product.length}개',
+                          Text('총 ${snapshot.data.length}개',
                           style: TextStyle(fontSize: 15),),
                           SizedBox(
                             height: 30,
@@ -171,7 +170,7 @@ class _RecommendProductState extends State<RecommendProduct> {
                       ),
                     ),
                   ),
-                  ProductList(product : product)
+                  ProductList(product : snapshot.data)
                 ],
               );
           }

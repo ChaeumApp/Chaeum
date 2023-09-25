@@ -39,7 +39,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 1, subCatId : null, catName : '과일', sortNum : 0)));
+                          IngrMain(catId : 1, subCatId : 0, catName : '과일', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -64,7 +64,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 2, subCatId : null, catName: '채소', sortNum : 0)));
+                          IngrMain(catId : 2, subCatId : 0, catName: '채소', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -89,7 +89,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 3, subCatId : null, catName: '곡류/견과', sortNum : 0)));
+                          IngrMain(catId : 3, subCatId : 0, catName: '곡류/견과', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -277,7 +277,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 5, subCatId : null, catName: '수산물', sortNum : 0)));
+                          IngrMain(catId : 5, subCatId : 0, catName: '수산물', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -302,7 +302,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 6, subCatId : null, catName: '유제품', sortNum : 0)));
+                          IngrMain(catId : 6, subCatId : 0, catName: '유제품', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -327,7 +327,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 7, subCatId : null, catName: '김치', sortNum : 0)));
+                          IngrMain(catId : 7, subCatId : 0, catName: '김치', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -352,7 +352,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 8, subCatId : null, catName: '면/파스타', sortNum : 0)));
+                          IngrMain(catId : 8, subCatId : 0, catName: '면/파스타', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -377,7 +377,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 9, subCatId : null, catName: '통조림', sortNum : 0)));
+                          IngrMain(catId : 9, subCatId : 0, catName: '통조림', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -402,7 +402,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 10, subCatId : null, catName: '가루/조미료', sortNum : 0)));
+                          IngrMain(catId : 10, subCatId : 0, catName: '가루/조미료', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -427,7 +427,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 11, subCatId : null, catName: '오일/소스', sortNum : 0)));
+                          IngrMain(catId : 11, subCatId : 0, catName: '오일/소스', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(
@@ -452,7 +452,7 @@ class _CategoryMainState extends State<CategoryMain> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          IngrMain(catId : 12, subCatId : null, catName: '빵/잼', sortNum : 0)));
+                          IngrMain(catId : 12, subCatId : 0, catName: '빵/잼', sortNum : 0)));
             },
             child: Container(
               decoration: BoxDecoration(

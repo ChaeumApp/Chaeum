@@ -52,27 +52,18 @@ class _IngrMainState extends State<IngrMain> {
   Future<dynamic> getIngr() async {
     var accessToken = context.read<UserStore>().accessToken;
     try {
-      if (widget.subCatId == null) {
-        final response = await dio.get('$serverURL/ingr/category',
-            queryParameters: {'catId': widget.catId},
+      if (accessToken != '') {
+        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}',
           options: Options(
-            headers: {'Authorization': accessToken != '' ? 'Bearer $accessToken' : ''},
+            headers: {'Authorization' : 'Bearer $accessToken'},
           ));
-        final data = response.data;
-        print(response.data);
-        final sortedData = sortData(data, num);
+        final data = response.data[0]; // response.data를 data 변수에 저장
+        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
         return sortedData;
       } else {
-        final response = await dio.get('$serverURL/ingr/category',
-            queryParameters: {
-              'catId': widget.catId,
-              'subCatId': widget.subCatId
-            },
-          options: Options(
-            headers: {'Authorization': accessToken != '' ? 'Bearer $accessToken' : ''},
-          ),);
-        final data = response.data;
-        final sortedData = sortData(data, num);
+        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
+        final data = response.data[0]; // response.data를 data 변수에 저장
+        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
         return sortedData;
       }
     } catch (e) {
@@ -114,7 +105,6 @@ class _IngrMainState extends State<IngrMain> {
             headers: {'Authorization': 'Bearer $accessToken'},
           ),
         );
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
