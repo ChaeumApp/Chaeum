@@ -5,6 +5,7 @@ import 'package:fe/user/pageapi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
@@ -269,6 +270,13 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration(seconds: 21), () {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => Main(),
+          ),
+          (route) => false);
+    });
     Future.delayed(Duration.zero, () async {
       final userStore = Provider.of<UserStore>(context, listen: false);
       final accessToken = userStore.accessToken;
@@ -342,7 +350,7 @@ class _MyPageState extends State<MyPage> {
                           Padding(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Text(
-                              '${context.watch<UserStore>().userId.split('@')[0]} ',
+                              '${context.read<UserStore>().userId.split('@')[0]} ',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -740,7 +748,7 @@ class _MyPageState extends State<MyPage> {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                   onPressed: () async {
-                    // await widget.storage.delete(key: "login");
+                    await widget.storage.delete(key: "login");
                     await pageapi.logout(context.read<UserStore>().accessToken);
                     await context.read<UserStore>().changeAccessToken('');
 
@@ -756,7 +764,15 @@ class _MyPageState extends State<MyPage> {
                   '회원 탈퇴',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  final response = await pageapi.deleteuser(
+                      context.read<UserStore>().accessToken,
+                      context.read<UserStore>().userId);
+                  // if (response )
+                  await UserApi.instance.unlink();
+
+                  print('연결 끊기 성공, SDK에서 토큰 삭제');
+                },
               ),
             ]),
           ],

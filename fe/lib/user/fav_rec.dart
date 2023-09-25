@@ -17,12 +17,12 @@ class _FavRecState extends State<FavRec> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: recipes.length,
+        itemCount: 4,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
               // 연결후 추가
-              clickRecipe(index);
+              // clickRecipe(index);
               // Navigator.push(
               //     context,
               //     MaterialPageRoute(
@@ -38,9 +38,10 @@ class _FavRecState extends State<FavRec> {
                   Flexible(
                     flex: 3,
                     child: Image.network(
-                        getYoutubeThumbnail(
-                          recipes[index]['url'],
-                        ),
+                        // getYoutubeThumbnail(
+                        //   recipes[index]['url'],
+                        // ),
+                        '',
                         height: 100),
                   ),
                   Flexible(
@@ -50,8 +51,7 @@ class _FavRecState extends State<FavRec> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(recipes[index]['title'] as String,
-                              style: TextStyle(fontSize: 15)),
+                          Text('하', style: TextStyle(fontSize: 15)),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 15,

@@ -95,23 +95,26 @@ class _MainState extends State<Main> {
     print('kakaokey$key');
     userToken = await storage.read(key: "login");
     print(userToken);
+    print('------');
     if (userToken != null) {
       final response = await pageapi
           .tokenValidation(userToken.toString().split(" ")[1].toString());
       print(response);
-    }
 
-    if (userToken != null) {
-      await context
-          .read<UserStore>()
-          .changeAccessToken(userToken.toString().split(" ")[1].toString());
-    } else {
-      await context.read<UserStore>().changeAccessToken('');
-    }
-
-    final storetoken = context.read<UserStore>().accessToken;
-    print('이닛 다시 하나요?');
-    print(storetoken);
+      if (response == 'success') {
+        await context
+            .read<UserStore>()
+            .changeAccessToken(userToken.toString().split(" ")[1].toString());
+        final storetoken = context.read<UserStore>().accessToken;
+        print('이닛 다시 하나요?');
+        print(storetoken);
+      } else {
+        print('토큰 제거 실행여부');
+        await storage.delete(key: "login");
+        await context.read<UserStore>().changeAccessToken('');
+        setState(() {});
+      }
+    } else {}
     final devicetoken = await getMyDeviceToken();
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }

@@ -85,16 +85,33 @@ class _AddInfoState extends State<AddInfo> {
       print('ggggg');
       setState(() {
         print('111');
+
         controller.text = widget.user['birth'].toString().substring(0, 4);
+        print(controller.text);
+        print(controller.text.runtimeType);
         if (controller.text != '0000') {
           yearcheck = true;
         } else {
           controller.text = '';
         }
+
         controller2.text = widget.user['birth'].toString().substring(4, 6);
-        monthcheck = true;
+        print(controller2.text);
+        print(controller2.text.runtimeType);
+        if (controller2.text != 'nu') {
+          monthcheck = true;
+        } else {
+          controller2.text = '';
+        }
+
         controller3.text = widget.user['birth'].toString().substring(6, 8);
-        daycheck = true;
+        print(controller2.text);
+        print(controller2.text.runtimeType);
+        if (controller2.text != 'll') {
+          daycheck = true;
+        } else {
+          controller3.text = '';
+        }
       });
     }
   }
