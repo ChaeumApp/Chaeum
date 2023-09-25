@@ -1,6 +1,7 @@
 package com.tls.item.entity.single;
 
 import com.tls.ingredient.entity.single.Ingredient;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,16 +25,16 @@ public class Item {
 
     @Id
     @Column(name = "item_id")
-    private long item_id;
+    private long itemId;
 
     @Column(name = "item_name")
-    private String item_name;
+    private String itemName;
 
     @Column(name = "item_image")
-    private String item_image;
+    private String itemImage;
 
     @Column(name = "item_price")
-    private int item_price;
+    private int itemPrice;
 
     @Column(name = "item_store")
     private String itemStore;
@@ -42,6 +43,9 @@ public class Item {
     private String itemStoreLink;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_tb")
+    @JoinColumn(name = "ingr_id")
     private Ingredient ingredient;
+
+    @Column(name = "item_crawling_date", nullable = false)
+    private LocalDate itemCrawlingDate;
 }

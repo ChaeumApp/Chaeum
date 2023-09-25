@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../webview/webview.dart';
 
@@ -16,8 +18,8 @@ class MainBest extends StatefulWidget {
 class _MainBestState extends State<MainBest> {
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
-
+  final serverURL = 'http://j9c204.p.ssafy.io';
+  // 얻어오는거
   Future<dynamic> getMainBest() async {
     try {
       final response = await dio.get('$serverURL/recipe');
@@ -26,6 +28,25 @@ class _MainBestState extends State<MainBest> {
       print(e);
     }
   }
+  // 상품 클릭하는거
+  // 상품아이디!!!!!
+  Future<dynamic> clickItem(itemId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +176,9 @@ class _MainBestState extends State<MainBest> {
                     itemBuilder: (c, i) {
                       return GestureDetector(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage()));
+                          clickItem(ranking[i]['rank']);
+                          // 웹뷰페이지에 전달하는 주소도!! 아이템아이디도 보내야됨!!!!!
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
                         },
                         child: Container(
                           width: 120,
@@ -179,13 +202,13 @@ class _MainBestState extends State<MainBest> {
                                     width: 25,
                                     height: 25,
                                     decoration: BoxDecoration(
-                                        color: Color.fromRGBO(161, 203, 161, 0.8),
+                                        color: Color.fromRGBO(76, 140, 76, 0.8),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
+                                            color: Colors.grey.withOpacity(0.8),
                                             blurRadius: 5.0,
                                             spreadRadius: 0.0,
-                                            offset: Offset(3, 3),
+                                            offset: Offset(2, 2),
                                           )
                                         ],
                                         borderRadius: BorderRadius.only(
@@ -196,7 +219,7 @@ class _MainBestState extends State<MainBest> {
                                           '${ranking[i]['rank']}',
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontWeight: FontWeight.w600,
+                                              fontWeight: FontWeight.w700,
                                               fontSize: 15),
                                         )),
                                   )

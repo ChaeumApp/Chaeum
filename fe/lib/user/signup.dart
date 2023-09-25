@@ -4,8 +4,9 @@ import '../user/mypage.dart';
 import 'pageapi.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  const SignUp({super.key, this.storage});
 
+  final storage;
   @override
   State<SignUp> createState() => _SignUpState();
 }
@@ -334,12 +335,33 @@ class _SignUpState extends State<SignUp> {
                                       setState(() {
                                         passwordError = passwordMessage;
                                         passwordCheck = false;
+                                        if (controller2.text ==
+                                            controller3.text) {
+                                          setState(() {
+                                            samepasswordError = null;
+                                            samepasswordCheck = true;
+                                          });
+                                        } else {
+                                          samepasswordError =
+                                              samepasswordMessage;
+                                          samepasswordCheck = false;
+                                        }
                                       });
                                     } else {
                                       setState(() {
                                         passwordError = null; // 에러 없음
                                         passwordCheck = true;
                                       });
+                                      if (controller2.text ==
+                                          controller3.text) {
+                                        setState(() {
+                                          samepasswordError = null;
+                                          samepasswordCheck = true;
+                                        });
+                                      } else {
+                                        samepasswordError = samepasswordMessage;
+                                        samepasswordCheck = false;
+                                      }
                                     }
                                   },
 
@@ -440,12 +462,16 @@ class _SignUpState extends State<SignUp> {
                                                             builder:
                                                                 (context) =>
                                                                     AddInfo(
-                                                                        user: {
-                                                                          'userEmail':
-                                                                              controller.text,
-                                                                          'userPwd':
-                                                                              controller2.text
-                                                                        })),
+                                                                      user: {
+                                                                        'userEmail':
+                                                                            controller.text,
+                                                                        'userPwd':
+                                                                            controller2.text
+                                                                      },
+                                                                      storage:
+                                                                          widget
+                                                                              .storage,
+                                                                    )),
                                                       );
                                                     }
                                                   : null,

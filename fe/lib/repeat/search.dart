@@ -1,7 +1,11 @@
+import 'package:fe/main.dart';
 import 'package:fe/search/searchresult.dart';
+import 'package:fe/store/searchstore.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Search extends StatefulWidget {
   const Search({super.key});
@@ -12,6 +16,16 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final searchController = TextEditingController();
+
+  Future<void> addWordToList(String word) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> wordList = prefs.getStringList('wordList') ?? [];
+    if (wordList.length >= 10) {
+      wordList.removeLast();
+    }
+    wordList.insert(0, word);
+    await prefs.setStringList('wordList', wordList);
+  }
 
 
   @override
@@ -24,15 +38,21 @@ class _SearchState extends State<Search> {
         children: [
           Flexible(
               flex: 2,
-              child: Center(child: Image.asset('assets/images/repeat/top_logo.png')),
+              child: GestureDetector(
+                  onTap: (){
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+                        Main()
+                    ));
+                  },
+                  child: Center(child: Image.asset('assets/images/repeat/top_logo.png'))),
               ),
           Flexible(
             flex: 9,
             child: TextField(
               controller: searchController,
-            onSubmitted: (value){
-                context.read<UserStore>().addSearchList(value);
-                print(context.read<UserStore>().searchList);
+              onSubmitted: (value){
+                addWordToList(value);
+                context.read<SearchStore>().watchSearch();
                 Navigator.push(
                     context,
                     MaterialPageRoute(

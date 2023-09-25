@@ -1,6 +1,7 @@
 package com.tls.user.service;
 
 import com.tls.allergy.entity.composite.UserAllergy;
+import com.tls.allergy.entity.single.Allergy;
 import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
@@ -26,10 +27,7 @@ import com.tls.user.vo.UserSignUpVO;
 import com.tls.ingredient.repository.UserIngrRepository;
 import io.jsonwebtoken.Jwts;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
     private final UserRecipeRepository userRecipeRepository;
     private final AllergyRepository allergyRepository;
 
-    private UserConverter userConverter = new UserConverter();
+    private final UserConverter userConverter;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -70,30 +68,33 @@ public class UserServiceImpl implements UserService {
     public int signUp(UserSignUpVO userDto) {
         try {
             // user 정보 먼저 저장한다.
-            if (userDto.getUserEmail().startsWith("[S]") && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
+            if ((userDto.getUserEmail().startsWith("[K]") || userDto.getUserEmail().startsWith("[S]"))
+                    && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
                 return 200;
             }
             User user = User.builder()
-                .userEmail(userDto.getUserEmail())
-                .userPwd(passwordEncoder.encode(userDto.getUserPwd()))
-                .userBirthday(userDto.getUserBirthday())
-                .userGender(userDto.getUserGender())
-                .userActivated(true)
-                .vegan(veganRepository.findByVeganId(userDto.getVeganId()).isPresent() ?
-                    veganRepository.findByVeganId(userDto.getVeganId()).get() : null)
-                .build();
+                    .userEmail(userDto.getUserEmail())
+                    .userPwd(userDto.getUserPwd() != null ? passwordEncoder.encode(userDto.getUserPwd()) : "")
+                    .userBirthday(userDto.getUserBirthday())
+                    .userGender(userDto.getUserGender())
+                    .userActivated(true)
+                    .vegan(veganRepository.findByVeganId(userDto.getVeganId()).isPresent() ?
+                            veganRepository.findByVeganId(userDto.getVeganId()).get() : null)
+                    .build();
             userRepository.save(user);
             // user 가 가지고 있는 allergy 정보를 저장한다.
             List<UserAllergy> userAllergyList = new ArrayList<>();
+            System.out.println(userDto.getAllergyList());
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
-                    .userId(user)
-                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
-                    .build();
+                        .userId(user)
+                        .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
+                        .build();
                 userAllergyList.add(userAllergy);
             });
             userAllergyRepository.saveAll(userAllergyList);
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("signup fail");
             return 406;
         }
@@ -108,12 +109,12 @@ public class UserServiceImpl implements UserService {
             // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
             // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                userEmail, userPwd);
+                    userEmail, userPwd);
 
             // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
             // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
             Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(authenticationToken);
+                    .authenticate(authenticationToken);
 
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             TokenDto tokenDto = jwtTokenProvider.generateToken(userEmail);
@@ -121,8 +122,8 @@ public class UserServiceImpl implements UserService {
             if (authentication.isAuthenticated()) {
                 //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
                 redisTemplate.opsForValue()
-                    .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
-                        TimeUnit.MILLISECONDS);
+                        .set("RT:" + userEmail, tokenDto.getRefreshToken(), 86400000,
+                                TimeUnit.MILLISECONDS);
 
                 // user_notification_token table에 저장
 
@@ -145,7 +146,7 @@ public class UserServiceImpl implements UserService {
             }
             // Access Token에서 User email을 가져온다
             Authentication authentication = jwtTokenProvider.getAuthentication(
-                tokenDto.getAccessToken());
+                    tokenDto.getAccessToken());
 
             // Redis에서 해당 User email로 저장된 Refresh Token 이 있는지 여부를 확인 후에 있을 경우 삭제를 한다.
             if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
@@ -155,10 +156,10 @@ public class UserServiceImpl implements UserService {
 
             // 해당 Access Token 유효시간을 가지고 와서 BlackList에 저장하기
             long expiration =
-                Jwts.parser().setSigningKey(secretKey).parseClaimsJws(tokenDto.getAccessToken())
-                    .getBody().getExpiration().getTime() - new java.util.Date().getTime();
+                    Jwts.parser().setSigningKey(secretKey).parseClaimsJws(tokenDto.getAccessToken())
+                            .getBody().getExpiration().getTime() - new java.util.Date().getTime();
             redisTemplate.opsForValue()
-                .set(tokenDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
+                    .set(tokenDto.getAccessToken(), "logout", expiration, TimeUnit.MILLISECONDS);
             return 200;
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,6 +180,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public int updateUserInfo(String userEmail, UserSignUpVO userVO) {
         try {
@@ -187,18 +189,20 @@ public class UserServiceImpl implements UserService {
                 UserDto userDto = userConverter.entityToDto(selectUser);
                 userDto.setVeganId(userVO.getVeganId());
                 userRepository.save(userConverter.dtoToEntity(userDto));
+                userAllergyRepository.deleteByUserId(selectUser);
             });
             List<UserAllergy> userAllergyList = new ArrayList<>();
             userVO.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
-                    .userId(updateUser.get())
-                    .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
-                    .build();
+                        .userId(updateUser.orElse(null))
+                        .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
+                        .build();
                 userAllergyList.add(userAllergy);
             });
             userAllergyRepository.saveAll(userAllergyList);
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
@@ -223,14 +227,14 @@ public class UserServiceImpl implements UserService {
     public int findUserPwd(String userEmail, String userBirthday) {
         try {
             Optional<User> user = userRepository.findByUserEmailAndUserBirthday(userEmail,
-                Date.valueOf(userBirthday));
+                    Date.valueOf(userBirthday));
             if (user.isPresent()) {
                 String tempPassword = new RandomStringCreator().getRandomString(10);
                 MailDto mailDto = new MailDto();
                 mailDto.setAddress(userEmail);
                 mailDto.setTitle("채움 임시 비밀번호 안내 이메일입니다.");
                 mailDto.setMessage("안녕하세요. 채움입니다!\n임시 비밀번호 안내 이메일입니다.\n회원님의 임시 비밀번호는 "
-                    + tempPassword + " 입니다.\n로그인 후에 비밀번호를 변경해 주세요.");
+                        + tempPassword + " 입니다.\n로그인 후에 비밀번호를 변경해 주세요.");
 
                 Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
                 updateUser.ifPresent(selectUser -> {
@@ -266,10 +270,10 @@ public class UserServiceImpl implements UserService {
             mailDto.setAddress(userEmail);
             mailDto.setTitle("채움 회원가입 인증 메일입니다.");
             mailDto.setMessage("안녕하세요. 채움 입니다.\n이메일 인증번호 안내 관련 이메일입니다.\n회원님의 인증번호는 "
-                + resultNum + " 입니다.\n회원가입 페이지에서 해당 번호를 입력해주세요! :)");
+                    + resultNum + " 입니다.\n회원가입 페이지에서 해당 번호를 입력해주세요! :)");
             String result = resultNum.toString();
             redisTemplate.opsForValue()
-                .set("Email:" + userEmail, result, 60 * 5, TimeUnit.SECONDS); // 유효시간 5분 설정
+                    .set("Email:" + userEmail, result, 60 * 5, TimeUnit.SECONDS); // 유효시간 5분 설정
 
             mailService.sendEmail(mailDto);
 
@@ -313,17 +317,23 @@ public class UserServiceImpl implements UserService {
     public UserProfileDto readProfile(String userEmail) {
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            int veganId = Objects.requireNonNull(userRepository.findByUserEmail(userEmail).orElse(null)).getVegan().getVeganId();
             List<Ingredient> ingrList = new ArrayList<>();
             List<Recipe> recipeList = new ArrayList<>();
+            List<Allergy> allergyList = new ArrayList<>();
             if (userIngrRepository.findAllByUserId(user).isPresent()) {
                 ingrList = userIngrRepository.findAllByUserId(user).get().stream()
-                    .map(UserIngr::getIngrId).collect(Collectors.toList());
+                        .map(UserIngr::getIngrId).collect(Collectors.toList());
             }
             if (userRecipeRepository.findAllByUserId(user).isPresent()) {
                 recipeList = userRecipeRepository.findAllByUserId(user).get().stream()
-                    .map(UserRecipe::getRecipeId).collect(Collectors.toList());
+                        .map(UserRecipe::getRecipeId).collect(Collectors.toList());
             }
-            return new UserProfileDto(ingrList, recipeList);
+            if (userAllergyRepository.findAllByUserId(user).isPresent()) {
+                allergyList = userAllergyRepository.findAllByUserId(user).get().stream()
+                        .map(UserAllergy::getAlgyId).collect(Collectors.toList());
+            }
+            return new UserProfileDto(userEmail, veganId, ingrList, recipeList, allergyList);
         } catch (Exception e) {
             return null;
         }

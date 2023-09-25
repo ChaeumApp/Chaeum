@@ -135,7 +135,7 @@ CREATE TABLE `ingredient_preference_tb`
 
 CREATE TABLE `allergy_tb`
 (
-    `algy_id`   SMALLINT    NOT NULL primary key auto_increment,
+    `algy_id`   SMALLINT    NOT NULL primary key,
     `algy_name` varchar(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -156,17 +156,147 @@ CREATE TABLE `recipe_process_tb`
 
 CREATE TABLE `recipe_select_log_tb`
 (
+    `recipe_select_pk`   BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`            INT       NOT NULL,
     `recipe_id`          INT       NOT NULL,
     `recipe_select_time` TIMESTAMP NOT NULL
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+CREATE TABLE `ingredient_select_log_tb`
+(
+    `ingr_select_pk`   BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `user_id`          INT       NOT NULL,
+    `ingr_id`          INT       NOT NULL,
+    `ingr_select_time` TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+CREATE TABLE `item_select_log_tb`
+(
+    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `user_id`          INT       NOT NULL,
+    `item_id`          BIGINT    NOT NULL,
+    `item_select_time` TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE `recipe_recommend_tb`
+(
+    `recipe_id`              INT   NOT NULL,
+    `user_id`                INT   NOT NULL,
+    `recipe_recommend_score` FLOAT NOT NULL DEFAULT 0
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+CREATE TABLE `ingredient_recommend_tb`
+(
+    `user_id`              INT   NOT NULL,
+    `ingr_id`              INT   NOT NULL,
+    `ingr_recommend_score` FLOAT NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+ALTER TABLE `ingredient_recommend_tb`
+    ADD CONSTRAINT `PK_INGREDIENT_RECOMMEND_TB` PRIMARY KEY (
+                                                             `user_id`,
+                                                             `ingr_id`
+        );
+
+ALTER TABLE `ingredient_recommend_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_ingredient_recommend_tb_1` FOREIGN KEY (
+                                                                          `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `ingredient_recommend_tb`
+    ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_recommend_tb_1` FOREIGN KEY (
+                                                                                `ingr_id`
+        )
+        REFERENCES `ingredient_tb` (
+                                    `ingr_id`
+            );
+
+
+
+ALTER TABLE `recipe_recommend_tb`
+    ADD CONSTRAINT `PK_RECIPE_RECOMMEND_TB` PRIMARY KEY (
+                                                         `recipe_id`,
+                                                         `user_id`
+        );
+
+ALTER TABLE `recipe_recommend_tb`
+    ADD CONSTRAINT `FK_recipe_tb_TO_recipe_recommend_tb_1` FOREIGN KEY (
+                                                                        `recipe_id`
+        )
+        REFERENCES `recipe_tb` (
+                                `recipe_id`
+            );
+
+ALTER TABLE `recipe_recommend_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_recipe_recommend_tb_1` FOREIGN KEY (
+                                                                      `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+
+ALTER TABLE `item_select_log_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_item_select_log_tb_1` FOREIGN KEY (
+                                                                     `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `item_select_log_tb`
+    ADD CONSTRAINT `FK_item_tb_TO_item_select_log_tb_1` FOREIGN KEY (
+                                                                     `item_id`
+        )
+        REFERENCES `item_tb` (
+                              `item_id`
+            );
+
+
+ALTER TABLE `ingredient_select_log_tb`
+    ADD CONSTRAINT `FK_user_tb_TO_ingredient_select_log_tb_1` FOREIGN KEY (
+                                                                           `user_id`
+        )
+        REFERENCES `user_tb` (
+                              `user_id`
+            );
+
+ALTER TABLE `ingredient_select_log_tb`
+    ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_select_log_tb_1` FOREIGN KEY (
+                                                                                 `ingr_id`
+        )
+        REFERENCES `ingredient_tb` (
+                                    `ingr_id`
+            );
+
 
 CREATE TABLE `user_devtoken_tb`
 (
-    `user_id`           INT         NOT NULL,
-    `token_id`          VARCHAR(30) NOT NULL
+    `user_id`  INT         NOT NULL,
+    `token_id` VARCHAR(30) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+CREATE TABLE `item_purchased_log_tb`
+(
+    `item_purchased_log_pk` BIGINT    NOT NULL,
+    `user_id`               INT       NOT NULL,
+    `item_id`               BIGINT    NOT NULL,
+    `item_purchased_time`   TIMESTAMP NOT NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+ALTER TABLE `item_purchased_log_tb`
+    ADD CONSTRAINT `PK_ITEM_PURCHASED_LOG_TB`
+        PRIMARY KEY (
+                     `item_purchased_log_pk`
+            );
 
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
@@ -238,11 +368,6 @@ ALTER TABLE `recipe_process_tb`
                                                        `recipe_id`
         );
 
-ALTER TABLE `recipe_select_log_tb`
-    ADD CONSTRAINT `PK_RECIPE_SELECT_LOG_TB` PRIMARY KEY (
-                                                          `user_id`,
-                                                          `recipe_id`
-        );
 
 ALTER TABLE `user_devtoken_tb`
     ADD CONSTRAINT `PK_USER_DEVTOKEN_TB` PRIMARY KEY (
@@ -420,10 +545,10 @@ ALTER TABLE `recipe_select_log_tb`
 
 ALTER TABLE `user_devtoken_tb`
     ADD CONSTRAINT `FK_user_tb_TO_user_device_token_1` FOREIGN KEY (
-                                                                         `user_id`
+                                                                    `user_id`
         )
         REFERENCES `user_tb` (
-                                `user_id`
+                              `user_id`
             );
 
 
@@ -466,20 +591,23 @@ values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO
 
 
 insert into allergy_tb
-values (1, '난류'),
-       (2, '우유'),
-       (3, '메밀'),
-       (4, '땅콩'),
-       (5, '대두'),
-       (6, '밀'),
-       (7, '고등어'),
-       (8, '게'),
-       (9, '새우'),
-       (10, '돼지고기'),
-       (11, '복숭아'),
-       (12, '토마토'),
-       (13, '호두'),
-       (14, '닭고기'),
-       (15, '쇠고기'),
-       (16, '오징어'),
-       (17, '조개류(굴, 전복, 홍합)');
+values (0, '난류'),
+       (1, '우유'),
+       (2, '메밀'),
+       (3, '땅콩'),
+       (4, '대두'),
+       (5, '밀'),
+       (6, '고등어'),
+       (7, '게'),
+       (8, '새우'),
+       (9, '돼지고기'),
+       (10, '복숭아'),
+       (11, '토마토'),
+       (12, '호두'),
+       (13, '닭고기'),
+       (14, '쇠고기'),
+       (15, '오징어'),
+       (16, '조개류(굴, 전복, 홍합)');
+
+ALTER TABLE `item_tb`
+    ADD COLUMN `item_crawling_date` DATE NOT NULL;
