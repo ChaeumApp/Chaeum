@@ -13,7 +13,8 @@ class RecipeMainList extends StatefulWidget {
   State<RecipeMainList> createState() => _RecipeMainListState();
 }
 
-class _RecipeMainListState extends State<RecipeMainList> {
+class _RecipeMainListState extends State<RecipeMainList>{
+
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io';
 
@@ -118,61 +119,67 @@ class _RecipeMainListState extends State<RecipeMainList> {
         // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
         else {
           return Expanded(
-                child: ListView.builder(
-                  controller: widget.scrollController,
-                  shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: (){
-                          clickRecipe(snapshot.data[index]['recipeId']);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.network(snapshot.data[index]['recipeThumbnail'],
-                            height: 230,
-                            width: double.infinity,
-                            fit: BoxFit.fill),
-                            Container(
-                                margin: EdgeInsets.fromLTRB(20, 15, 20, 30),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image.asset('assets/images/recipe/recipe.png',
-                                      height: 40,
-                                      width: 40,),
-                                    ),
-                                    SizedBox(width: 15,),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('${snapshot.data[index]['recipeName']}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                          ),softWrap: true,),
-                                          Text('만개의 레시피',
-                                            style: TextStyle(
-                                              color: Colors.black54
-                                            ),
-                                          )
-                                        ],
+                child: RefreshIndicator(
+                  color: Color(0xff4C8C4C),
+                  onRefresh: ()async{
+                    setState(() {});
+                  },
+                  child: ListView.builder(
+                    controller: widget.scrollController,
+                    shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: (){
+                            clickRecipe(snapshot.data[index]['recipeId']);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(snapshot.data[index]['recipeThumbnail'],
+                              height: 230,
+                              width: double.infinity,
+                              fit: BoxFit.fill),
+                              Container(
+                                  margin: EdgeInsets.fromLTRB(20, 15, 20, 30),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.asset('assets/images/recipe/recipe.png',
+                                        height: 40,
+                                        width: 40,),
                                       ),
-                                    ),
-                                  ],
-                                ))
-                          ],
-                        ),
-                      );
-                    }),
+                                      SizedBox(width: 15,),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('${snapshot.data[index]['recipeName']}',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),softWrap: true,),
+                                            Text('만개의 레시피',
+                                              style: TextStyle(
+                                                color: Colors.black54
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        );
+                      }),
+                ),
               );
         }
       });

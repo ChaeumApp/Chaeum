@@ -24,7 +24,7 @@ CREATE TABLE `vegan_tb`
 CREATE TABLE `item_tb`
 (
     `item_id`        BIGINT       NOT NULL primary key auto_increment,
-    `item_name`      varchar(20)  NOT NULL,
+    `item_name`      varchar(256)  NOT NULL,
     `item_image`     varchar(512) NULL,
     `item_price`     INT          NOT NULL,
     `item_store`     varchar(20)  NOT NULL,

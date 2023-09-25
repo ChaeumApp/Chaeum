@@ -226,7 +226,9 @@ class Detail extends StatefulWidget {
 }
 
 class _DetailState extends State<Detail> {
+  final ScrollController scrollController = ScrollController();
   var data = {'saleper': 10, 'salewon': 300, 'salerank': 1};
+
 
   @override
   Widget build(BuildContext context) {
@@ -248,8 +250,9 @@ class _DetailState extends State<Detail> {
                 SliverPersistentHeader(
                   delegate: MyDelegate(TabBar(
                       labelColor: Colors.black,
+                      indicatorWeight: 3,
                       unselectedLabelColor: Color(0xffD0D0D0),
-                      labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      labelPadding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16
@@ -267,12 +270,26 @@ class _DetailState extends State<Detail> {
               ];
             },
             body: TabBarView(children: [
-              RecommendProduct(),
+              RecommendProduct(ingrId : widget.category, scrollController : scrollController),
               PriceInfo(),
               DetailRecipe(),
             ]),
           ),
         ),
+          floatingActionButton: FloatingActionButton.small(
+            onPressed: () {
+              scrollController.animateTo(
+                scrollController.position.minScrollExtent,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn,
+              );
+            },
+            backgroundColor: Colors.grey[50],
+            shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: Color(0xffA1CBA1)),
+                borderRadius: BorderRadius.circular(12)),
+            child: Icon(Icons.arrow_upward_sharp, color: Color(0xffA1CBA1)),
+          )
       ),
     );
   }
