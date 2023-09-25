@@ -286,13 +286,15 @@ public class UserController {
         log.info("checkToken call");
         try {
             if (jwtTokenProvider.validateToken(tokenWithPrefix.substring(7)) ) {
-                if(redisTemplate.opsForValue().get(tokenWithPrefix.substring(7)) == null){
-                    return getResponseEntity(0);
-                } else if (Objects.equals(
-                    redisTemplate.opsForValue().get(tokenWithPrefix.substring(7)), "logout")){
-                    return getResponseEntity(0);
+                Authentication authentication = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7));
+                if(redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null){
+                    if (Objects.equals(redisTemplate.opsForValue().get(tokenWithPrefix.substring(7)), "logout")){
+                        return new ResponseEntity<>("signout user", HttpStatus.OK);
+                    } else {
+                        return getResponseEntity(1);
+                    }
                 }
-                return getResponseEntity(1);
+                return new ResponseEntity<>("cannot find user", HttpStatus.OK);
             } else {
                 return getResponseEntity(0);
             }
