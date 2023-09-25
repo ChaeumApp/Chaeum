@@ -153,14 +153,21 @@ public class IngredientController {
 
     @PostMapping("/dislike")
     @Operation(summary = "소분류 관심없음 반영 메서드", description = "사용자가 특정 소분류를 관심없음 설정한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> dislikeIngredient(IngredientVO ingredientVO) {
+    public ResponseEntity<?> dislikeIngredient(@RequestHeader("Authorization")String tokenWithPrefix, @RequestBody IngredientVO ingredientVO) {
         log.info("dislikeIngredient call :: ");
-        int n = ingredientService.dislikeIngredient(ingredientVO);
-        if (n == 1) {
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
+        try{
+            Authentication authentication = jwtTokenProvider
+                .getAuthentication(tokenWithPrefix.substring(7));
+            int n = ingredientService.dislikeIngredient(authentication.getName(), ingredientVO);
+            if (n == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e){
+            return getResponseEntity(0);
         }
+
     }
 
     @PostMapping("/favorite")

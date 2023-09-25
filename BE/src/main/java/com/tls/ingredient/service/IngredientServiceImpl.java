@@ -180,7 +180,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int dislikeIngredient(IngredientVO ingredientVO) {
+    public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) {
         return 0;
     }
 
