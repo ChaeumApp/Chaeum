@@ -51,20 +51,35 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getIngredients(int catId, int subCatId) {
+    public List<IngredientDto> getIngredients(int catId, int subCatId, String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
             if (subCatId == 0) {
-                Objects.requireNonNull(ingrRepository.findByCategory(
-                        categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
-                    .forEach(
-                        ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                if(userEmail != null){
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                }
             } else {
-                Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
-                        categoryRepository.findByCatId(catId).orElseThrow(),
-                        subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
-                    .forEach(
-                        ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                if(userEmail != null){
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                }
             }
             return results;
         } catch (Exception e) {

@@ -19,7 +19,7 @@ class RecipeDetailPage extends StatefulWidget {
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   bool isSet = false;
   bool tmpSaved = false;
@@ -146,12 +146,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     //         color: Colors.black, fontWeight: FontWeight.w700)),
                     centerTitle: true,
                     backgroundColor: Colors.grey[50],
+                    titleSpacing: 0,
                     leading: BackButton(
                       color: Colors.black,
                     ),
                     actions: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: LikeButton(
                           isLiked: snapshot.data['savedRecipe'],
                           onTap: (isLiked) {
@@ -196,13 +197,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           margin: EdgeInsets.fromLTRB(3, 3, 3, 3),
                           decoration: BoxDecoration(
                             border: Border.all(
-                                color: Color(0xffA1CBA1), width: 1.8),
+                                color: Color(0xff4C8C4C), width: 1.8),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                               '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1]}',
                               style: TextStyle(
-                                  color: Color(0xffA1CBA1),
+                                  color: Color(0xff4C8C4C),
                                   fontWeight: FontWeight.w600)),
                         ),
                       )),
@@ -220,7 +221,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                 height: 25,
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                      color: Color(0xffA1CBA1), width: 1.6),
+                                      color: Color(0xff4C8C4C), width: 1.6),
                                   shape: BoxShape.circle,
                                   // color: Color(0xffA1CBA1),
                                 ),
@@ -228,7 +229,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                                   child: Text(
                                     '${index + 1}',
                                     style: TextStyle(
-                                        color: Color(0xffA1CBA1),
+                                        color: Color(0xff4C8C4C),
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600),
                                   ),
