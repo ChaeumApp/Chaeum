@@ -15,7 +15,7 @@ class RecipeMainList extends StatefulWidget {
 
 class _RecipeMainListState extends State<RecipeMainList> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getCategory() async {
     try {
