@@ -9,9 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductList extends StatefulWidget {
-  const ProductList({super.key, this.product});
+  const ProductList({super.key, this.product, this.scrollController});
 
   final product;
+  final scrollController;
 
   @override
   State<ProductList> createState() => _ProductListState();
