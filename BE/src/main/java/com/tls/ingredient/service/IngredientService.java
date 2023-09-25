@@ -2,20 +2,19 @@ package com.tls.ingredient.service;
 
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.vo.IngredientVO;
-import com.tls.ingredient.vo.UserIngrVO;
 import java.util.List;
 
 public interface IngredientService {
 
-    List<IngredientDto> getIngredients();
+    List<IngredientDto> getIngredients(String userEmail);
 
     List<IngredientDto> getIngredients(int catId, int subcatId);
 
     List<IngredientDto> getBestIngredients();
 
-    IngredientDto getIngredient(int ingrId);
+    IngredientDto getIngredient(String userEmail, int ingrId);
 
-    int selectIngredient(UserIngrVO userIngrVO);
+    int selectIngredient(String userEmail, IngredientVO ingredientVO);
 
     int dislikeIngredient(IngredientVO ingredientVO);
 

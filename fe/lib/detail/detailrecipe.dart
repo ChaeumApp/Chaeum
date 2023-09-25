@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
+import 'package:fe/recipe/recipedetail.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailRecipe extends StatefulWidget {
@@ -12,7 +16,7 @@ class DetailRecipe extends StatefulWidget {
 
 class _DetailRecipeState extends State<DetailRecipe> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getDetailRecipe() async {
     try {
@@ -20,6 +24,23 @@ class _DetailRecipeState extends State<DetailRecipe> {
       return response.data;
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<dynamic> clickRecipe(recipeId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -69,36 +90,46 @@ class _DetailRecipeState extends State<DetailRecipe> {
               child: ListView.builder(
                   itemCount: recipes.length,
                   itemBuilder: (BuildContext context, int index){
-                    return Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
-                          )
-                      ),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            flex: 3,
-                            child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
-                                height: 100),
-                          ),
-                          Flexible(
-                            flex: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(recipes[index]['title'] as String, style: TextStyle(
-                                      fontSize: 15
-                                  )),
-                                  Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
-                                ],
-                              ),
+                    return GestureDetector(
+                      onTap: (){
+                        // 연결후 추가
+                        clickRecipe(index);
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => RecipeDetailPage(recipeId : recipes[index]['recipeId'])));
+                      },
+                      child: Container(
+                        height: 100,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.5))
+                            )
+                        ),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              child: Image.network(getYoutubeThumbnail(recipes[index]['url'],),
+                                  height: 100),
                             ),
-                          )
-                        ],
+                            Flexible(
+                              flex: 4,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 15, 0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(recipes[index]['title'] as String, style: TextStyle(
+                                        fontSize: 15
+                                    )),
+                                    Icon(Icons.arrow_forward_ios, size: 15, color: Color(0xff868E96),)
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }),

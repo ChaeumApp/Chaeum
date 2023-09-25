@@ -1,7 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:fe/api/click.dart';
+import 'package:fe/store/userstore.dart';
+import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ProductList extends StatefulWidget {
@@ -15,7 +19,7 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'http://j9c204.p.ssafy.io';
 
   Future<dynamic> getProductList() async {
     try {
@@ -26,87 +30,123 @@ class _ProductListState extends State<ProductList> {
     }
   }
 
+  Future<dynamic> clickItem(itemId) async {
+    var accessToken = context.read<UserStore>().accessToken;
+    print(accessToken);
+    if(accessToken != ''){
+      try {
+        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+          options: Options(
+            headers: {'Authorization': 'Bearer $accessToken'},
+          ),);
+        print(response.data);
+        return response.data;
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(future: getProductList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return Center(child: SpinKitPulse(
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: Image.asset('assets/images/repeat/bottom_logo.png',
-                  height: 40),
-                );
-              },
-            ));
+            return SliverToBoxAdapter(
+              child: Center(child: SpinKitPulse(
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                    child: Image.asset('assets/images/repeat/bottom_logo.png',
+                    height: 40),
+                  );
+                },
+              )),
+            );
           }
 
           else if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: 15),
+            return SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Error: ${snapshot.error}',
+                  style: TextStyle(fontSize: 15),
+                ),
               ),
             );
           }
 
           else {
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            return SliverPadding(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 3 / 5,
+                  childAspectRatio: 7 / 11,
                   mainAxisSpacing: 10,
-                  crossAxisSpacing: 25),
-              itemCount: widget.product.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
-                      child: Image.asset(
-                        '${widget.product[index]['image']}',
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 35,
-                      child: Text(
-                          '${widget.product[index]['title']!.length > 25 ? widget.product[index]['title']?.substring(0, 25) : widget.product[index]['title']}'
-                              '${widget.product[index]['title']!.length > 25 ? "..." : ""}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          )),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('${NumberFormat('#,###').format(widget.product[index]['price'])}원',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff73324C)
-                          ),),
-                        SizedBox(
-                          width: 45,
-                          child: Image.asset('${widget.product[index]['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                  crossAxisSpacing: 25,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: (){
+                        // 상품클릭함수 상품 나오면 전달하는거 바꿔줘!!!!
+                        clickItem(index);
+                        // 웹뷰페이지에 전달하는 주소도!! 아이디도!!!
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                            child: Image.asset(
+                              '${widget.product[index]['image']}',
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        )
-                        // SizedBox(
-                        //   width: 45,
-                        //   child: Image.asset('assets/images/detail/naver_shopping_logo.png',),
-                        // )
-                      ],
-                    )
-                  ],
-                );
-              },
+                          SizedBox(
+                            height: 35,
+                            child: Text(
+                              '${widget.product[index]['title']!.length > 25 ? widget.product[index]['title']?.substring(0, 25) : widget.product[index]['title']}'
+                                  '${widget.product[index]['title']!.length > 25 ? "..." : ""}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                '${NumberFormat('#,###').format(widget.product[index]['price'])}원',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xff73324C),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 45,
+                                child: Image.asset(
+                                  '${widget.product[index]['site'] == 'naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: widget.product.length,
+                ),
+              ),
             );
-          }
+
+        }
         });
   }
 }

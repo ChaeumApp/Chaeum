@@ -16,6 +16,7 @@ import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDto viewRecipe(int recipeId) {
+    public RecipeDto viewRecipe(String userEmail, int recipeId) {
         try {
             List<String> process = new ArrayList<>();
             Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
@@ -85,12 +86,19 @@ public class RecipeServiceImpl implements RecipeService {
                 info[1] = recipeIngr.getRecipeIngrAmount();
                 ingredients.add(info);
             });
+            boolean saved = false;
+            if(userEmail != null){
+                User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                saved = userRecipeRepository.findByUserIdAndRecipeId(user, recipe).isPresent();
+            }
             return RecipeDto.builder()
+                .recipeId(recipe.getRecipeId())
                 .recipeName(recipe.getRecipeName())
                 .recipeThumbnail(recipe.getRecipeThumbnail())
                 .recipeLink(recipe.getRecipeLink())
                 .recipeProcess(process)
                 .recipeIngredients(ingredients)
+                .savedRecipe(saved)
                 .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,6 +132,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
+    @Transactional
     public int likeRecipe(String userEmail, int recipeId) {
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -146,7 +155,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<Recipe> findByIngrName(String ingrName) {
-        return recipeRepository.findByRecipeNameLike(ingrName);
+        return recipeRepository.findByRecipeNameContaining(ingrName);
     }
 
     @Override

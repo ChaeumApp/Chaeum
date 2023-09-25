@@ -11,9 +11,8 @@ public interface RecipeRepository extends Repository<Recipe, String> {
 
     Optional<Recipe> findByRecipeId(int recipeId);
 
-    List<Recipe> findByRecipeNameLike(String recipeName);
+    List<Recipe> findByRecipeNameContaining(String recipeName);
 
     void save(Recipe recipe);
 
-    void deleteAllInBatch();
 }

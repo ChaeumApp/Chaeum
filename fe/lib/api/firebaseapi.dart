@@ -50,22 +50,23 @@ void initializeNotification(context) async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Detail(category: message.data['name'])));
+            builder: (context) => Detail(category: message.data['id'])));
   }
 
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Detail(category: event.data['name'])));
+            builder: (context) => Detail(category: event.data['id'])));
   });
 }
 
-void getMyDeviceToken() async {
+getMyDeviceToken() async {
   final firebaseMessaging = FirebaseMessaging.instance;
   await firebaseMessaging.requestPermission();
   final token = await firebaseMessaging.getToken();
-  print("내 디바이스 토큰: $token");
+
+  return token.toString();
 }
 
 void foregroundMessage(RemoteMessage message) {
@@ -84,7 +85,7 @@ void foregroundMessage(RemoteMessage message) {
           ),
         ),
         // local notification에 메세지 전달은 이걸로
-        payload: message.data['name']);
+        payload: message.data['id']);
   }
 }
 
