@@ -125,7 +125,8 @@ CREATE TABLE `ingredient_group_tb` (
 	`ingr_group_id`	INT	NOT NULL primary key auto_increment,
 	`ingr_id`	INT	NOT NULL,
 	`group_id`	INT	NOT NULL
-);
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 CREATE TABLE `saved_ingredient_tb`
 (
