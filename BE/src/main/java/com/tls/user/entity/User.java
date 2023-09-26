@@ -68,6 +68,10 @@ public class User implements UserDetails {
         this.userPwd = newUserPwd;
     }
 
+    public void updateVegan(Vegan vegan) {
+        this.vegan = vegan;
+    }
+
     public void deactivateUser() {
         this.userEmail = null;
         this.userActivated = false;

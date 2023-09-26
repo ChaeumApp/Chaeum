@@ -7,6 +7,6 @@ import org.springframework.data.repository.Repository;
 
 public interface AllergyIngredientRepository extends Repository<AllergyIngredient, String> {
 
-    Optional<List<AllergyIngredient>> findByAlgyId(int AlgyId);
+    List<AllergyIngredient> findByAlgyId(int AlgyId);
 
 }

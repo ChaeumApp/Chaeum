@@ -183,7 +183,7 @@ CREATE TABLE `ingredient_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `item_select_log_tb`
 (
-    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_select_log_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `item_id`          BIGINT    NOT NULL,
     `item_select_time` TIMESTAMP NOT NULL
@@ -614,6 +614,8 @@ values (0, '난류'),
        (14, '쇠고기'),
        (15, '오징어'),
        (16, '조개류(굴, 전복, 홍합)');
+
+
 
 ALTER TABLE `item_tb`
     ADD COLUMN `item_crawling_date` DATE NOT NULL;
