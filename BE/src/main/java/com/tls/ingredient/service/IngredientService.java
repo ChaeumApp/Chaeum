@@ -3,6 +3,7 @@ package com.tls.ingredient.service;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.vo.IngredientVO;
+import com.tls.recipe.entity.single.Recipe;
 import java.util.List;
 
 public interface IngredientService {
@@ -23,4 +24,6 @@ public interface IngredientService {
     int favoriteIngredient(String userEmail, int ingrId);
 
     List<IngredientPriceVO> getPriceList(int ingrId);
+
+    List<Recipe> getRelatedRecipeList(int ingrId);
 }
