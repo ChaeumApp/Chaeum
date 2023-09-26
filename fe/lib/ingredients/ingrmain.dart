@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:fe/api/click.dart';
 import 'package:fe/detail/detail.dart';
+import 'package:fe/ingredients/ingrfavbtn.dart';
+import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class IngrMain extends StatefulWidget {
-  const IngrMain({super.key, this.catId, this.subCatId, this.catName});
+  const IngrMain({super.key, this.catId, this.subCatId, this.catName, this.sortNum});
 
   final catId;
   final subCatId;
   final catName;
+  final sortNum;
 
   @override
   State<IngrMain> createState() => _IngrMainState();
@@ -20,6 +23,7 @@ class IngrMain extends StatefulWidget {
 class _IngrMainState extends State<IngrMain> {
   final ScrollController scrollController = ScrollController();
   bool isFabVisible = false;
+  int num = 0;
 
   @override
   void initState() {
@@ -33,33 +37,35 @@ class _IngrMainState extends State<IngrMain> {
     scrollController.dispose();
   }
 
-
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io';
 
-  // 받아오기
-  Future<dynamic> getIngr() async {
-    try {
-      if(widget.subCatId == null){
-        final response = await dio.get('$serverURL/ingr/category',
-            queryParameters: {'catId' : widget.catId});
-        return response.data;
-      } else {
-        final response = await dio.get('$serverURL/ingr/category',
-            queryParameters: {'catId' : widget.catId, 'subCatId' : widget.subCatId});
-        return response.data;
-      }
-    } catch (e) {
-      print(e);
+
+  List<dynamic> sortData(List<dynamic> data, int sortNum) {
+    if (sortNum == 1) {
+      data.sort((a, b) => (a['ingrName']).compareTo(b['ingrName']));
     }
+    return data;
   }
 
-  // 좋아요
-  // 소분류 나오면 바꿔라
-  Future<dynamic> likeIngr() async {
+  // 받아오기
+  Future<dynamic> getIngr() async {
+    var accessToken = context.read<UserStore>().accessToken;
     try {
-      final response = await dio.get('ingr/favorite');
-      return response.data;
+      if (accessToken != '') {
+        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}',
+          options: Options(
+            headers: {'Authorization' : 'Bearer $accessToken'},
+          ));
+        final data = response.data[0]; // response.data를 data 변수에 저장
+        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
+        return sortedData;
+      } else {
+        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
+        final data = response.data[0]; // response.data를 data 변수에 저장
+        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
+        return sortedData;
+      }
     } catch (e) {
       print(e);
     }
@@ -69,12 +75,15 @@ class _IngrMainState extends State<IngrMain> {
   Future<dynamic> dislikeIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;
     print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.post('$serverURL/ingr/dislike', queryParameters: {'ingrId' : ingrId},
+        final response = await dio.post(
+          '$serverURL/ingr/dislike',
+          queryParameters: {'ingrId': ingrId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
+          ),
+        );
         print('관심없음 ${response.data}');
         return response.data;
       } catch (e) {
@@ -83,20 +92,19 @@ class _IngrMainState extends State<IngrMain> {
     }
   }
 
-
-
-
   // 클릭
   Future<dynamic> clickIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;
     print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.post('$serverURL/ingr/selected', data: {'ingrId' : ingrId},
+        final response = await dio.post(
+          '$serverURL/ingr/selected',
+          data: {'ingrId': ingrId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
-        print(response.data);
+          ),
+        );
         return response.data;
       } catch (e) {
         print(e);
@@ -109,7 +117,7 @@ class _IngrMainState extends State<IngrMain> {
   }
 
   var sort = ['추천순', '가나다순'];
-  String? selectedVal = "추천순";
+  String? selectedVal = '추천순';
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +215,15 @@ class _IngrMainState extends State<IngrMain> {
                                         onChanged: (val) {
                                           setState(() {
                                             selectedVal = val as String;
+                                            if(val == '추천순'){
+                                              setState(() {
+                                                num = 0;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                num = 1;
+                                              });
+                                            }
                                           });
                                         },
                                         selectedItemBuilder:
@@ -244,60 +261,33 @@ class _IngrMainState extends State<IngrMain> {
                           (BuildContext context, int index) {
                             return Column(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    clickIngr(snapshot.data[index]['ingrId']);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Detail(
-                                                category: snapshot.data[index]['ingrId'])));
-                                  },
-                                  child: ClipRRect(
+                                ClipRRect(
                                     borderRadius: BorderRadius.circular(3),
-                                    child: Image.asset('assets/images/repeat/bottom_logo.png',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        clickIngr(
+                                            snapshot.data[index]['ingrId']);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Detail(
+                                                    category:
+                                                        snapshot.data[index]
+                                                            ['ingrId'])));
+                                      },
+                                      child: Image.asset(
+                                        'assets/images/repeat/bottom_logo.png',
                                         height: 250,
                                         fit: BoxFit.fill,
+                                      ),
                                     )
                                     // Image.network(
                                     //   snapshot.data[index]['recipeThumbnail'],
                                     //   height: 250,
                                     //   fit: BoxFit.fill,
                                     // ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    likeIngr();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                                    padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                    decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Color(0xffD9D9D9)),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(3)),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 5, 0),
-                                          child: Icon(
-                                              Icons.shopping_cart_outlined,
-                                              size: 17),
-                                        ),
-                                        Text(
-                                          '알림설정',
-                                          style: TextStyle(fontSize: 15),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                IngrFavBtn(isFav: snapshot.data[index]['savedIngredient'], ingrId : snapshot.data[index]['ingrId']),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -306,17 +296,19 @@ class _IngrMainState extends State<IngrMain> {
                                       margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       child: GestureDetector(
                                         onTap: () {
-                                          clickIngr(snapshot.data[index]['ingrId']);
+                                          clickIngr(
+                                              snapshot.data[index]['ingrId']);
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) => Detail(
                                                       category:
-                                                      snapshot.data[index]['ingrId'])));
+                                                          snapshot.data[index]
+                                                              ['ingrId'])));
                                         },
                                         child: Text(
-                                              '${snapshot.data[index]['ingrName']!.length > 8 ? snapshot.data[index]['ingrName']?.substring(0, 8) : snapshot.data[index]['ingrName']}'
-                                              '${snapshot.data[index]['ingrName']!.length > 8 ? "..." : ""}',
+                                          '${snapshot.data[index]['ingrName']!.length > 8 ? snapshot.data[index]['ingrName']?.substring(0, 8) : snapshot.data[index]['ingrName']}'
+                                          '${snapshot.data[index]['ingrName']!.length > 8 ? "..." : ""}',
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700),
@@ -339,7 +331,10 @@ class _IngrMainState extends State<IngrMain> {
                                         child: Icon(Icons.more_vert),
                                       ),
                                       itemBuilder: (BuildContext context) {
-                                        return [_menuItem("관심없음", snapshot.data[index]['ingrId'])];
+                                        return [
+                                          _menuItem("관심없음",
+                                              snapshot.data[index]['ingrId'])
+                                        ];
                                       },
                                     )
                                   ],

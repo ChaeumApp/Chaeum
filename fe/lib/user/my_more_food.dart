@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import './fav_food.dart';
 
-class FavoriteMoreFood extends StatelessWidget {
-  FavoriteMoreFood({super.key});
+class FavoriteMoreFood extends StatefulWidget {
+  FavoriteMoreFood({super.key, this.favorIngr});
+  final favorIngr;
 
+  @override
+  State<FavoriteMoreFood> createState() => _FavoriteMoreFoodState();
+}
+
+class _FavoriteMoreFoodState extends State<FavoriteMoreFood> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +26,6 @@ class FavoriteMoreFood extends StatelessWidget {
             centerTitle: true,
             toolbarHeight: 65,
             foregroundColor: Colors.black),
-        body: FavFood());
+        body: FavFood(favorIngr: widget.favorIngr));
   }
 }

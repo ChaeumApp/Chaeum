@@ -1,11 +1,16 @@
 package com.tls.ingredient.service;
 
+import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.dto.IngredientDto;
+import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
+import com.tls.ingredient.entity.single.IngredientPrice;
 import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.converter.IngredientConverter;
+import com.tls.ingredient.repository.IngredientPriceRepository;
+import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.UserIngrLogRepository;
 import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
@@ -13,7 +18,10 @@ import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +39,10 @@ public class IngredientServiceImpl implements IngredientService {
     private final SubCategoryRepository subCategoryRepository;
     private final UserIngrLogRepository userIngrLogRepository;
     private final IngredientConverter ingredientConverter;
+    private final IngredientRecommendRepository ingredientRecommendRepository;
+    private final IngredientPriceRepository ingredientPriceRepository;
+    private final int TERM = 7;
+    private final int NUMBERS = 12;
 
     @Override
     public List<IngredientDto> getIngredients(String userEmail) {
@@ -51,20 +63,82 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getIngredients(int catId, int subCatId) {
+    public List<IngredientDto> getIngredients(int catId, int subCatId, String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
             if (subCatId == 0) {
-                Objects.requireNonNull(ingrRepository.findByCategory(
-                        categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
-                    .forEach(
-                        ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                if(userEmail != null){
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                }
             } else {
-                Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
-                        categoryRepository.findByCatId(catId).orElseThrow(),
-                        subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
-                    .forEach(
-                        ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                if(userEmail != null){
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                }
+            }
+            return results;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId, String userEmail) {
+        List<IngredientDto> results = new ArrayList<>();
+        try {
+            if (subCatId == 0) {
+                if(userEmail != null){
+                    User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                    List<IngredientRecommend> recommendedIngredients =
+                        ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
+                    for (IngredientRecommend recommend : recommendedIngredients) {
+                        Ingredient ingredient = recommend.getIngredient();
+                        if(ingredient.getCategory().getCatId() != catId) continue;
+                        results.add(ingredientConverter.entityToDto(userEmail, ingredient));
+                    }
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                    Collections.shuffle(results);
+                }
+            } else {
+                if(userEmail != null){
+                    User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+                    List<IngredientRecommend> recommendedIngredients =
+                        ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
+                    for (IngredientRecommend recommend : recommendedIngredients) {
+                        Ingredient ingredient = recommend.getIngredient();
+                        if(ingredient.getCategory().getCatId() != catId) continue;
+                        if(ingredient.getSubCategory().getSubCatId() != subCatId) continue;
+                        results.add(ingredientConverter.entityToDto(userEmail, ingredient));
+                    }
+                } else {
+                    Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
+                            categoryRepository.findByCatId(catId).orElseThrow(),
+                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
+                        .forEach(
+                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
+                    Collections.shuffle(results);
+                }
             }
             return results;
         } catch (Exception e) {
@@ -106,7 +180,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int dislikeIngredient(IngredientVO ingredientVO) {
+    public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) {
         return 0;
     }
 
@@ -130,5 +204,30 @@ public class IngredientServiceImpl implements IngredientService {
         } catch (Exception e) {
             return -1;
         }
+    }
+
+    @Override
+    public List<IngredientPriceVO> getPriceList(int ingrId) {
+        try{
+            List<IngredientPriceVO> ingredientPriceVOs = new ArrayList<>();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingrId).orElseThrow();
+            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient).orElseThrow();
+            for(int i = 0 ; i < list.size(); i++) {
+                IngredientPrice ingredientPrice = list.get(i);
+                if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM != 0){
+                    continue;
+                }
+                IngredientPriceVO ingredientPriceVO = IngredientPriceVO.builder()
+                    .price(ingredientPrice.getPrice())
+                    .date(ingredientPrice.getDate())
+                    .build();
+                ingredientPriceVOs.add(ingredientPriceVO);
+                if( i+1 == NUMBERS) break;
+            }
+            return ingredientPriceVOs;
+        } catch (Exception e){
+            return null;
+        }
+
     }
 }
