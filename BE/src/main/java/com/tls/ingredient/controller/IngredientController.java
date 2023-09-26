@@ -4,6 +4,7 @@ import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.service.IngredientService;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
+import com.tls.recipe.entity.single.Recipe;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
@@ -184,6 +185,16 @@ public class IngredientController {
         } catch (Exception e) {
             return getResponseEntity(0);
         }
+    }
+
+    @GetMapping("/{ingrId}/recipe")
+    @Operation(summary = "소분류 관련 레시피 반환 메서드", description = "소분류 id 를 주면 관련 레시피 리시트를 반환한다.", tags = "소분류  PI")
+    public ResponseEntity<?> getRelatedRecipeList(@PathVariable(name = "ingrId") int ingrId){
+        List<Recipe> results = ingredientService.getRelatedRecipeList(ingrId);
+        if(results == null){
+            return getResponseEntity(-1);
+        }
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
     private ResponseEntity<?> getResponseEntity(int resultCode) {
