@@ -3,7 +3,8 @@ import './pricechart.dart';
 import './pricetable.dart';
 
 class PriceInfo extends StatelessWidget {
-  const PriceInfo({super.key});
+  const PriceInfo({super.key, this.ingrId});
+  final ingrId;
 
   TextStyle titleStyle(){
     return const TextStyle(
@@ -26,7 +27,7 @@ class PriceInfo extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
                     child: Text('최근 3개월 가격 변동', style: titleStyle())),
-                PriceChart(),
+                PriceChart(ingrId : ingrId),
                 Container(
                     margin: EdgeInsets.fromLTRB(0, 35, 0, 10),
                     child: Row(

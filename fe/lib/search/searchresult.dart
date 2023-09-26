@@ -17,6 +17,7 @@ class SearchResult extends StatefulWidget {
 
 class _SearchResultState extends State<SearchResult> {
   TextEditingController word = TextEditingController();
+  final ScrollController scrollController = ScrollController();
 
 
   @override
@@ -94,11 +95,24 @@ class _SearchResultState extends State<SearchResult> {
             ),
             body: TabBarView(
                   children: [
-                    SearchIngr(),
-                    SearchRecipe()
+                    SearchIngr(scrollController : scrollController),
+                    SearchRecipe(scrollController : scrollController)
                   ],
                 ),
-
+              floatingActionButton: FloatingActionButton.small(
+                onPressed: () {
+                  scrollController.animateTo(
+                    scrollController.position.minScrollExtent,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.fastOutSlowIn,
+                  );
+                },
+                backgroundColor: Colors.grey[50],
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Color(0xffA1CBA1)),
+                    borderRadius: BorderRadius.circular(12)),
+                child: Icon(Icons.arrow_upward_sharp, color: Color(0xffA1CBA1)),
+              )
             ),
         ),
     );
