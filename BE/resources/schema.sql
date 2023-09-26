@@ -183,7 +183,7 @@ CREATE TABLE `ingredient_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `item_select_log_tb`
 (
-    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_select_log_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `item_id`          BIGINT    NOT NULL,
     `item_select_time` TIMESTAMP NOT NULL

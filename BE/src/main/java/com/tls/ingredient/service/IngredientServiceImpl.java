@@ -205,7 +205,7 @@ public class IngredientServiceImpl implements IngredientService {
             ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
 
             return 1;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
                 .orElseThrow();
