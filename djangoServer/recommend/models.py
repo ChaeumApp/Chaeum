@@ -94,7 +94,7 @@ class IngredientPrice(models.Model):
         ]
 
 class Item(models.Model):
-    item_id = models.BigAutoField(primary_key=True)  # 자동 증가하는 Primary Key
+    item_id = models.CharField(max_length=64, primary_key=True)  # 자동 증가하는 Primary Key
     ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)  # Integer 필드
     item_name = models.CharField(max_length=20)  # 최대 길이 20의 문자열 필드
     item_image = models.CharField(max_length=512, null=True, blank=True)  # 최대 길이 512의 문자열 필드, NULL 허용
