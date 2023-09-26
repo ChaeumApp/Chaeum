@@ -168,7 +168,6 @@ public class IngredientController {
         } catch (Exception e){
             return getResponseEntity(0);
         }
-
     }
 
     @PostMapping("/favorite")

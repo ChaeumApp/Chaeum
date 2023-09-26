@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -106,13 +107,32 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public int purchaseItem(String userEmail, ItemVO itemVO) {
         try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Item item = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow();
+
             ItemPurchaseLog itemPurchaseLog = ItemPurchaseLog.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                .itemId(itemRepository.findByItemId(itemVO.getItemId()).orElseThrow())
+                .userId(user)
+                .itemId(item)
                 .build();
             itemPurchaseLogRepository.save(itemPurchaseLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 100);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow().getIngredient();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(15)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
             return 1;
         } catch (Exception e) {
             return -1;
