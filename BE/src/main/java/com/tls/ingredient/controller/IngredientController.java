@@ -188,7 +188,7 @@ public class IngredientController {
     }
 
     @GetMapping("/{ingrId}/recipe")
-    @Operation(summary = "소분류 관련 레시피 반환 메서드", description = "소분류 id 를 주면 관련 레시피 리시트를 반환한다.", tags = "소분류  PI")
+    @Operation(summary = "소분류 관련 레시피 반환 메서드", description = "소분류 id 를 주면 관련 레시피 리시트를 반환한다.", tags = "소분류 API")
     public ResponseEntity<?> getRelatedRecipeList(@PathVariable(name = "ingrId") int ingrId){
         List<Recipe> results = ingredientService.getRelatedRecipeList(ingrId);
         if(results == null){
