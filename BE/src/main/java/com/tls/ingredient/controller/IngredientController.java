@@ -6,6 +6,7 @@ import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -56,17 +56,27 @@ public class IngredientController {
 
     }
 
-    @GetMapping("category")
+    @GetMapping("category/{catId}/{subCatId}")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredientsByCatAndSubCat(
-        @RequestParam int catId, @RequestParam(required = false) String subCatId) {
+    public ResponseEntity<?> getIngredientsByCatAndSubCat(@RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
+        @PathVariable int catId, @PathVariable(required = false) String subCatId) {
         log.info("getIngredients call :: ");
-        List<IngredientDto> ingredientDtoList = ingredientService.getIngredients(catId,
-            subCatId == null ? 0 : Integer.parseInt(subCatId));
-        if (ingredientDtoList != null) {
+        try {
+            List<List<IngredientDto>> ingredientDtoList = new ArrayList<>();
+            int subCatIdInteger = subCatId == null ? 0 : Integer.parseInt(subCatId);
+            if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
+                ingredientDtoList.add(ingredientService
+                    .getIngredients(catId, subCatIdInteger, userEmail));
+                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, userEmail));
+            } else {
+                ingredientDtoList.add(ingredientService.getIngredients(catId, subCatIdInteger, null));
+                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, null));
+            }
             return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
-        } else {
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
     }
@@ -79,14 +89,14 @@ public class IngredientController {
         log.info("getIngredient call :: {}", ingrId);
         try {
             IngredientDto ingredientDto;
-            if (tokenWithPrefix.split(" ")[0].equals("Bearer")) {
-                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+            if (tokenWithPrefix!= null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+                String userEmail = jwtTokenProvider
+                    .getAuthentication(tokenWithPrefix.substring(7))
                     .getName();
                 ingredientDto = ingredientService.getIngredient(userEmail, ingrId);
             } else {
                 ingredientDto = ingredientService.getIngredient(null, ingrId);
             }
-
             if (ingredientDto != null) {
                 return new ResponseEntity<>(ingredientDto, HttpStatus.OK);
             } else {
@@ -95,7 +105,17 @@ public class IngredientController {
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.OK);
         }
+    }
 
+    @GetMapping("price/{ingrId}")
+    @Operation(summary = "소분류 가격정보를 조회하는 메서드", description = "소분류의 기간에 따른 가격 정보 리스트를 반환합니다.", tags = "소분류 API")
+    public ResponseEntity<?> getPriceList(@PathVariable(name = "ingrId") int ingrId){
+        log.info("getPriceList call :: {}", ingrId);
+        try {
+            return new ResponseEntity<>(ingredientService.getPriceList(ingrId), HttpStatus.OK);
+        } catch (Exception e){
+            return getResponseEntity(-1);
+        }
     }
 
     @GetMapping("/best")
@@ -133,14 +153,21 @@ public class IngredientController {
 
     @PostMapping("/dislike")
     @Operation(summary = "소분류 관심없음 반영 메서드", description = "사용자가 특정 소분류를 관심없음 설정한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> dislikeIngredient(IngredientVO ingredientVO) {
+    public ResponseEntity<?> dislikeIngredient(@RequestHeader("Authorization")String tokenWithPrefix, @RequestBody IngredientVO ingredientVO) {
         log.info("dislikeIngredient call :: ");
-        int n = ingredientService.dislikeIngredient(ingredientVO);
-        if (n == 1) {
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("fail", HttpStatus.OK);
+        try{
+            Authentication authentication = jwtTokenProvider
+                .getAuthentication(tokenWithPrefix.substring(7));
+            int n = ingredientService.dislikeIngredient(authentication.getName(), ingredientVO);
+            if (n == 1) {
+                return new ResponseEntity<>("success", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } catch (Exception e){
+            return getResponseEntity(0);
         }
+
     }
 
     @PostMapping("/favorite")

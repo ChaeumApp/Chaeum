@@ -40,13 +40,18 @@ public class OAuthService {
             }
 
             String gender, birthday, birthyear = "0000";
+            JsonNode result = getUserInfo(accessToken);
             if (type.equals("kakao")) {
-                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().substring(0, 1);
-                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText();
+                gender = result.get("gender_needs_agreement").asText().equals("false") ?
+                    Objects.requireNonNull(result.get("gender").asText().substring(0, 1)) : null;
+                log.info("gender: {}", gender);
+                birthday = result.get("birthday_needs_agreement").asText().equals("false") ?
+                    Objects.requireNonNull(result.get("birthday").asText()) : null;
+                log.info("birthday: {}", birthday);
             } else {
-                gender = Objects.requireNonNull(getUserInfo(accessToken)).get("gender").asText().toLowerCase();
-                birthday = Objects.requireNonNull(getUserInfo(accessToken)).get("birthday").asText().replace("-", "");
-                birthyear = Objects.requireNonNull(getUserInfo(accessToken)).get("birthyear").asText();
+                gender = Objects.requireNonNull(result).get("gender").asText().toLowerCase();
+                birthday = Objects.requireNonNull(result).get("birthday").asText().replace("-", "");
+                birthyear = Objects.requireNonNull(result).get("birthyear").asText();
             }
             vo.setUserPwd("");
             vo.setUserGender(gender);
