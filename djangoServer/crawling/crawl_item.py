@@ -8,6 +8,9 @@ import time
 from recommend.models import *
 from ingredientPrice.views import update_price
 
+import logging
+logger = logging.getLogger('my')
+
 url = "https://www.coupang.com/np/search"
 base_url = "https://www.coupang.com/"
 
@@ -36,8 +39,6 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
 
         time.sleep(0.1)
         res = requests.get(url, params=params, headers=headers)
-
-        # date = datetime.now().strftime('%Y-%m-%d')
 
         if res.status_code == 200:
             soup = BeautifulSoup(res.text, "html.parser") # 가져온 HTML 문서를 파서를 통해 BeautifulSoup 객체로 만듦
@@ -99,6 +100,7 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                         ingr_id = ingredient.ingr_id
                         item = Item.objects.get(item_id="Coupang_"+id)
                     except Ingredient.DoesNotExist:
+                        logger.info(keyword)
                         pass
                     except Item.DoesNotExist:
                         item_obj = Item(
@@ -156,10 +158,13 @@ def main():
         BREAD
     ]
 
+    logger.info("crawling start...")
+    date = datetime.now().strftime('%Y-%m-%d')
     startTime = time.time()
-    for i in range(1, 12):
+    # for i in range(1, 12):
+    for i in range(1, 2):
         num = str(i).zfill(2)
-        with open(f'./crawl/subcate_list/subcategory_{num}.csv', 'r', encoding='UTF-8') as file:
+        with open(f'./crawling/subcate_list/subcategory_{num}.csv', 'r', encoding='UTF-8') as file:
             category = num_to_category[i]
             r = csv.reader(file)
 
@@ -169,9 +174,17 @@ def main():
                     inclusions = list(inclusions.split(","))
                     exclusions = list(exclusions.split(","))
 
-                    result = cp_crawling(keyword, inclusions, exclusions, category, debug)
+                    cp_crawling(keyword, inclusions, exclusions, category, debug)
+
+    
 
     endTime = time.time()
-    executionTime = endTime - startTime
+    logger.info("crawling end...")
 
+    time.sleep(10)
+    for i in range(1, 418):
+        update_price(ingr_id=i, item_crawling_date=date)
+
+    executionTime = endTime - startTime
     print(f'코드 실행 시간: {executionTime}초')
+    logger.info(executionTime)

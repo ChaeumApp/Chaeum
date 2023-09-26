@@ -3,7 +3,7 @@ from recommend.models import Item, IngredientPrice
 from django.http import JsonResponse
 import re
 
-def update_price(request, ingr_id, item_crawling_date):
+def update_price(ingr_id, item_crawling_date):
     items = Item.objects.filter(ingr_id=ingr_id, item_crawling_date=item_crawling_date)
     
     def find_gram(title):
