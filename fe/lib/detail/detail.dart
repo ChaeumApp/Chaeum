@@ -237,6 +237,7 @@ class _DetailState extends State<Detail> {
         body: DefaultTabController(
           length: 3,
           child: NestedScrollView(
+            controller: scrollController,
             // physics: NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, isScrolled) {
               return [
@@ -271,8 +272,8 @@ class _DetailState extends State<Detail> {
             },
             body: TabBarView(children: [
               RecommendProduct(ingrId : widget.category, scrollController : scrollController),
-              PriceInfo(),
-              DetailRecipe(),
+              PriceInfo(ingrId : widget.category),
+              DetailRecipe(ingrId : widget.category),
             ]),
           ),
         ),

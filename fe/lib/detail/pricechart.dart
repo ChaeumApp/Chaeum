@@ -4,7 +4,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PriceChart extends StatefulWidget {
-  PriceChart({super.key});
+  PriceChart({super.key, this.ingrId});
+  final ingrId;
 
   @override
   State<PriceChart> createState() => _PriceChartState();
@@ -14,46 +15,43 @@ class _PriceChartState extends State<PriceChart> {
   Dio dio = Dio();
   final serverURL = 'http://j9c204.p.ssafy.io';
 
+  double? minY;
+  double? maxY;
+
   Future<dynamic> getPriceChart() async {
     try {
-      final response = await dio.get('$serverURL/recipe');
-      return response.data;
+      final response = await dio.get('$serverURL/ingr/price/${widget.ingrId}');
+      var reversedData = response.data.reversed.toList();
+
+      minY = response.data.map((entry) => (entry['price'] as int).toDouble()).fold(
+          double.infinity,
+              (previousValue, element) =>
+          element < previousValue! ? element : previousValue);
+
+      maxY = response.data.map((entry) => (entry['price'] as int).toDouble()).fold(
+          -double.infinity,
+              (previousValue, element) =>
+          element > previousValue! ? element : previousValue);
+
+      if (minY != null && maxY != null) {
+        // minY = ((minY! / 10).ceil() * 10.0 - (minY! * 0.05)).ceilToDouble();
+        // maxY = ((maxY! / 10).ceil() * 10.0 + (maxY! * 0.05)).ceilToDouble();
+      }
+      return reversedData;
     } catch (e) {
       print(e);
     }
   }
 
-  var data = [
-    {'date': '7/12', 'price': 4600},
-    {'date': '7/19', 'price': 4430},
-    {'date': '7/26', 'price': 4800},
-    {'date': '8/2', 'price': 4600},
-    {'date': '8/9', 'price': 4230},
-    {'date': '8/16', 'price': 5200},
-    {'date': '8/23', 'price': 4650},
-    {'date': '8/30', 'price': 4600},
-    {'date': '9/6', 'price': 4700},
-    {'date': '9/13', 'price': 4600},
-    {'date': '9/20', 'price': 4850},
-    {'date': '9/27', 'price': 4850},
-  ];
+
+  String formatDate(String inputDate) {
+    DateTime date = DateTime.parse(inputDate);
+    String formattedDate = '${date.month}/${date.day}';
+    return formattedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
-    double? minY = data.map((entry) => (entry['price'] as int).toDouble()).fold(
-        double.infinity,
-        (previousValue, element) =>
-            element < previousValue! ? element : previousValue);
-
-    double? maxY = data.map((entry) => (entry['price'] as int).toDouble()).fold(
-        -double.infinity,
-        (previousValue, element) =>
-            element > previousValue! ? element : previousValue);
-
-    if (minY != null && maxY != null) {
-      minY = ((minY / 10).ceil() * 10.0 - (minY * 0.05)).ceilToDouble(); // 십의 자리에서 올림
-      maxY = ((maxY / 10).ceil() * 10.0 + (maxY * 0.05)).ceilToDouble();
-    }
 
     List<Color> gradientColors = [
       Color(0xffA1CBA1),
@@ -139,22 +137,22 @@ class _PriceChartState extends State<PriceChart> {
                                 String text = '';
                                 switch (value.toDouble()) {
                                   case 1:
-                                    text = data[1]['date'] as String;
+                                    text = formatDate(snapshot.data[1]['date'] as String);
                                     break;
                                   case 3:
-                                    text = data[3]['date'] as String;
+                                    text = formatDate(snapshot.data[3]['date'] as String);
                                     break;
                                   case 5:
-                                    text = data[5]['date'] as String;
+                                    text = formatDate(snapshot.data[5]['date'] as String);
                                     break;
                                   case 7:
-                                    text = data[7]['date'] as String;
+                                    text = formatDate(snapshot.data[7]['date'] as String);
                                     break;
                                   case 9:
-                                    text = data[9]['date'] as String;
+                                    text = formatDate(snapshot.data[9]['date'] as String);
                                     break;
                                   case 11:
-                                    text = data[11]['date'] as String;
+                                    text = formatDate(snapshot.data[11]['date'] as String);
                                     break;
                                 }
                                 return Container(
@@ -168,7 +166,17 @@ class _PriceChartState extends State<PriceChart> {
                           ),
                           leftTitles: AxisTitles(
                               sideTitles: SideTitles(
-                                  showTitles: false
+                                  showTitles: true,
+                                reservedSize: 40,
+                                getTitlesWidget: (value, meta) {
+                                  if (value == minY) {
+                                    return Text('${minY?.toInt()}');
+                                  } else if (value == maxY) {
+                                    return Text('${maxY?.toInt()}');
+                                  } else {
+                                    return Text('');
+                                  }
+                                },
                               )
                           )
                       ),
@@ -179,18 +187,18 @@ class _PriceChartState extends State<PriceChart> {
                       lineBarsData: [
                         LineChartBarData(
                             spots: [
-                              FlSpot(0, (data[0]['price'] as int).toDouble()),
-                              FlSpot(1, (data[1]['price'] as int).toDouble()),
-                              FlSpot(2, (data[2]['price'] as int).toDouble()),
-                              FlSpot(3, (data[3]['price'] as int).toDouble()),
-                              FlSpot(4, (data[4]['price'] as int).toDouble()),
-                              FlSpot(5, (data[5]['price'] as int).toDouble()),
-                              FlSpot(6, (data[6]['price'] as int).toDouble()),
-                              FlSpot(7, (data[7]['price'] as int).toDouble()),
-                              FlSpot(8, (data[8]['price'] as int).toDouble()),
-                              FlSpot(9, (data[9]['price'] as int).toDouble()),
-                              FlSpot(10, (data[10]['price'] as int).toDouble()),
-                              FlSpot(11, (data[11]['price'] as int).toDouble()),
+                              FlSpot(0, (snapshot.data[0]['price'] as int).toDouble()),
+                              FlSpot(1, (snapshot.data[1]['price'] as int).toDouble()),
+                              FlSpot(2, (snapshot.data[2]['price'] as int).toDouble()),
+                              FlSpot(3, (snapshot.data[3]['price'] as int).toDouble()),
+                              FlSpot(4, (snapshot.data[4]['price'] as int).toDouble()),
+                              FlSpot(5, (snapshot.data[5]['price'] as int).toDouble()),
+                              FlSpot(6, (snapshot.data[6]['price'] as int).toDouble()),
+                              FlSpot(7, (snapshot.data[7]['price'] as int).toDouble()),
+                              FlSpot(8, (snapshot.data[8]['price'] as int).toDouble()),
+                              FlSpot(9, (snapshot.data[9]['price'] as int).toDouble()),
+                              FlSpot(10, (snapshot.data[10]['price'] as int).toDouble()),
+                              FlSpot(11, (snapshot.data[11]['price'] as int).toDouble()),
                             ],
                             isCurved: false,
                             color: Color(0xffA1CBA1),
@@ -219,6 +227,7 @@ class _PriceChartState extends State<PriceChart> {
                         enabled: true,
                         touchTooltipData: LineTouchTooltipData(
                             tooltipBgColor: Colors.white,
+                            fitInsideVertically: true,
                             tooltipBorder: BorderSide(
                                 color: Color(0xffA1CBA1)
                             ),
@@ -231,7 +240,7 @@ class _PriceChartState extends State<PriceChart> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600);
                                   return LineTooltipItem(
-                                    '${touchedSpot.y.toStringAsFixed(0)}원', // 숫자를 화폐 형식으로 표시
+                                    '${touchedSpot.y.toStringAsFixed(0)}원',
                                     textStyle,
                                   );
                                 },

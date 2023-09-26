@@ -6,7 +6,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 class SearchRecipe extends StatefulWidget {
-  const SearchRecipe({super.key});
+  const SearchRecipe({super.key, this.scrollController});
+  final scrollController;
 
   @override
   State<SearchRecipe> createState() => _SearchRecipeState();
@@ -70,6 +71,7 @@ class _SearchRecipeState extends State<SearchRecipe> {
 
           else {
             return ListView.builder(
+              controller: widget.scrollController,
               itemCount: (snapshot.data.length + 2), // 변경된 itemCount
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {

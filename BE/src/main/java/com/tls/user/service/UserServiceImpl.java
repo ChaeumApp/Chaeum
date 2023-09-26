@@ -2,10 +2,14 @@ package com.tls.user.service;
 
 import com.tls.allergy.entity.composite.UserAllergy;
 import com.tls.allergy.entity.single.Allergy;
+import com.tls.allergy.repository.AllergyIngredientRepository;
 import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.RandomStringCreator;
+import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.single.Ingredient;
+import com.tls.ingredient.repository.IngrRepository;
+import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
@@ -16,7 +20,6 @@ import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.dto.UserProfileDto;
 import com.tls.user.converter.UserConverter;
-import com.tls.user.dto.UserDto;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
@@ -58,6 +61,9 @@ public class UserServiceImpl implements UserService {
     private final UserIngrRepository userIngrRepository;
     private final UserRecipeRepository userRecipeRepository;
     private final AllergyRepository allergyRepository;
+    private final AllergyIngredientRepository allergyIngredientRepository;
+    private final IngredientPreferenceRepository ingredientPreferenceRepository;
+    private final IngrRepository ingrRepository;
 
     private final UserConverter userConverter;
 
@@ -84,15 +90,38 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             // user 가 가지고 있는 allergy 정보를 저장한다.
             List<UserAllergy> userAllergyList = new ArrayList<>();
-            System.out.println(userDto.getAllergyList());
+
             userDto.getAllergyList().forEach(allergy -> {
                 UserAllergy userAllergy = UserAllergy.builder()
                         .userId(user)
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
+
+                allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                    IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                        .findByUserAndIngredient(user, allergyIngredient.getIngrId()).orElseThrow();
+                    ingredientPreference.updatePrefRating(-10000);
+                });
+
             });
             userAllergyRepository.saveAll(userAllergyList);
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();
+            List<IngredientPreference> list = new ArrayList<>();
+            userDto.getAllergyList().forEach(allergy -> {
+                    allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                        IngredientPreference ingredientPreference = IngredientPreference.builder()
+                            .prefRating(-10000)
+                            .ingredient(allergyIngredient.getIngrId())
+                            .user(user)
+                            .build();
+                        list.add(ingredientPreference);
+                    });
+                }
+            );
+            ingredientPreferenceRepository.saveAll(list);
+            return 1;
         } catch (Exception e) {
             e.printStackTrace();
             log.info("signup fail");
@@ -186,10 +215,7 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<User> updateUser = userRepository.findByUserEmail(userEmail);
             updateUser.ifPresent(selectUser -> {
-                UserDto userDto = userConverter.entityToDto(selectUser);
-                userDto.setVeganId(userVO.getVeganId());
-                userRepository.save(userConverter.dtoToEntity(userDto));
-                userAllergyRepository.deleteByUserId(selectUser);
+                selectUser.updateVegan(veganRepository.findByVeganId(userVO.getVeganId()).get());
             });
             List<UserAllergy> userAllergyList = new ArrayList<>();
             userVO.getAllergyList().forEach(allergy -> {
@@ -198,8 +224,28 @@ public class UserServiceImpl implements UserService {
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
+                allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                    IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                        .findByUserAndIngredient(updateUser.get(), allergyIngredient.getIngrId()).orElseThrow();
+                    ingredientPreference.updatePrefRating(-10000);
+                });
             });
             userAllergyRepository.saveAll(userAllergyList);
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            List<IngredientPreference> list = new ArrayList<>();
+            userVO.getAllergyList().forEach(allergy ->
+                    allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                        IngredientPreference ingredientPreference = IngredientPreference.builder()
+                            .prefRating(-10000)
+                            .ingredient(allergyIngredient.getIngrId())
+                            .user(user)
+                            .build();
+                        list.add(ingredientPreference);
+                    })
+            );
+            ingredientPreferenceRepository.saveAll(list);
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
