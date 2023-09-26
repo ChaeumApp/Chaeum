@@ -273,7 +273,7 @@ class _DetailState extends State<Detail> {
             body: TabBarView(children: [
               RecommendProduct(ingrId : widget.category, scrollController : scrollController),
               PriceInfo(ingrId : widget.category),
-              DetailRecipe(),
+              DetailRecipe(ingrId : widget.category),
             ]),
           ),
         ),

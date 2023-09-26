@@ -62,10 +62,12 @@ class _ProductListState extends State<ProductList> {
               (BuildContext context, int index) {
             return GestureDetector(
               onTap: (){
-                // 상품클릭함수 상품 나오면 전달하는거 바꿔줘!!!!
                 clickItem(widget.product[index]['itemId']);
-                // 웹뷰페이지에 전달하는 주소도!! 아이디도!!!
-                Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : widget.product[index]['itemStoreLink'], itemId : widget.product[index]['itemId'])));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WebviewPage(url : widget.product[index]['itemStoreLink'],
+                            itemId : widget.product[index]['itemId'])));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
