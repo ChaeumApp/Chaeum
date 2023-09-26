@@ -1,5 +1,9 @@
+import 'package:fe/main.dart';
 import 'package:fe/user/addinfo.dart';
+import 'package:fe/user/signuptimer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import '../user/mypage.dart';
 import 'pageapi.dart';
 
@@ -22,6 +26,8 @@ class _SignUpState extends State<SignUp> {
   bool passwordCheck = false;
   bool samepasswordCheck = false;
   bool emailCheckButton = false;
+  bool validateloading = true;
+  bool timeron = false;
 
   String? emailError;
   String? passwordError;
@@ -146,13 +152,15 @@ class _SignUpState extends State<SignUp> {
                                               minimumSize:
                                                   MaterialStateProperty.all(
                                                       Size(75, 0)),
-                                              backgroundColor: emailCheck
+                                              backgroundColor: emailCheck &&
+                                                      validateloading
                                                   ? MaterialStateProperty.all<
                                                       Color>(Color(0xffA1CBA1))
                                                   : MaterialStateProperty.all<
                                                       Color>(Colors.grey),
                                             ),
-                                            onPressed: emailCheck
+                                            onPressed: emailCheck &&
+                                                    validateloading
                                                 ? () async {
                                                     String? dupcheck =
                                                         await pageapi
@@ -193,6 +201,28 @@ class _SignUpState extends State<SignUp> {
                                                         setState(() {
                                                           emailCheckButton =
                                                               true;
+                                                          validateloading =
+                                                              false;
+                                                          timeron = true;
+                                                        });
+                                                        Future.delayed(
+                                                            Duration(
+                                                                seconds: 7),
+                                                            () {
+                                                          // 이곳에 실행하고자 하는 코드를 작성
+                                                          setState(() {
+                                                            validateloading =
+                                                                true;
+                                                          });
+                                                        });
+                                                        Future.delayed(
+                                                            Duration(
+                                                                seconds: 300),
+                                                            () {
+                                                          // 이곳에 실행하고자 하는 코드를 작성
+                                                          setState(() {
+                                                            timeron = false;
+                                                          });
                                                         });
                                                       }
                                                     } else {
@@ -225,7 +255,7 @@ class _SignUpState extends State<SignUp> {
                                               '인증 하기',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                  color: Colors.black),
+                                                  color: Colors.white),
                                             ),
                                           ),
                                         )),
@@ -240,29 +270,46 @@ class _SignUpState extends State<SignUp> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
-                                            child: TextField(
-                                              controller: controller4,
-                                              cursorColor: Color(0xffA1CBA1),
-                                              enabled:
-                                                  emailCodeCheck ? false : true,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        vertical: 17.0,
-                                                        horizontal: 10.0),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            width: 1.5,
-                                                            color: Color(
-                                                                0xffA1CBA1))),
-                                                border: OutlineInputBorder(
-                                                    borderSide: BorderSide()),
-                                                labelText: '인증 번호',
-                                                focusColor: Color(0xffA1CBA1),
-                                              ),
-                                              keyboardType:
-                                                  TextInputType.emailAddress,
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                TextField(
+                                                  controller: controller4,
+                                                  cursorColor:
+                                                      Color(0xffA1CBA1),
+                                                  enabled: emailCodeCheck
+                                                      ? false
+                                                      : true,
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 17.0,
+                                                            horizontal: 10.0),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Color(
+                                                                    0xffA1CBA1))),
+                                                    border: OutlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide()),
+                                                    labelText: '인증 번호',
+                                                    focusColor:
+                                                        Color(0xffA1CBA1),
+                                                  ),
+                                                  keyboardType: TextInputType
+                                                      .emailAddress,
+                                                ),
+                                                Positioned(
+                                                  right: BorderSide
+                                                          .strokeAlignCenter +
+                                                      15,
+                                                  child: timeron
+                                                      ? CountdownTimer()
+                                                      : Text(''),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           SizedBox(
@@ -303,6 +350,9 @@ class _SignUpState extends State<SignUp> {
                                                             setState(() {
                                                               emailCodeCheck =
                                                                   true;
+                                                              validateloading =
+                                                                  false;
+                                                              timeron = false;
                                                             });
                                                           }
                                                         },
@@ -315,7 +365,7 @@ class _SignUpState extends State<SignUp> {
                                                           '인증 확인',
                                                           style: TextStyle(
                                                               color:
-                                                                  Colors.black),
+                                                                  Colors.white),
                                                         ),
                                                 ),
                                               )),
@@ -508,7 +558,167 @@ class _SignUpState extends State<SignUp> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            if (await isKakaoTalkInstalled()) {
+                                              try {
+                                                OAuthToken token = await UserApi
+                                                    .instance
+                                                    .loginWithKakaoTalk();
+                                                print(token.accessToken);
+                                                final sociallogininfo =
+                                                    await pageapi.kakaologin(
+                                                        token.accessToken);
+                                                if (sociallogininfo is Map &&
+                                                    sociallogininfo.containsKey(
+                                                        'accessToken')) {
+                                                  final accessToken =
+                                                      sociallogininfo[
+                                                          'accessToken'];
+                                                  final refreshToken =
+                                                      sociallogininfo[
+                                                          'refreshToken'];
+                                                  await widget.storage.write(
+                                                      key: "login",
+                                                      value:
+                                                          "accessToken $accessToken refreshToken $refreshToken");
+
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Main()),
+                                                      (route) => false);
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            AddInfo(
+                                                                user:
+                                                                    sociallogininfo,
+                                                                storage: widget
+                                                                    .storage)),
+                                                  );
+                                                }
+                                                print(token.accessToken);
+                                              } catch (error) {
+                                                print('카카오톡으로 로그인 실패 $error');
+                                                print('1');
+
+                                                // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+                                                // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+                                                if (error
+                                                        is PlatformException &&
+                                                    error.code == 'CANCELED') {
+                                                  return;
+                                                }
+                                                // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
+                                                try {
+                                                  OAuthToken token = await UserApi
+                                                      .instance
+                                                      .loginWithKakaoAccount();
+                                                  print(token.accessToken);
+                                                  final sociallogininfo =
+                                                      await pageapi.kakaologin(
+                                                          token.accessToken);
+                                                  if (sociallogininfo is Map &&
+                                                      sociallogininfo
+                                                          .containsKey(
+                                                              'accessToken')) {
+                                                    final accessToken =
+                                                        sociallogininfo[
+                                                            'accessToken'];
+                                                    final refreshToken =
+                                                        sociallogininfo[
+                                                            'refreshToken'];
+                                                    await widget.storage.write(
+                                                        key: "login",
+                                                        value:
+                                                            "accessToken $accessToken refreshToken $refreshToken");
+                                                    print(widget.storage
+                                                        .read(key: "login"));
+
+                                                    Navigator.pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                Main()),
+                                                        (route) => false);
+                                                  } else {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              AddInfo(
+                                                                  user:
+                                                                      sociallogininfo,
+                                                                  storage: widget
+                                                                      .storage)),
+                                                    );
+                                                  }
+                                                  print(token.accessToken);
+                                                } catch (error) {
+                                                  print(
+                                                      '카카오계정으로 로그인 실패 $error');
+                                                  print('2');
+                                                }
+                                              }
+                                            } else {
+                                              try {
+                                                OAuthToken token = await UserApi
+                                                    .instance
+                                                    .loginWithKakaoAccount();
+                                                print(token.accessToken);
+                                                final sociallogininfo =
+                                                    await pageapi.kakaologin(
+                                                        token.accessToken);
+                                                if (sociallogininfo is Map &&
+                                                    sociallogininfo.containsKey(
+                                                        'accessToken')) {
+                                                  final accessToken =
+                                                      sociallogininfo[
+                                                          'accessToken'];
+                                                  final refreshToken =
+                                                      sociallogininfo[
+                                                          'refreshToken'];
+                                                  await widget.storage.write(
+                                                      key: "login",
+                                                      value:
+                                                          "accessToken $accessToken refreshToken $refreshToken");
+                                                  print(widget.storage
+                                                      .read(key: "login"));
+
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Main()),
+                                                      (route) => false);
+                                                } else {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            AddInfo(
+                                                                user:
+                                                                    sociallogininfo,
+                                                                storage: widget
+                                                                    .storage)),
+                                                  );
+                                                }
+                                                print(token.accessToken);
+                                              } catch (error) {
+                                                print('카카오계정으로 로그인 실패 $error');
+                                                print('3');
+                                              }
+                                            }
+                                          },
                                           style: ButtonStyle(
                                               backgroundColor:
                                                   MaterialStatePropertyAll(
