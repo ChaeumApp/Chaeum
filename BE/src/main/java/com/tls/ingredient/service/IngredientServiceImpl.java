@@ -1,6 +1,7 @@
 package com.tls.ingredient.service;
 
 import com.tls.ingredient.IngredientPriceVO;
+import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
@@ -8,7 +9,6 @@ import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.entity.single.IngredientPrice;
 import com.tls.ingredient.repository.IngrRepository;
-import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.repository.IngredientPriceRepository;
 import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.UserIngrLogRepository;
@@ -16,6 +16,11 @@ import com.tls.ingredient.repository.UserIngrRepository;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.category.repository.CategoryRepository;
 import com.tls.category.repository.SubCategoryRepository;
+import com.tls.recipe.dto.RecipeDto;
+import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.repository.RecipeIngredientRepository;
+import com.tls.recipe.repository.RecipeProcRepository;
+import com.tls.recipe.repository.RecipeRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -41,6 +46,10 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientConverter ingredientConverter;
     private final IngredientRecommendRepository ingredientRecommendRepository;
     private final IngredientPriceRepository ingredientPriceRepository;
+    private final RecipeRepository recipeRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeProcRepository recipeProcRepository;
+
     private final int TERM = 7;
     private final int NUMBERS = 12;
 
@@ -48,11 +57,11 @@ public class IngredientServiceImpl implements IngredientService {
     public List<IngredientDto> getIngredients(String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
-            if(userEmail != null){
+            if (userEmail != null) {
                 ingrRepository.findAll().orElseThrow().forEach(ingredient ->
                     results.add(ingredientConverter.entityToDto(userEmail, ingredient))
                 );
-            } else{
+            } else {
                 ingrRepository.findAll().orElseThrow().forEach(ingredient ->
                     results.add(ingredientConverter.entityToDto(ingredient)));
             }
@@ -67,11 +76,12 @@ public class IngredientServiceImpl implements IngredientService {
         List<IngredientDto> results = new ArrayList<>();
         try {
             if (subCatId == 0) {
-                if(userEmail != null){
+                if (userEmail != null) {
                     Objects.requireNonNull(ingrRepository.findByCategory(
                             categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
                         .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                            ingredient -> results.add(
+                                ingredientConverter.entityToDto(userEmail, ingredient)));
                 } else {
                     Objects.requireNonNull(ingrRepository.findByCategory(
                             categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
@@ -79,12 +89,13 @@ public class IngredientServiceImpl implements IngredientService {
                             ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
                 }
             } else {
-                if(userEmail != null){
+                if (userEmail != null) {
                     Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
                             categoryRepository.findByCatId(catId).orElseThrow(),
                             subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
                         .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(userEmail, ingredient)));
+                            ingredient -> results.add(
+                                ingredientConverter.entityToDto(userEmail, ingredient)));
                 } else {
                     Objects.requireNonNull(ingrRepository.findByCategoryAndSubCategory(
                             categoryRepository.findByCatId(catId).orElseThrow(),
@@ -100,17 +111,20 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId, String userEmail) {
+    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId,
+        String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
             if (subCatId == 0) {
-                if(userEmail != null){
+                if (userEmail != null) {
                     User user = userRepository.findByUserEmail(userEmail).orElseThrow();
                     List<IngredientRecommend> recommendedIngredients =
                         ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
                     for (IngredientRecommend recommend : recommendedIngredients) {
                         Ingredient ingredient = recommend.getIngredient();
-                        if(ingredient.getCategory().getCatId() != catId) continue;
+                        if (ingredient.getCategory().getCatId() != catId) {
+                            continue;
+                        }
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
@@ -121,14 +135,18 @@ public class IngredientServiceImpl implements IngredientService {
                     Collections.shuffle(results);
                 }
             } else {
-                if(userEmail != null){
+                if (userEmail != null) {
                     User user = userRepository.findByUserEmail(userEmail).orElseThrow();
                     List<IngredientRecommend> recommendedIngredients =
                         ingredientRecommendRepository.findByUserOrderByIngrRecommendScoreDesc(user);
                     for (IngredientRecommend recommend : recommendedIngredients) {
                         Ingredient ingredient = recommend.getIngredient();
-                        if(ingredient.getCategory().getCatId() != catId) continue;
-                        if(ingredient.getSubCategory().getSubCatId() != subCatId) continue;
+                        if (ingredient.getCategory().getCatId() != catId) {
+                            continue;
+                        }
+                        if (ingredient.getSubCategory().getSubCatId() != subCatId) {
+                            continue;
+                        }
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
@@ -208,13 +226,15 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public List<IngredientPriceVO> getPriceList(int ingrId) {
-        try{
+        try {
             List<IngredientPriceVO> ingredientPriceVOs = new ArrayList<>();
             Ingredient ingredient = ingrRepository.findByIngrId(ingrId).orElseThrow();
-            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient).orElseThrow();
-            for(int i = 0 ; i < list.size(); i++) {
+            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient)
+                .orElseThrow();
+            for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
-                if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM != 0){
+                if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM
+                    != 0) {
                     continue;
                 }
                 IngredientPriceVO ingredientPriceVO = IngredientPriceVO.builder()
@@ -222,12 +242,57 @@ public class IngredientServiceImpl implements IngredientService {
                     .date(ingredientPrice.getDate())
                     .build();
                 ingredientPriceVOs.add(ingredientPriceVO);
-                if( i+1 == NUMBERS) break;
+                if (i + 1 == NUMBERS) {
+                    break;
+                }
             }
             return ingredientPriceVOs;
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
 
+    }
+
+    @Override
+    public List<Recipe> getRelatedRecipeList(int ingrId) {
+        try {
+            Ingredient ingredient = ingrRepository.findByIngrId(ingrId).orElseThrow();
+            List<Recipe> results = new ArrayList<>();
+            List<Recipe> selectAll = recipeRepository.findAll();
+            selectAll.forEach(recipe -> {
+                RecipeDto recipeDto = entityToDto(recipe);
+                 for(String[] recipeIngredient : recipeDto.getRecipeIngredients()){
+                     if(recipeIngredient[0].contains(ingredient.getIngrName())){
+                         results.add(recipe);
+                         break;
+                     }
+                 }
+            });
+            return results;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public RecipeDto entityToDto(Recipe recipe) {
+        List<String[]> ingredientList = new ArrayList<>();
+        List<String> processList = new ArrayList<>();
+        recipeProcRepository.findByRecipeId(recipe).forEach(recipeProc ->
+            processList.add(recipeProc.getRecipeProcContent())
+        );
+        recipeIngredientRepository.findByRecipeId(recipe).forEach(recipeIngr -> {
+                ingredientList.add(
+                    new String[]{recipeIngr.getRecipeIngrName(), recipeIngr.getRecipeIngrAmount()});
+            }
+        );
+        return RecipeDto.builder()
+            .recipeId(recipe.getRecipeId())
+            .recipeThumbnail(recipe.getRecipeThumbnail())
+            .recipeLink(recipe.getRecipeLink())
+            .recipeName(recipe.getRecipeName())
+            .recipeIngredients(ingredientList)
+            .recipeProcess(processList)
+            .build();
     }
 }
