@@ -223,8 +223,39 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
+    @Transactional
     public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) {
-        return 0;
+        try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
+            UserIngrLog userIngrLog = UserIngrLog.builder()
+                .userId(user)
+                .ingrId(ingredient)
+                .build();
+            userIngrLogRepository.save(userIngrLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, ingredient).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(-150)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
