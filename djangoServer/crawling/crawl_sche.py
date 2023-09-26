@@ -1,17 +1,11 @@
-# import sys
-# import os
-# import django
-# current_dir = os.path.dirname(os.path.abspath(__file__))
-# parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
-# sys.path.append(parent_dir)
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoServer.settings")
-# django.setup()
-
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import register_events, DjangoJobStore
 from .crawl_item import main
 from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
+import logging
+
+logger = logging.getLogger()
 
 def start():
     scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
@@ -19,8 +13,8 @@ def start():
 
     scheduler.add_job(
         main,
-        trigger=CronTrigger(hour="04", minute="00"),
-        id = "crawl",
+        trigger=CronTrigger(hour="1", minute="40"),
+        id = "main",
         max_instances=1,
         replace_existing=True
     )
@@ -28,6 +22,8 @@ def start():
     register_events(scheduler)
 
     try:
+        logger.info("Starting scheduler...")
         scheduler.start()
     except KeyboardInterrupt:
+        logger.info("Stopping scheduler...")
         scheduler.shutdown()
