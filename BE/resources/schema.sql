@@ -52,6 +52,7 @@ CREATE TABLE `recipe_tb`
 
 CREATE TABLE `item_preference_tb`
 (
+    `ingr_pref_pk` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `item_id`     VARCHAR(128) NOT NULL,
     `user_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NOT NULL DEFAULT 0
@@ -60,6 +61,7 @@ CREATE TABLE `item_preference_tb`
 
 CREATE TABLE `recipe_preference_tb`
 (
+    `recipe_perf_pk` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `recipe_id`   INT    NOT NULL,
     `user_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NOT NULL DEFAULT 0
@@ -182,7 +184,7 @@ CREATE TABLE `ingredient_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `item_select_log_tb`
 (
-    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_select_log_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `item_id`          VARCHAR(128)    NOT NULL,
     `item_select_time` TIMESTAMP NOT NULL
@@ -191,6 +193,7 @@ CREATE TABLE `item_select_log_tb`
 
 CREATE TABLE `recipe_recommend_tb`
 (
+    `recipe_recommend_pk`    INT   NOT NULL PRIMARY KEY  AUTO_INCREMENT,
     `recipe_id`              INT   NOT NULL,
     `user_id`                INT   NOT NULL,
     `recipe_recommend_score` FLOAT NOT NULL DEFAULT 0
@@ -228,13 +231,6 @@ ALTER TABLE `ingredient_recommend_tb`
                                     `ingr_id`
             );
 
-
-
-ALTER TABLE `recipe_recommend_tb`
-    ADD CONSTRAINT `PK_RECIPE_RECOMMEND_TB` PRIMARY KEY (
-                                                         `recipe_id`,
-                                                         `user_id`
-        );
 
 ALTER TABLE `recipe_recommend_tb`
     ADD CONSTRAINT `FK_recipe_tb_TO_recipe_recommend_tb_1` FOREIGN KEY (
@@ -327,18 +323,6 @@ ALTER TABLE `user_allergy_tb`
     ADD CONSTRAINT `PK_USER_ALLERGY_TB` PRIMARY KEY (
                                                      `user_id`,
                                                      `algy_id`
-        );
-
-ALTER TABLE `item_preference_tb`
-    ADD CONSTRAINT `PK_ITEM_PREFERENCE_TB` PRIMARY KEY (
-                                                        `item_id`,
-                                                        `user_id`
-        );
-
-ALTER TABLE `recipe_preference_tb`
-    ADD CONSTRAINT `PK_RECIPE_PREFERENCE_TB` PRIMARY KEY (
-                                                          `recipe_id`,
-                                                          `user_id`
         );
 
 ALTER TABLE `saved_recipe_tb`

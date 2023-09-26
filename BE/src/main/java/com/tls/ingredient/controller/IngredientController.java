@@ -4,6 +4,7 @@ import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.service.IngredientService;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
+import com.tls.recipe.entity.single.Recipe;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.ArrayList;
@@ -146,7 +147,7 @@ public class IngredientController {
                 return new ResponseEntity<>("fail", HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("unauthorization", HttpStatus.OK);
+            return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         }
 
     }
@@ -154,10 +155,10 @@ public class IngredientController {
     @PostMapping("/dislike")
     @Operation(summary = "소분류 관심없음 반영 메서드", description = "사용자가 특정 소분류를 관심없음 설정한 내용을 저장합니다.", tags = "소분류 API")
     public ResponseEntity<?> dislikeIngredient(@RequestHeader("Authorization")String tokenWithPrefix, @RequestBody IngredientVO ingredientVO) {
-        log.info("dislikeIngredient call :: ");
         try{
             Authentication authentication = jwtTokenProvider
                 .getAuthentication(tokenWithPrefix.substring(7));
+            log.info("dislikeIngredient call :: {} : {}", authentication.getName(), ingredientVO.getIngrId());
             int n = ingredientService.dislikeIngredient(authentication.getName(), ingredientVO);
             if (n == 1) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
@@ -167,7 +168,6 @@ public class IngredientController {
         } catch (Exception e){
             return getResponseEntity(0);
         }
-
     }
 
     @PostMapping("/favorite")
@@ -184,6 +184,16 @@ public class IngredientController {
         } catch (Exception e) {
             return getResponseEntity(0);
         }
+    }
+
+    @GetMapping("/{ingrId}/recipe")
+    @Operation(summary = "소분류 관련 레시피 반환 메서드", description = "소분류 id 를 주면 관련 레시피 리시트를 반환한다.", tags = "소분류 API")
+    public ResponseEntity<?> getRelatedRecipeList(@PathVariable(name = "ingrId") int ingrId){
+        List<Recipe> results = ingredientService.getRelatedRecipeList(ingrId);
+        if(results == null){
+            return getResponseEntity(-1);
+        }
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
     private ResponseEntity<?> getResponseEntity(int resultCode) {

@@ -128,7 +128,7 @@ class _WebviewPageState extends State<WebviewPage> {
               Expanded(
                 child: InAppWebView(
                   key: webViewKey,
-                  initialUrlRequest: URLRequest(url: Uri.parse("https://m.smartstore.naver.com/nsm33313140/products/3333012376?NaPm=ct%3Dlmougzso%7Cci%3Dc0b80778df4ff7ea72c3b422d2de06e80a43549e%7Ctr%3Dslsl%7Csn%3D698942%7Chk%3Defd14d7939d074c416569a84d2f920486bd1147d")),
+                  initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
                   initialOptions: options,
                   pullToRefreshController: pullToRefreshController,
                   onWebViewCreated: (InAppWebViewController controller) {
@@ -156,11 +156,10 @@ class _WebviewPageState extends State<WebviewPage> {
                       "data", "javascript", "about"].contains(uri.scheme)) {
                       if (await canLaunchUrl(uri)) {
                         // Launch the App
-                        await launchUrl(
-                          uri
-                        );
-                        // and cancel the request
+                        await launchUrl(uri);
                         return NavigationActionPolicy.CANCEL;
+                      } else {
+
                       }
                     }
                     return NavigationActionPolicy.ALLOW;
