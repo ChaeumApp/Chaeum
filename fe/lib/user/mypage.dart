@@ -5,10 +5,13 @@ import 'package:fe/user/pageapi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import 'package:provider/provider.dart';
 import '../store/userstore.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MyPage extends StatefulWidget {
   MyPage({super.key, this.storage});
@@ -18,16 +21,12 @@ class MyPage extends StatefulWidget {
   State<MyPage> createState() => _MyPageState();
 }
 
-class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _MyPageState extends State<MyPage> {
   final PageApi pageapi = PageApi();
 
   List<dynamic> favoringredient = [];
   List<dynamic> favorrecipe = [];
 
-  List<String> foodlist = ['bakery.png', 'cabbage.png'];
   TextEditingController controller = TextEditingController();
   TextEditingController controller2 = TextEditingController();
   TextEditingController controller3 = TextEditingController();
@@ -65,7 +64,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
     '오징어',
     '조개류'
   ];
-  List<Object?> selectedAllergie = [];
+  List<dynamic> selectedAllergie = [];
   List<dynamic> selectedAllergieNumber = [];
 
   bool algdropdown = false;
@@ -220,20 +219,12 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                   selectedAllergieNumber = resultList;
                                   print(selectedAllergieNumber);
                                 },
+                                initialValue: selectedAllergie,
                                 chipDisplay: MultiSelectChipDisplay(
                                   chipColor: Color(0xffA1CBA1),
                                   textStyle: TextStyle(color: Colors.white),
                                 ),
                               ),
-                              selectedAllergie.isEmpty
-                                  ? Container(
-                                      padding: EdgeInsets.all(10),
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "None selected",
-                                        style: TextStyle(color: Colors.black54),
-                                      ))
-                                  : Container(),
                             ]
                           : [],
                     ),
@@ -276,28 +267,12 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
         }));
   }
 
-  Dio dio = Dio();
-
-  changepassword() async {
-    try {
-      Response response =
-          await dio.post('http://10.0.2.2:8080/user/signin', data: {
-        'curpassword': controller.text.toString(),
-        'nextpassword': controller2.text.toString()
-      });
-      print('여기문제없어');
-      return response.data;
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () async {
       final userStore = Provider.of<UserStore>(context, listen: false);
-      print(userStore.accessToken);
       final accessToken = userStore.accessToken;
       print(accessToken);
       final info = await pageapi.getinfo(accessToken);
@@ -305,9 +280,26 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
 
       if (info != null) {
         await userStore.changeUserInfo(info['userEmail']);
+        favoringredient = info['ingredientList'];
+        favorrecipe = info['recipeList'];
+        selectedVeganNumber = info['veganId'];
+        selectedVegan = veganList[selectedVeganNumber];
+
+        final resallergyList = (info['allergyList']);
+        print(resallergyList);
+        print(resallergyList.runtimeType);
+        if (resallergyList.isNotEmpty) {
+          print(1);
+          algdropdown = true;
+          havAllergie = '있음';
+        }
+        for (int i = 0; i < resallergyList.length; i++) {
+          selectedAllergieNumber.add(resallergyList[i]['algyId']);
+          selectedAllergie.add(resallergyList[i]['algyName']);
+        }
+        print(selectedAllergieNumber);
+        print(selectedAllergie);
       }
-      favoringredient = info['ingredientList'];
-      favorrecipe = info['recipeList'];
       setState(() {});
       // 이제 userStore를 사용할 수 있습니다.
       // ...
@@ -352,7 +344,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                           Padding(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Text(
-                              '${context.watch<UserStore>().userId.split('@')[0]} ',
+                              '${context.read<UserStore>().userId.split('@')[0]} ',
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w600,
@@ -398,68 +390,78 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     child: Column(
                       children: [
                         SizedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(children: [
-                                Text(
-                                  '레시피 ',
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  '(${favorrecipe.length}건)',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ]),
-                              favorrecipe.isNotEmpty
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  FavoriteMoreRec()),
-                                        );
-                                      },
-                                      child: Text('더보기'))
-                                  : Text('')
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(children: [
+                                  Text(
+                                    '레시피 ',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    '(${favorrecipe.length}건)',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ]),
+                                favorrecipe.isNotEmpty
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        FavoriteMoreRec(
+                                                            favorRec:
+                                                                favorrecipe)),
+                                          );
+                                        },
+                                        child: Text('더보기'))
+                                    : Text('')
+                              ],
+                            ),
                           ),
                         ),
-                        Expanded(
+                        SizedBox(
+                          height: 200,
                           child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          FavoriteMoreRec()),
-                                );
-                              },
+                              onTap: favorrecipe.isNotEmpty
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                FavoriteMoreRec(
+                                                    favorRec: favorrecipe)),
+                                      );
+                                    }
+                                  : null,
                               child: favorrecipe.isNotEmpty
                                   ? GridView.count(
-                                      crossAxisCount: 2, // 열 개수
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 2 / 1.1,
                                       children: List<Widget>.generate(
-                                          foodlist.length, (idx) {
+                                          favorrecipe.length > 4
+                                              ? 4
+                                              : favorrecipe.length, (idx) {
                                         return Container(
-                                          color: Colors.amber,
-                                          padding: const EdgeInsets.all(30),
-                                          margin: const EdgeInsets.all(8),
-                                          child: Image.asset(
-                                            'assets/images/main/${foodlist[idx]}',
-                                            width: 100,
-                                            height: 100,
+                                          margin: const EdgeInsets.all(5),
+                                          child: Image.network(
+                                            favorrecipe[idx]['recipeThumbnail'],
                                           ),
                                         );
                                       }).toList())
                                   : Center(child: Text('좋아하는 레시피를 추가해 보세요'))),
                         ),
-                        SizedBox(
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -485,7 +487,9 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                           context,
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  FavoriteMoreFood()),
+                                                  FavoriteMoreFood(
+                                                      favorIngr:
+                                                          favoringredient)),
                                         );
                                       },
                                       child: Text('더보기'))
@@ -495,25 +499,30 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                         ),
                         Expanded(
                           child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          FavoriteMoreFood()),
-                                );
-                              },
+                              onTap: favoringredient.isNotEmpty
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                FavoriteMoreFood(
+                                                    favorIngr:
+                                                        favoringredient)),
+                                      );
+                                    }
+                                  : null,
                               child: favoringredient.isNotEmpty
                                   ? GridView.count(
-                                      crossAxisCount: 2, // 열 개수
+                                      crossAxisCount: 3, // 열 개수
                                       children: List<Widget>.generate(
-                                          foodlist.length, (idx) {
+                                          favorrecipe.length > 3
+                                              ? 3
+                                              : favorrecipe.length, (idx) {
                                         return Container(
                                           color: Colors.amber,
-                                          padding: const EdgeInsets.all(30),
-                                          margin: const EdgeInsets.all(8),
+                                          margin: const EdgeInsets.all(3),
                                           child: Image.asset(
-                                            'assets/images/main/${foodlist[idx]}',
+                                            'assets/images/main/bakery.png',
                                             width: 100,
                                             height: 100,
                                           ),
@@ -543,7 +552,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                    barrierDismissible: false,
                     builder: ((context) {
                       return AlertDialog(
                         title: Text("비밀번호 변경"),
@@ -637,16 +646,84 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                               .hasMatch(controller3.text) &&
                                           controller2.text ==
                                               controller3.text) {
-                                        final response = await changepassword();
+                                        final response =
+                                            await pageapi.changepassword(
+                                                context
+                                                    .read<UserStore>()
+                                                    .accessToken,
+                                                controller.text,
+                                                controller2.text);
+
+                                        if (response == 'success') {
+                                          //메인페이지 이동 후 알림창 띄우고 토큰 삭제하기
+                                        } else if (response == 'fail') {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible:
+                                                  true, //바깥 영역 터치시 닫을지 여부 결정
+                                              builder: ((context) {
+                                                return AlertDialog(
+                                                    content:
+                                                        Text('현재 비밀번호와 다릅니다.'),
+                                                    actions: <Widget>[
+                                                      Container(
+                                                        child: TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); //창 닫기
+                                                          },
+                                                          child: Text("닫기"),
+                                                        ),
+                                                      )
+                                                    ]);
+                                              }));
+                                        }
                                       } else if (!RegExp(
                                               r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
                                           .hasMatch(controller2.text)) {
-                                        showSnackBar(context,
-                                            Text('비밀번호는 특수문자,영어, 숫자를 포함해 주세요'));
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                                true, //바깥 영역 터치시 닫을지 여부 결정
+                                            builder: ((context) {
+                                              return AlertDialog(
+                                                  content: Text(
+                                                      '특수문자,영어, 숫자를 포함해 주세요'),
+                                                  actions: <Widget>[
+                                                    Container(
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop(); //창 닫기
+                                                        },
+                                                        child: Text("닫기"),
+                                                      ),
+                                                    )
+                                                  ]);
+                                            }));
                                       } else if (controller2.text !=
                                           controller3.text) {
-                                        showSnackBar(context,
-                                            Text('비밀번호화 비밀번호 확인이 다릅니다.'));
+                                        showDialog(
+                                            context: context,
+                                            barrierDismissible:
+                                                true, //바깥 영역 터치시 닫을지 여부 결정
+                                            builder: ((context) {
+                                              return AlertDialog(
+                                                  content: Text(
+                                                      '새로 입력한 비밀번호 같지 않습니다.'),
+                                                  actions: <Widget>[
+                                                    Container(
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop(); //창 닫기
+                                                        },
+                                                        child: Text("닫기"),
+                                                      ),
+                                                    )
+                                                  ]);
+                                            }));
                                       } else {
                                         showSnackBar(context,
                                             Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
@@ -658,6 +735,9 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                                           Color(0xffA1CBA1))),
                                   onPressed: () {
                                     Navigator.of(context).pop(); //창 닫기
+                                    controller.text = '';
+                                    controller2.text = '';
+                                    controller3.text = '';
                                   },
                                   child: Text("취소하기"),
                                 ),
@@ -678,6 +758,8 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                   ),
                   onPressed: () async {
                     await widget.storage.delete(key: "login");
+                    await pageapi.logout(context.read<UserStore>().accessToken);
+                    await context.read<UserStore>().changeAccessToken('');
 
                     Navigator.pushAndRemoveUntil(
                         context,
@@ -691,7 +773,132 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                   '회원 탈퇴',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            contentPadding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    child: Image.asset(
+                                      'assets/images/repeat/bottom_logo.png',
+                                      height: 50,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text('정말로 탈퇴하시겠습니까?',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700)),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            top: BorderSide(
+                                                width: 1,
+                                                color: Colors.black26))),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: InkWell(
+                                            onTap: () async {
+                                              try {
+                                                final response =
+                                                    await pageapi.deleteuser(
+                                                        context
+                                                            .read<UserStore>()
+                                                            .accessToken,
+                                                        context
+                                                            .read<UserStore>()
+                                                            .userId);
+                                                await widget.storage
+                                                    .delete(key: "login");
+
+                                                // if (response )
+                                                if (response == 'success') {
+                                                  if (context
+                                                          .read<UserStore>()
+                                                          .userId
+                                                          .substring(0, 3) ==
+                                                      '[K]') {
+                                                    await UserApi.instance
+                                                        .unlink();
+                                                    print('카카오 연동 해제 성공');
+                                                  } else if (context
+                                                          .read<UserStore>()
+                                                          .userId
+                                                          .substring(0, 3) ==
+                                                      '[N]') {
+                                                    print(
+                                                        '회원탈퇴 되었습니다. 네이버에서 정보 제공 동의를 제거하세요');
+                                                  }
+                                                  print(
+                                                      '연결 끊기 성공, SDK에서 토큰 삭제');
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (BuildContext
+                                                                  context) =>
+                                                              Main()),
+                                                      (route) => false);
+                                                } else {
+                                                  print('서버 연결을 확인해주세요');
+                                                }
+                                              } catch (e) {
+                                                print('무슨 에러이니 ㅇ려줘 $e');
+                                              }
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 15, 0, 15),
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      right: BorderSide(
+                                                          width: 1,
+                                                          color:
+                                                              Colors.black26))),
+                                              child: Text(
+                                                '회원탈퇴',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 15, 0, 15),
+                                              child: Text(
+                                                '취소',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]));
+                      });
+                },
               ),
             ]),
           ],

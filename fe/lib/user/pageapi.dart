@@ -131,7 +131,7 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('유저 정보 ${response.data}');
+      print('유저 정보 수정 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -148,5 +148,70 @@ class PageApi {
       print(e.toString());
     }
   }
-  // 다른 API 호출 메서드 추가
+
+  Future<dynamic> changepassword(token, curpwd, nextpwd) async {
+    try {
+      final response = await dio.post('$serverURL/user/pwd',
+          data: {'curpassword': curpwd, 'nextpassword': nextpwd},
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('비밀번호 변경 ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> logout(token) async {
+    try {
+      final response = await dio.post('$serverURL/user/signout',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('로그아웃 api ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> tokenValidation(token) async {
+    try {
+      final response = await dio.post('$serverURL/user/auth/checktoken',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('토큰유효 api ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<dynamic> deleteuser(token, id) async {
+    try {
+      final response = await dio.delete('$serverURL/user',
+          data: {"userEmail": id},
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token', // 토큰을 'Bearer' 스타일로 포함
+              // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
+            },
+          ));
+      print('회원탈퇴 api ${response.data}');
+      return response.data;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }
