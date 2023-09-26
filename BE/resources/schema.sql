@@ -615,5 +615,7 @@ values (0, '난류'),
        (15, '오징어'),
        (16, '조개류(굴, 전복, 홍합)');
 
+
+
 ALTER TABLE `item_tb`
     ADD COLUMN `item_crawling_date` DATE NOT NULL;
