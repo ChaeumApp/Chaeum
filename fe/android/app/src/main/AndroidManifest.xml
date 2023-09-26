@@ -31,6 +31,18 @@
                 <!-- 카카오 로그인 Redirect URI -->
                 <data android:scheme="kakaof23e753ee765964826104dd2a8cf6e5d" android:host="oauth"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="coupang"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="intent"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"

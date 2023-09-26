@@ -7,7 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class SearchIngr extends StatefulWidget {
-  const SearchIngr({super.key});
+  const SearchIngr({super.key, this.scrollController});
+  final scrollController;
 
   @override
   State<SearchIngr> createState() => _SearchIngrState();
@@ -127,6 +128,7 @@ class _SearchIngrState extends State<SearchIngr> {
           }
           else {
             return ListView.builder(
+              controller: widget.scrollController,
               itemCount: (product.length + 1) ~/ 2 + 2,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
