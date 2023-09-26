@@ -4,6 +4,7 @@ import 'package:fe/category/categorymain.dart';
 import 'package:fe/recipe/recipemain.dart';
 import 'package:fe/search/searchmain.dart';
 import 'package:fe/store/searchstore.dart';
+import 'package:fe/user/pageapi.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fe/api/firebaseapi.dart';
 import 'package:fe/firebase_options.dart';
@@ -71,6 +72,7 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   static String? userToken; //user의 정보를 저장하기 위한 변수;
   static final storage = FlutterSecureStorage();
+  final PageApi pageapi = PageApi();
   @override
   void initState() {
     super.initState();
@@ -93,17 +95,37 @@ class _MainState extends State<Main> {
     print('kakaokey$key');
     userToken = await storage.read(key: "login");
     print(userToken);
+    print('------');
     if (userToken != null) {
-      await context
-          .read<UserStore>()
-          .changeAccessToken(userToken.toString().split(" ")[1].toString());
-    } else {
-      await context.read<UserStore>().changeAccessToken('');
-    }
+      try {
+        final response = await pageapi
+            .tokenValidation(userToken.toString().split(" ")[1].toString());
+        print(response);
 
-    final storetoken = context.read<UserStore>().accessToken;
-    print('이닛 다시 하나요?');
-    print(storetoken);
+        if (response == 'success') {
+          await context
+              .read<UserStore>()
+              .changeAccessToken(userToken.toString().split(" ")[1].toString());
+          final storetoken = context.read<UserStore>().accessToken;
+          print('이닛 다시 하나요?');
+          print(storetoken);
+        } else {
+          print('토큰 제거 실행여부');
+          await storage.delete(key: "login");
+          await context.read<UserStore>().changeAccessToken('');
+          setState(() {});
+        }
+      } catch (e) {
+        print('그냥 다 로그아웃');
+        await storage.delete(key: "login");
+        await context.read<UserStore>().changeAccessToken('');
+        setState(() {});
+      }
+    } else {
+      await storage.delete(key: "login");
+      await context.read<UserStore>().changeAccessToken('');
+      setState(() {});
+    }
     final devicetoken = await getMyDeviceToken();
     await context.read<UserStore>().savedevicetoken(devicetoken.toString());
   }

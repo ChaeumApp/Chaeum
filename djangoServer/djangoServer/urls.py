@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from ingredientPrice import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('update/<int:ingr_id>/<str:item_crawling_date>/', views.update_price, name='update_price'),
 ]

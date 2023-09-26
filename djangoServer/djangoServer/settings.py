@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-u%t^fdq$q=@%vyf1_i0se1s9f9vnpozvh$=$#qwu!up@otna7b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'crawl',
     'recommend',
+    'ingredientPrice',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
