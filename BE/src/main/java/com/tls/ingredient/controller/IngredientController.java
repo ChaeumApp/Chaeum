@@ -147,7 +147,7 @@ public class IngredientController {
                 return new ResponseEntity<>("fail", HttpStatus.OK);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("unauthorization", HttpStatus.OK);
+            return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         }
 
     }
