@@ -545,210 +545,234 @@ class _MyPageState extends State<MyPage> {
               ),
               Text('|'),
               TextButton(
+                onPressed: context.read<UserStore>().userId.substring(0, 1) !=
+                        '['
+                    ? () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: ((context) {
+                            return AlertDialog(
+                              title: Text("비밀번호 변경"),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          1, 0, 1, 10),
+                                      child: TextField(
+                                        maxLength: 20,
+                                        controller: controller,
+                                        keyboardType:
+                                            TextInputType.visiblePassword,
+                                        obscureText: true, // 비밀번호 안보이도록 하는 것
+                                        decoration: InputDecoration(
+                                            counterText: '',
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 16.0,
+                                                    horizontal: 10.0),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 1.5,
+                                                    color: Color(0xffA1CBA1))),
+                                            border: OutlineInputBorder(
+                                                borderSide: BorderSide()),
+                                            labelText: '현재 비밀번호',
+                                            focusColor: Color(0xffA1CBA1)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          1, 0, 1, 10),
+                                      child: TextField(
+                                        maxLength: 20,
+
+                                        controller: controller2,
+                                        keyboardType:
+                                            TextInputType.visiblePassword,
+                                        obscureText: true, // 비밀번호 안보이도록 하는 것
+                                        decoration: InputDecoration(
+                                            counterText: '',
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 16.0,
+                                                    horizontal: 10.0),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 1.5,
+                                                    color: Color(0xffA1CBA1))),
+                                            border: OutlineInputBorder(
+                                                borderSide: BorderSide()),
+                                            labelText: '새로운 비밀번호',
+                                            focusColor: Color(0xffA1CBA1)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(1, 0, 1, 0),
+                                      child: TextField(
+                                        maxLength: 20,
+
+                                        controller: controller3,
+                                        obscureText: true, // 비밀번호 안보이도록 하는 것
+                                        decoration: InputDecoration(
+                                            counterText: '',
+                                            contentPadding:
+                                                EdgeInsets.symmetric(
+                                                    vertical: 16.0,
+                                                    horizontal: 10.0),
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 1.5,
+                                                    color: Color(0xffA1CBA1))),
+                                            border: OutlineInputBorder(
+                                                borderSide: BorderSide()),
+                                            labelText: '비밀번호 확인',
+                                            focusColor: Color(0xffA1CBA1)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(1, 0, 1, 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStatePropertyAll(
+                                                      Color(0xffA1CBA1))),
+                                          child: Text("변경하기"),
+                                          onPressed: () async {
+                                            if (RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                    .hasMatch(
+                                                        controller2.text) &&
+                                                RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                    .hasMatch(
+                                                        controller3.text) &&
+                                                controller2.text ==
+                                                    controller3.text) {
+                                              final response =
+                                                  await pageapi.changepassword(
+                                                      context
+                                                          .read<UserStore>()
+                                                          .accessToken,
+                                                      controller.text,
+                                                      controller2.text);
+
+                                              if (response == 'success') {
+                                                //메인페이지 이동 후 알림창 띄우고 토큰 삭제하기
+                                              } else if (response == 'fail') {
+                                                showDialog(
+                                                    context: context,
+                                                    barrierDismissible:
+                                                        true, //바깥 영역 터치시 닫을지 여부 결정
+                                                    builder: ((context) {
+                                                      return AlertDialog(
+                                                          content: Text(
+                                                              '현재 비밀번호와 다릅니다.'),
+                                                          actions: <Widget>[
+                                                            Container(
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(); //창 닫기
+                                                                },
+                                                                child:
+                                                                    Text("닫기"),
+                                                              ),
+                                                            )
+                                                          ]);
+                                                    }));
+                                              }
+                                            } else if (!RegExp(
+                                                    r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
+                                                .hasMatch(controller2.text)) {
+                                              showDialog(
+                                                  context: context,
+                                                  barrierDismissible:
+                                                      true, //바깥 영역 터치시 닫을지 여부 결정
+                                                  builder: ((context) {
+                                                    return AlertDialog(
+                                                        content: Text(
+                                                            '특수문자,영어, 숫자를 포함해 주세요'),
+                                                        actions: <Widget>[
+                                                          Container(
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); //창 닫기
+                                                              },
+                                                              child: Text("닫기"),
+                                                            ),
+                                                          )
+                                                        ]);
+                                                  }));
+                                            } else if (controller2.text !=
+                                                controller3.text) {
+                                              showDialog(
+                                                  context: context,
+                                                  barrierDismissible:
+                                                      true, //바깥 영역 터치시 닫을지 여부 결정
+                                                  builder: ((context) {
+                                                    return AlertDialog(
+                                                        content: Text(
+                                                            '새로 입력한 비밀번호 같지 않습니다.'),
+                                                        actions: <Widget>[
+                                                          Container(
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(); //창 닫기
+                                                              },
+                                                              child: Text("닫기"),
+                                                            ),
+                                                          )
+                                                        ]);
+                                                  }));
+                                            } else {
+                                              showSnackBar(
+                                                  context,
+                                                  Text(
+                                                      '현재비밀번호가 다릅니다 다시 시도해주세요'));
+                                            }
+                                          }),
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStatePropertyAll(
+                                                    Color(0xffA1CBA1))),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); //창 닫기
+                                          controller.text = '';
+                                          controller2.text = '';
+                                          controller3.text = '';
+                                        },
+                                        child: Text("취소하기"),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            );
+                          }),
+                        );
+                      }
+                    : null,
                 child: Text(
                   '비밀번호 변경',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: ((context) {
-                      return AlertDialog(
-                        title: Text("비밀번호 변경"),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                                child: TextField(
-                                  maxLength: 20,
-                                  controller: controller,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText: true, // 비밀번호 안보이도록 하는 것
-                                  decoration: InputDecoration(
-                                      counterText: '',
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Color(0xffA1CBA1))),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide()),
-                                      labelText: '현재 비밀번호',
-                                      focusColor: Color(0xffA1CBA1)),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                                child: TextField(
-                                  maxLength: 20,
-
-                                  controller: controller2,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText: true, // 비밀번호 안보이도록 하는 것
-                                  decoration: InputDecoration(
-                                      counterText: '',
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Color(0xffA1CBA1))),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide()),
-                                      labelText: '새로운 비밀번호',
-                                      focusColor: Color(0xffA1CBA1)),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
-                                child: TextField(
-                                  maxLength: 20,
-
-                                  controller: controller3,
-                                  obscureText: true, // 비밀번호 안보이도록 하는 것
-                                  decoration: InputDecoration(
-                                      counterText: '',
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 10.0),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Color(0xffA1CBA1))),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide()),
-                                      labelText: '비밀번호 확인',
-                                      focusColor: Color(0xffA1CBA1)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(1, 0, 1, 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStatePropertyAll(
-                                                Color(0xffA1CBA1))),
-                                    child: Text("변경하기"),
-                                    onPressed: () async {
-                                      if (RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                              .hasMatch(controller2.text) &&
-                                          RegExp(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                              .hasMatch(controller3.text) &&
-                                          controller2.text ==
-                                              controller3.text) {
-                                        final response =
-                                            await pageapi.changepassword(
-                                                context
-                                                    .read<UserStore>()
-                                                    .accessToken,
-                                                controller.text,
-                                                controller2.text);
-
-                                        if (response == 'success') {
-                                          //메인페이지 이동 후 알림창 띄우고 토큰 삭제하기
-                                        } else if (response == 'fail') {
-                                          showDialog(
-                                              context: context,
-                                              barrierDismissible:
-                                                  true, //바깥 영역 터치시 닫을지 여부 결정
-                                              builder: ((context) {
-                                                return AlertDialog(
-                                                    content:
-                                                        Text('현재 비밀번호와 다릅니다.'),
-                                                    actions: <Widget>[
-                                                      Container(
-                                                        child: TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(); //창 닫기
-                                                          },
-                                                          child: Text("닫기"),
-                                                        ),
-                                                      )
-                                                    ]);
-                                              }));
-                                        }
-                                      } else if (!RegExp(
-                                              r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$")
-                                          .hasMatch(controller2.text)) {
-                                        showDialog(
-                                            context: context,
-                                            barrierDismissible:
-                                                true, //바깥 영역 터치시 닫을지 여부 결정
-                                            builder: ((context) {
-                                              return AlertDialog(
-                                                  content: Text(
-                                                      '특수문자,영어, 숫자를 포함해 주세요'),
-                                                  actions: <Widget>[
-                                                    Container(
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop(); //창 닫기
-                                                        },
-                                                        child: Text("닫기"),
-                                                      ),
-                                                    )
-                                                  ]);
-                                            }));
-                                      } else if (controller2.text !=
-                                          controller3.text) {
-                                        showDialog(
-                                            context: context,
-                                            barrierDismissible:
-                                                true, //바깥 영역 터치시 닫을지 여부 결정
-                                            builder: ((context) {
-                                              return AlertDialog(
-                                                  content: Text(
-                                                      '새로 입력한 비밀번호 같지 않습니다.'),
-                                                  actions: <Widget>[
-                                                    Container(
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop(); //창 닫기
-                                                        },
-                                                        child: Text("닫기"),
-                                                      ),
-                                                    )
-                                                  ]);
-                                            }));
-                                      } else {
-                                        showSnackBar(context,
-                                            Text('현재비밀번호가 다릅니다 다시 시도해주세요'));
-                                      }
-                                    }),
-                                ElevatedButton(
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStatePropertyAll(
-                                          Color(0xffA1CBA1))),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(); //창 닫기
-                                    controller.text = '';
-                                    controller2.text = '';
-                                    controller3.text = '';
-                                  },
-                                  child: Text("취소하기"),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      );
-                    }),
-                  );
-                },
               ),
               Text('|'),
               TextButton(
