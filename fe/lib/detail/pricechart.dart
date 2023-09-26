@@ -34,8 +34,8 @@ class _PriceChartState extends State<PriceChart> {
           element > previousValue! ? element : previousValue);
 
       if (minY != null && maxY != null) {
-        minY = ((minY! / 10).ceil() * 10.0 - (minY! * 0.05)).ceilToDouble(); // 십의 자리에서 올림
-        maxY = ((maxY! / 10).ceil() * 10.0 + (maxY! * 0.05)).ceilToDouble();
+        // minY = ((minY! / 10).ceil() * 10.0 - (minY! * 0.05)).ceilToDouble();
+        // maxY = ((maxY! / 10).ceil() * 10.0 + (maxY! * 0.05)).ceilToDouble();
       }
       return reversedData;
     } catch (e) {
@@ -166,7 +166,17 @@ class _PriceChartState extends State<PriceChart> {
                           ),
                           leftTitles: AxisTitles(
                               sideTitles: SideTitles(
-                                  showTitles: false
+                                  showTitles: true,
+                                reservedSize: 40,
+                                getTitlesWidget: (value, meta) {
+                                  if (value == minY) {
+                                    return Text('${minY?.toInt()}');
+                                  } else if (value == maxY) {
+                                    return Text('${maxY?.toInt()}');
+                                  } else {
+                                    return Text('');
+                                  }
+                                },
                               )
                           )
                       ),
@@ -217,6 +227,7 @@ class _PriceChartState extends State<PriceChart> {
                         enabled: true,
                         touchTooltipData: LineTouchTooltipData(
                             tooltipBgColor: Colors.white,
+                            fitInsideVertically: true,
                             tooltipBorder: BorderSide(
                                 color: Color(0xffA1CBA1)
                             ),
@@ -229,7 +240,7 @@ class _PriceChartState extends State<PriceChart> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600);
                                   return LineTooltipItem(
-                                    '${touchedSpot.y.toStringAsFixed(0)}원', // 숫자를 화폐 형식으로 표시
+                                    '${touchedSpot.y.toStringAsFixed(0)}원',
                                     textStyle,
                                   );
                                 },
