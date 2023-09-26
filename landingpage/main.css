@@ -1,0 +1,329 @@
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.material-symbols-sharp {
+  color: #fff;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+
+html,
+body {
+  font-family: 'Pretendard-Regular';
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.box:nth-child(7) {
+  background: purple;
+}
+
+.box1 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  object-fit: fill;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+}
+
+.box1 .name {
+  position: absolute;
+  right: 2rem;
+  bottom: 0;
+  z-index: 2;
+}
+
+.box1 .title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.box1 .title .subtitle {
+  font-size: 4vmin;
+  font-weight: 500;
+  color: #fff;
+}
+
+.box1 .title .info {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 0.5;
+}
+
+@media (max-width: 1024px) {
+  .box1 .title .info {
+    font-size: 1.8rem;
+    line-height: 0.5;
+  }
+  .box1 .title .subtitle {
+    /* font-size: 4vmax; */
+    font-weight: 500;
+    color: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .box1 .title .info {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .box1 .title .info {
+    font-size: 16px;
+    line-height: 1;
+  }
+}
+
+.box1 .title img {
+  width: 5rem;
+}
+
+.box1 .title img {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 3s forwards;
+}
+
+.box1 .title p {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 3s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cover {
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  background-color: #000;
+  opacity: 0.4;
+}
+
+.container {
+  position: absolute;
+  bottom: 5rem;
+  width: 24px;
+  height: 24px;
+}
+
+.chevron {
+  position: absolute;
+  width: 28px;
+  height: 8px;
+  opacity: 0;
+  transform: scale3d(0.5, 0.5, 0.5);
+  animation: move 3s ease-out infinite;
+}
+
+.chevron:first-child {
+  animation: move 3s ease-out 1s infinite;
+}
+
+.chevron:nth-child(2) {
+  animation: move 3s ease-out 2s infinite;
+}
+
+.chevron:before,
+.chevron:after {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 51%;
+  background: #fff;
+}
+
+.chevron:before {
+  left: 0;
+  transform: skew(0deg, 30deg);
+}
+
+.chevron:after {
+  right: 0;
+  width: 50%;
+  transform: skew(0deg, -30deg);
+}
+
+@keyframes move {
+  25% {
+    opacity: 1;
+  }
+
+  33% {
+    opacity: 1;
+    transform: translateY(30px);
+  }
+
+  67% {
+    opacity: 1;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(55px) scale3d(0.5, 0.5, 0.5);
+  }
+}
+
+.text {
+  display: block;
+  margin-left: -30px;
+  font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+  font-size: 12px;
+  color: #fff;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.25;
+  animation: pulse 2s linear alternate infinite;
+}
+
+@keyframes pulse {
+  to {
+    opacity: 1;
+  }
+}
+
+.appinfo {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.appinfo p {
+  margin: 0;
+  /* 기본 마진을 제거합니다. */
+}
+
+.appinfo div {
+  width: 23rem;
+}
+
+.appinfo img {
+  /* height: 40rem; */
+  width: 18rem;
+}
+
+.appinfo p {
+  /* margin: 0; */
+  /* 기본 마진을 제거합니다. */
+}
+
+.appinfo .infoTitle {
+  font-size: 4vmax;
+  font-weight: 700;
+}
+
+.appinfo .infoDetail {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.appinfo div.fadeInFromLeft {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeInFromLeft 1s forwards;
+}
+
+@keyframes fadeInFromLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.box2 {
+  height: 65%;
+  background-color: rgb(236, 236, 236);
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.lastp {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 0.3;
+}
+
+.lasttitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.download {
+  width: 9rem;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 15px 8px 20px;
+  font-size: 15px;
+  background-color: #282828;
+  color: #fff;
+  font-weight: 600;
+}
+
+.download p {
+  margin: 0;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.download span {
+  margin: 0 0 0 5px;
+}
+
+footer {
+  padding: 35px;
+  background-color: rgb(236, 236, 236);
+  border-top: #d0d0d0 solid 1px;
+  text-align: end;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer img {
+  width: 30px;
+}
