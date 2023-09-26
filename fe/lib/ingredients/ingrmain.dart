@@ -57,13 +57,15 @@ class _IngrMainState extends State<IngrMain> {
           options: Options(
             headers: {'Authorization' : 'Bearer $accessToken'},
           ));
-        final data = response.data[0]; // response.data를 data 변수에 저장
-        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
+        final data = response.data[1];
+        print(response.data[1]);
+        final sortedData = sortData(data, num);
         return sortedData;
       } else {
         final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
-        final data = response.data[0]; // response.data를 data 변수에 저장
-        final sortedData = sortData(data, num); // sortData 함수를 사용해 데이터 정렬
+        final data = response.data[1];
+        print(response.data[1]);
+        final sortedData = sortData(data, num);
         return sortedData;
       }
     } catch (e) {
