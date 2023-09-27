@@ -244,10 +244,57 @@ class _MyPageState extends State<MyPage> {
                           print(selectedVeganNumber);
                           print(selectedAllergieNumber);
 
-                          await pageapi.updateuserinfo(
+                          final response = await pageapi.updateuserinfo(
                               context.read<UserStore>().accessToken,
                               selectedVeganNumber,
                               selectedAllergieNumber);
+
+                          if (response == 'success') {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                                builder: ((context) {
+                                  return AlertDialog(
+                                      content: Text('정상적으로 변경되었습니다.'),
+                                      actions: <Widget>[
+                                        Container(
+                                          child: TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); //창 닫기
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          MyPage()),
+                                                  (route) => false);
+                                            },
+                                            child: Text("닫기"),
+                                          ),
+                                        )
+                                      ]);
+                                }));
+                          } else {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                                builder: ((context) {
+                                  return AlertDialog(
+                                      content: Text('잠시 후 시도해주세요.'),
+                                      actions: <Widget>[
+                                        Container(
+                                          child: TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); //창 닫기
+                                            },
+                                            child: Text("닫기"),
+                                          ),
+                                        )
+                                      ]);
+                                }));
+                          }
                         },
                         child: Text("변경하기")),
                     ElevatedButton(
