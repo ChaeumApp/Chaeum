@@ -7,6 +7,6 @@ RUN pip3 install -r requirements.txt
 # Make sure the entrypoint.sh file is executable
 RUN chmod +x entrypoint.sh
 
-CMD ["entrypoint.sh"]
+ENTRYPOINT [ "executable" ] ["entrypoint.sh"]
 
 EXPOSE 8000
