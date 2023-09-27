@@ -5,7 +5,7 @@ WORKDIR /app
 RUN pip3 install -r requirements.txt
 
 # Make sure the entrypoint.sh file is executable
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 CMD ["entrypoint.sh"]
 
