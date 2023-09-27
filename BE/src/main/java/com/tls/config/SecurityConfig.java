@@ -27,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .requestMatchers()
-            .antMatchers("/user/**", "/category/**", "/item/**", "/ingr/**", "/recipe/**", "/src/**", "/")
+            .antMatchers("/user/**", "/category/**", "/item/**", "/ingr/**", "/recipe/**", "/src/**", "/", "/images/**")
             .and()
             .httpBasic().disable()
             .csrf().disable()
@@ -46,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .requestMatchers()
-            .antMatchers("/swagger-ui/**", "/images/**")
+            .antMatchers("/swagger-ui/**")
             .and()
             .httpBasic()
             .and()
