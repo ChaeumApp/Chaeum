@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class IngredientPreference(models.Model):
-    ingr_pref_pk = models.IntegerField(primary_key=True)
+    ingr_pref_pk = models.BigAutoField(primary_key=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
     pref_rating = models.FloatField(null=True)
@@ -17,7 +17,7 @@ class IngredientPreference(models.Model):
         ]
 
 class IngredientRecommend(models.Model):
-    ingr_recommend_pk = models.IntegerField(primary_key=True)
+    ingr_recommend_pk = models.BigAutoField(primary_key=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
     ingr_recommend_score = models.FloatField(null=True)
@@ -33,7 +33,7 @@ class IngredientRecommend(models.Model):
         
 
 class Ingredient(models.Model):
-    ingr_id = models.IntegerField(primary_key=True)
+    ingr_id = models.AutoField(primary_key=True)
     ingr_name = models.CharField(max_length=30)
     subcat = models.ForeignKey('Subcat', on_delete=models.CASCADE, null=True)
     cat = models.ForeignKey('Category', on_delete=models.CASCADE)
@@ -94,7 +94,7 @@ class IngredientPrice(models.Model):
         ]
 
 class IngredientGroup(models.Model):
-    ingr_group_id = models.IntegerField(primary_key=True)
+    ingr_group_id = models.AutoField(primary_key=True)
     ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
     group_id = models.IntegerField()
 
@@ -108,7 +108,7 @@ class IngredientGroup(models.Model):
         ]
 
 class Item(models.Model):
-    item_id = models.BigAutoField(primary_key=True)  # 자동 증가하는 Primary Key
+    item_id = models.AutoField(primary_key=True)  # 자동 증가하는 Primary Key
     ingr_id = models.IntegerField()  # Integer 필드
     item_name = models.CharField(max_length=20)  # 최대 길이 20의 문자열 필드
     item_image = models.CharField(max_length=512, null=True, blank=True)  # 최대 길이 512의 문자열 필드, NULL 허용
