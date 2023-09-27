@@ -210,10 +210,6 @@ body {
   justify-content: space-evenly;
 }
 
-.appinfo div {
-  width: 26vw;
-}
-
 .appinfo img {
   height: 40rem;
   width: 18rem;
@@ -238,7 +234,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    text-align: center;
+    /* text-align: center; */
   }
   .appinfo .infoTitle {
     font-size: 3vw;
@@ -255,7 +251,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    text-align: center;
   }
   .appinfo .infoTitle {
     font-size: 4vw;
