@@ -14,7 +14,7 @@ class RecommendProduct extends StatefulWidget {
 
 class _RecommendProductState extends State<RecommendProduct> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<dynamic> getProductList() async {
     try {
