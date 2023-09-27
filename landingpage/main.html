@@ -13,16 +13,18 @@
   </head>
 
   <body>
-    <div class="box1">
+    <div class="box1 box">
       <video autoplay loop muted class="bg-video">
         <source src="main.mp4" type="video/mp4" />
       </video>
       <p class="name">Video by Jack Sparrow</p>
       <div class="cover"></div>
       <div class="container" onclick="goToScroll('boxstart')">
-        <div class="chevron"></div>
-        <div class="chevron"></div>
-        <div class="chevron"></div>
+        <div>
+          <div class="chevron"></div>
+          <div class="chevron"></div>
+          <div class="chevron"></div>
+        </div>
         <span class="text">Scroll down</span>
       </div>
       <div class="title">
@@ -40,7 +42,7 @@
           <p class="infoDetail">베스트 상품과 할인율을 확인하세요</p>
         </div>
         <div>
-          <img src="category_page.png" alt="" />
+          <img src="mockup.png" alt="" />
         </div>
       </div>
     </div>
@@ -64,7 +66,7 @@
           <p class="infoDetail">카테고리별로 확인하세요</p>
         </div>
         <div>
-          <img src="mockup.png" alt="" />
+          <img src="category_page.png" alt="" />
         </div>
       </div>
     </div>
@@ -114,11 +116,13 @@
       </div>
     </div>
     <footer>
-      <p>
-        <img src="logo.png" alt="" /><br />
-        <span class="footertitle">채움</span><br />
-        <span>Copyright 2023, the legend six. All Rights Reserved.</span><br />
-      </p>
+      <div>
+        <p>
+          <img src="logo.png" alt="" /><br />
+          <span class="footertitle">채움</span><br />
+          <span>Copyright 2023, the legend six. All Rights Reserved.</span><br />
+        </p>
+      </div>
     </footer>
   </body>
 
