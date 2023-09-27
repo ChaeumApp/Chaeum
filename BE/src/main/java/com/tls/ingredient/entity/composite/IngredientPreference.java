@@ -26,7 +26,7 @@ public class IngredientPreference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ingr_pref_pk")
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,6 +37,10 @@ public class IngredientPreference {
     private Ingredient ingredient;
 
     @Column(name = "pref_rating")
-    private Double prefRating;
+    private double prefRating;
+
+    public void updatePrefRating(double prefRating){
+        this.prefRating = prefRating;
+    }
 
 }

@@ -71,7 +71,7 @@ class _SearchIngrState extends State<SearchIngr> {
 
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<dynamic> searchIngr() async {
     try {

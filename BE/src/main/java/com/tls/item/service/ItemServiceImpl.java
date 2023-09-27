@@ -1,20 +1,27 @@
 package com.tls.item.service;
 
+import com.tls.ingredient.entity.composite.IngredientPreference;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngrRepository;
+import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.item.converter.ItemConverter;
 import com.tls.item.dto.ItemDto;
 import com.tls.item.entity.composite.ItemPurchaseLog;
 import com.tls.item.entity.composite.UserItemLog;
+import com.tls.item.entity.single.Item;
 import com.tls.item.repository.ItemPurchaseLogRepository;
 import com.tls.item.repository.ItemRepository;
 import com.tls.item.repository.UserItemLogRepository;
 import com.tls.item.vo.ItemVO;
+import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +32,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final UserItemLogRepository userItemLogRepository;
     private final ItemPurchaseLogRepository itemPurchaseLogRepository;
+    private final IngredientPreferenceRepository ingredientPreferenceRepository;
     private final ItemConverter itemConverter = new ItemConverter();
 
     @Override
@@ -70,11 +78,28 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public int selectItem(String userEmail, ItemVO itemVO) {
         try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Item item = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow();
             UserItemLog userItemLog = UserItemLog.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                .itemId(itemRepository.findByItemId(itemVO.getItemId()).orElseThrow())
+                .userId(user)
+                .itemId(item)
                 .build();
             userItemLogRepository.save(userItemLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow().getIngredient();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(15)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
             return 1;
         } catch (Exception e) {
             return -1;
@@ -82,13 +107,32 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public int purchaseItem(String userEmail, ItemVO itemVO) {
         try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Item item = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow();
+
             ItemPurchaseLog itemPurchaseLog = ItemPurchaseLog.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                .itemId(itemRepository.findByItemId(itemVO.getItemId()).orElseThrow())
+                .userId(user)
+                .itemId(item)
                 .build();
             itemPurchaseLogRepository.save(itemPurchaseLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 100);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow().getIngredient();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(15)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
             return 1;
         } catch (Exception e) {
             return -1;

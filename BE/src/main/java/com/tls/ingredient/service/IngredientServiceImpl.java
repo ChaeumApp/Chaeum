@@ -3,12 +3,14 @@ package com.tls.ingredient.service;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.dto.IngredientDto;
+import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.ingredient.entity.composite.UserIngrLog;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.entity.single.IngredientPrice;
 import com.tls.ingredient.repository.IngrRepository;
+import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.ingredient.repository.IngredientPriceRepository;
 import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.UserIngrLogRepository;
@@ -28,6 +30,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,7 @@ public class IngredientServiceImpl implements IngredientService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeProcRepository recipeProcRepository;
+    private final IngredientPreferenceRepository ingredientPreferenceRepository;
 
     private final int TERM = 7;
     private final int NUMBERS = 12;
@@ -184,22 +188,74 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
+    @Transactional
     public int selectIngredient(String userEmail, IngredientVO ingredientVO) {
         try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
             UserIngrLog userIngrLog = UserIngrLog.builder()
-                .userId(userRepository.findByUserEmail(userEmail).orElseThrow())
-                .ingrId(ingrRepository.findByIngrId(ingredientVO.getIngrId()).orElseThrow())
+                .userId(user)
+                .ingrId(ingredient)
                 .build();
             userIngrLogRepository.save(userIngrLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, ingredient).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(10)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
             return 1;
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
 
     @Override
+    @Transactional
     public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) {
-        return 0;
+        try {
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
+            UserIngrLog userIngrLog = UserIngrLog.builder()
+                .userId(user)
+                .ingrId(ingredient)
+                .build();
+            userIngrLogRepository.save(userIngrLog);
+
+            IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                .findByUserAndIngredient(user, ingredient).orElseThrow();
+            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
+
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
+                .orElseThrow();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(-150)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     @Override
@@ -261,12 +317,12 @@ public class IngredientServiceImpl implements IngredientService {
             List<Recipe> selectAll = recipeRepository.findAll();
             selectAll.forEach(recipe -> {
                 RecipeDto recipeDto = entityToDto(recipe);
-                 for(String[] recipeIngredient : recipeDto.getRecipeIngredients()){
-                     if(recipeIngredient[0].contains(ingredient.getIngrName())){
-                         results.add(recipe);
-                         break;
-                     }
-                 }
+                for (String[] recipeIngredient : recipeDto.getRecipeIngredients()) {
+                    if (recipeIngredient[0].contains(ingredient.getIngrName())) {
+                        results.add(recipe);
+                        break;
+                    }
+                }
             });
             return results;
         } catch (Exception e) {

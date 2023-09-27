@@ -3,6 +3,7 @@ import 'package:fe/user/addinfo.dart';
 import 'package:fe/user/signuptimer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import '../user/mypage.dart';
 import 'pageapi.dart';
@@ -306,7 +307,7 @@ class _SignUpState extends State<SignUp> {
                                                           .strokeAlignCenter +
                                                       15,
                                                   child: timeron
-                                                      ? CountdownTimer()
+                                                      ? SignupTimer()
                                                       : Text(''),
                                                 ),
                                               ],
@@ -750,7 +751,62 @@ class _SignUpState extends State<SignUp> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: ButtonTheme(
                                       child: TextButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            try {
+                                              final NaverLoginResult res =
+                                                  await FlutterNaverLogin
+                                                      .logIn();
+                                              // print('이건$res');
+                                              NaverAccessToken nlog =
+                                                  await FlutterNaverLogin
+                                                      .currentAccessToken;
+                                              print('저건$nlog');
+
+                                              final token = nlog.accessToken;
+                                              print(token);
+                                              final sociallogininfo =
+                                                  await pageapi
+                                                      .naverlogin(token);
+                                              print(sociallogininfo);
+                                              if (sociallogininfo
+                                                  .containsKey('accessToken')) {
+                                                final accessToken =
+                                                    sociallogininfo[
+                                                        'accessToken'];
+                                                final refreshToken =
+                                                    sociallogininfo[
+                                                        'refreshToken'];
+                                                await widget.storage.write(
+                                                    key: "login",
+                                                    value:
+                                                        "accessToken $accessToken refreshToken $refreshToken");
+                                                print(widget.storage
+                                                    .read(key: "login"));
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            Main()),
+                                                    (route) => false);
+                                              } else {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          AddInfo(
+                                                            user:
+                                                                sociallogininfo,
+                                                            storage:
+                                                                widget.storage,
+                                                          )),
+                                                );
+                                              }
+                                            } catch (error) {
+                                              print('naver login error $error');
+                                            }
+                                          },
                                           style: ButtonStyle(
                                               backgroundColor:
                                                   MaterialStatePropertyAll(
