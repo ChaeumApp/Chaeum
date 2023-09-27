@@ -318,6 +318,7 @@ body {
   background-color: #282828;
   color: #fff;
   font-weight: 600;
+  cursor: pointer;
 }
 
 .download p {
