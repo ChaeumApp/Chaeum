@@ -2,7 +2,7 @@
 
 # Apply database migrations
 echo "Apply database migrations"
-python manage.py migrate
+exec python manage.py migrate
 
 # Start server
 echo "Starting server"
