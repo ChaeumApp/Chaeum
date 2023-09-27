@@ -20,7 +20,7 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
 
   Future<dynamic> clickItem(itemId) async {
