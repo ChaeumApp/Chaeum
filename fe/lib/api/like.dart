@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 
 Dio dio = Dio(BaseOptions(
-  baseUrl: 'http://j9c204.p.ssafy.io:8080',
+  baseUrl: 'https://j9c204.p.ssafy.io:8080',
   // 토큰 넣는거 필요하면
   headers: {'Authorization': 'Bearer Token'},
 ));
