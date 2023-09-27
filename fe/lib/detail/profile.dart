@@ -18,7 +18,7 @@ class _ProfileViewState extends State<ProfileView>{
 
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   bool isSet = false;
 
