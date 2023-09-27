@@ -3,8 +3,10 @@ from recommend.models import Item, IngredientPrice
 from django.http import JsonResponse
 import re
 
-def update_price(request, ingr_id, item_crawling_date):
+def update_price(ingr_id, item_crawling_date):
     items = Item.objects.filter(ingr_id=ingr_id, item_crawling_date=item_crawling_date)
+    if len(items) == 0:
+        return
     
     def find_gram(title):
         g_pattern = r'(\d+(\.\d+)?)g'
@@ -26,7 +28,27 @@ def update_price(request, ingr_id, item_crawling_date):
             return min(pcs_matches)
         else:
             return 1
-    
+        
+    def trimmed_mean(price_per_gram):
+        # 배열을 정렬
+        sorted_prices = sorted(price_per_gram)
+        
+        # 상위 20%와 하위 20%의 인덱스를 구함
+        n = len(sorted_prices)
+        lower_index = int(0.2 * n)
+        upper_index = n - lower_index
+
+        # 상위 20%와 하위 20% 값을 제외한 중간 범위의 값들을 가져옴
+        trimmed_prices = sorted_prices[lower_index:upper_index]
+        if len(trimmed_prices) == 0:
+            return -1
+        else:
+            # 평균값을 반환
+            return sum(trimmed_prices) / len(trimmed_prices)
+
+
+    price_per_100g = []
+
     for item in items:
         title = item.item_name
         price = item.item_price
@@ -34,42 +56,14 @@ def update_price(request, ingr_id, item_crawling_date):
         pieces = find_pieces(title)
         
         if gram:
-            item.price_per_100g = 100 * price // (gram * pieces)
-            item.save()  # 변경 사항 저장
-    
-    # 새로운 값으로 업데이트 된 아이템들을 반환
-    updated_items = [
-        {
-            'item_id': item.item_id,
-            'price_per_100g': item.price_per_100g,
-        }
-        for item in items
-    ]
-    valid_items = [item for item in items if item.price_per_100g is not None and item.price_per_100g >= 0]
+            price_per_100g.append(100 * price // (gram * pieces))
 
-    # valid_items가 비어있지 않은지 확인
-    if valid_items:
-        sorted_items = sorted(valid_items, key=lambda x: x.price_per_100g)
-        total_items = len(sorted_items)
-        
-        # 상위 및 하위 20%의 인덱스를 찾기
-        lower_bound_index = total_items * 20 // 100
-        upper_bound_index = total_items - lower_bound_index
-        
-        # 상위 및 하위 20%를 제외한 아이템들의 price_per_100g의 평균 계산
-        middle_items = sorted_items[lower_bound_index:upper_bound_index]
-        
-        # middle_items가 비어있지 않은지 확인
-        if middle_items:
-            average_price = sum(item.price_per_100g for item in middle_items) / len(middle_items)
-        else:
-            average_price = None
-    else:
-        average_price = None
+    average_price = trimmed_mean(price_per_100g)
+    if average_price == -1:
+        print(f'소분류 {ingr_id}의 trimmed_prices가 없습니다.')
 
     if average_price is not None:
         new_price = IngredientPrice(ingr_id=ingr_id, date=item_crawling_date, price=average_price)
         new_price.save()
 
     return JsonResponse({'average_price_per_100g': average_price}, safe=False)
-

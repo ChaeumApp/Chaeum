@@ -4,6 +4,9 @@ COPY . /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
 
-WORKDIR /app
-CMD ["python3", "manage.py", "runserver", "0:8000"]
+# Make sure the entrypoint.sh file is executable
+RUN chmod +x entrypoint.sh
+
+CMD ["entrypoint.sh"]
+
 EXPOSE 8000

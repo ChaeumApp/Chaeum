@@ -38,7 +38,7 @@ class _IngrMainState extends State<IngrMain> {
   }
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
 
   List<dynamic> sortData(List<dynamic> data, int sortNum) {
@@ -323,8 +323,10 @@ class _IngrMainState extends State<IngrMain> {
                                           content: Text("$result 설정 되었습니다."),
                                           backgroundColor: Color(0xff4C8C4C),
                                         );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackBar);
+                                        if(context.read<UserStore>().accessToken != ''){
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                        }
                                       },
                                       child: Container(
                                         height: 36,
@@ -373,8 +375,12 @@ class _IngrMainState extends State<IngrMain> {
     return PopupMenuItem<String>(
       enabled: true,
       onTap: () {
-        dislikeIngr(ingrId);
-        setState(() {});
+        if(context.read<UserStore>().accessToken != ''){
+          dislikeIngr(ingrId);
+          setState(() {});
+        } else {
+          Alertlogin().needLogin(context);
+        }
       },
       value: text,
       child: Text(
