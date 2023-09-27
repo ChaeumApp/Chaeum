@@ -16,7 +16,7 @@ class PriceTable extends StatefulWidget {
 
 class _PriceTableState extends State<PriceTable> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<List<dynamic>> getPriceTable() async {
     try {
