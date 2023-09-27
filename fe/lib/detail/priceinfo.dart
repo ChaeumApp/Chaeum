@@ -43,7 +43,7 @@ class PriceInfo extends StatelessWidget {
                         )),
                       ],
                     )),
-                PriceTable(),
+                PriceTable(ingrId : ingrId),
               ],
             ),
           ),

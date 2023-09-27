@@ -23,13 +23,14 @@ CREATE TABLE `vegan_tb`
 
 CREATE TABLE `item_tb`
 (
-    `item_id`        BIGINT       NOT NULL primary key auto_increment,
+    `item_id`        varchar(128)  NOT NULL primary key,
     `item_name`      varchar(256)  NOT NULL,
     `item_image`     varchar(512) NULL,
     `item_price`     INT          NOT NULL,
     `item_store`     varchar(20)  NOT NULL,
     `item_storelink` varchar(512) NOT NULL,
-    `ingr_id`        INT          NOT NULL
+    `ingr_id`        INT          NOT NULL,
+    `item_crawling_date`    DATE    NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -52,7 +53,7 @@ CREATE TABLE `recipe_tb`
 CREATE TABLE `item_preference_tb`
 (
     `ingr_pref_pk` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `item_id`     BIGINT NOT NULL,
+    `item_id`     VARCHAR(128) NOT NULL,
     `user_id`     INT    NOT NULL,
     `pref_rating` DOUBLE NOT NULL DEFAULT 0
 ) ENGINE = InnoDB
@@ -86,7 +87,7 @@ CREATE TABLE `ingredient_price_tb`
 CREATE TABLE `saved_item_tb`
 (
     `user_id` INT    NOT NULL,
-    `item_id` BIGINT NOT NULL
+    `item_id` VARCHAR(128) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -183,9 +184,9 @@ CREATE TABLE `ingredient_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `item_select_log_tb`
 (
-    `item_select_log`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_select_log_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
-    `item_id`          BIGINT    NOT NULL,
+    `item_id`          VARCHAR(128)    NOT NULL,
     `item_select_time` TIMESTAMP NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -301,7 +302,7 @@ CREATE TABLE `item_purchased_log_tb`
 (
     `item_purchased_log_pk` BIGINT    NOT NULL,
     `user_id`               INT       NOT NULL,
-    `item_id`               BIGINT    NOT NULL,
+    `item_id`               VARCHAR(128)    NOT NULL,
     `item_purchased_time`   TIMESTAMP NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -614,6 +615,3 @@ values (0, '난류'),
        (14, '쇠고기'),
        (15, '오징어'),
        (16, '조개류(굴, 전복, 홍합)');
-
-ALTER TABLE `item_tb`
-    ADD COLUMN `item_crawling_date` DATE NOT NULL;
