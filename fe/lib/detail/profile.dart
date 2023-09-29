@@ -159,7 +159,7 @@ class _ProfileViewState extends State<ProfileView>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
-                'assets/images/temporary/sample.png',
+                'assets/images/ingr/${snapshot.data['ingrName']}.jpg',
                 height: 163,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -188,19 +188,19 @@ class _ProfileViewState extends State<ProfileView>{
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 3),
-                      child: Text(
-                        '어제보다 ${data['saleper']}%(${data['salewon']}원) 더 비싸졌어요.',
-                        style: TextStyle(
-                          color: Color(0xff73324C),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //  margin: EdgeInsets.only(bottom: 3),
+                    //  child: Text(
+                    //    '어제보다 ${data['saleper']}%(${data['salewon']}원) 더 비싸졌어요.',
+                    //    style: TextStyle(
+                    //      color: Color(0xff73324C),
+                    //      fontWeight: FontWeight.w700,
+                    //      fontSize: 16
+                    //   ),
+                    //  ),
+                    //),
                     Text(
-                       '최근 3개월 중 ${data['salerank']}번째로 비싼 날이에요.',
+                       '식재료에 대한 정보를 확인하세요.',
                       style: TextStyle(
                         color: Color(0xff73324C),
                         fontWeight: FontWeight.w700,
