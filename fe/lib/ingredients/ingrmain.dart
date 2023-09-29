@@ -277,10 +277,15 @@ class _IngrMainState extends State<IngrMain> {
                                                         snapshot.data[index]
                                                             ['ingrId'])));
                                       },
-                                      child: Image.asset(
-                                        'assets/images/repeat/bottom_logo.png',
-                                        height: 250,
-                                        fit: BoxFit.fill,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5)
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/ingr/${snapshot.data[index]['ingrName']}.jpg',
+                                          height: 250,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     )
                                     // Image.network(
