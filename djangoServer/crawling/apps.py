@@ -9,5 +9,5 @@ class CrawlingConfig(AppConfig):
 
     def ready(self):
         logger.info("apps.py ready method start...")
-        from . import crawl_sche
-        crawl_sche.start()
+        from itemCrawler import main
+        main.start()
