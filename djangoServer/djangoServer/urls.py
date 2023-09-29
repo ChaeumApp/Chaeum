@@ -21,5 +21,5 @@ from recommend import views as recommend_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('update/<int:ingr_id>/<str:item_crawling_date>/', ingredientPrice_views.update_price, name='update_price'),
-    path('recommend/<int:user_id>/<int:percent>', recommend_views.recommend_substitute, name='substitute'),
+    path('recommend/<int:user_id>/', recommend_views.recommend, name='recommend'),
 ]
