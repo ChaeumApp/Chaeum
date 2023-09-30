@@ -1,5 +1,6 @@
 package com.tls.item.service;
 
+import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngrRepository;
@@ -89,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
             ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
-
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -100,6 +101,7 @@ public class ItemServiceImpl implements ItemService {
                 .user(user)
                 .build();
             ingredientPreferenceRepository.save(ingredientPreference);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             return -1;
@@ -122,7 +124,7 @@ public class ItemServiceImpl implements ItemService {
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
             ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 100);
-
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -133,6 +135,7 @@ public class ItemServiceImpl implements ItemService {
                 .user(user)
                 .build();
             ingredientPreferenceRepository.save(ingredientPreference);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             return -1;
