@@ -84,8 +84,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'chaeum',
         'USER': 'root',
-        'PASSWORD': 'ssafy',
-        'HOST': 'localhost',
+        'PASSWORD': 'c204tls^^',
+        'HOST': 'j9c204.p.ssafy.io',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
