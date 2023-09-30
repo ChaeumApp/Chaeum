@@ -1,5 +1,6 @@
 package com.tls.ingredient.service;
 
+import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.dto.IngredientDto;
@@ -189,7 +190,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public int selectIngredient(String userEmail, IngredientVO ingredientVO) {
+    public int selectIngredient(String userEmail, IngredientVO ingredientVO) { // 소분류 클릭
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             Ingredient ingredient = ingrRepository.findByIngrId(ingredientVO.getIngrId())
@@ -204,6 +205,8 @@ public class IngredientServiceImpl implements IngredientService {
                 .findByUserAndIngredient(user, ingredient).orElseThrow();
             ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
 
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
+
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -215,6 +218,7 @@ public class IngredientServiceImpl implements IngredientService {
                 .user(user)
                 .build();
             ingredientPreferenceRepository.save(ingredientPreference);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,7 +228,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) {
+    public int dislikeIngredient(String userEmail, IngredientVO ingredientVO) { // 소분류 관심없음
         try {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
 
@@ -239,7 +243,7 @@ public class IngredientServiceImpl implements IngredientService {
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, ingredient).orElseThrow();
             ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
-
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -251,6 +255,7 @@ public class IngredientServiceImpl implements IngredientService {
                 .user(user)
                 .build();
             ingredientPreferenceRepository.save(ingredientPreference);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,12 +265,17 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     @Transactional
-    public int favoriteIngredient(String userEmail, int ingrId) {
+    public int favoriteIngredient(String userEmail, int ingrId) { // 소분류 좋아요
+        boolean tf = false;
         try {
             User user = userRepository.findByUserEmail(userEmail).orElse(null);
             Ingredient ingredient = ingrRepository.findByIngrId(ingrId).orElse(null);
             if (userIngrRepository.findByUserIdAndIngrId(user, ingredient).isPresent()) {
                 userIngrRepository.deleteByUserIdAndIngrId(user, ingredient);
+                tf = true;
+                IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                    .findByUserAndIngredient(user, ingredient).orElseThrow();
+                ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
             } else {
                 userIngrRepository.save(
                     UserIngr.builder()
@@ -273,7 +283,25 @@ public class IngredientServiceImpl implements IngredientService {
                         .ingrId(ingredient)
                         .build()
                 );
+                IngredientPreference ingredientPreference = ingredientPreferenceRepository
+                    .findByUserAndIngredient(user, ingredient).orElseThrow();
+                ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 150);
             }
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
+            return 1;
+        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
+            int score = 150;
+            if(tf)  score *= -1;
+            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
+            Ingredient ingredient = ingrRepository.findByIngrId(ingrId)
+                .orElseThrow();
+            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                .prefRating(score)
+                .ingredient(ingredient)
+                .user(user)
+                .build();
+            ingredientPreferenceRepository.save(ingredientPreference);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             return -1;

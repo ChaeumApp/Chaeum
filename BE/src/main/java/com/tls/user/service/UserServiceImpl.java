@@ -5,10 +5,10 @@ import com.tls.allergy.entity.single.Allergy;
 import com.tls.allergy.repository.AllergyIngredientRepository;
 import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
+import com.tls.config.HttpConnectionConfig;
 import com.tls.config.RandomStringCreator;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.single.Ingredient;
-import com.tls.ingredient.repository.IngrRepository;
 import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
@@ -19,7 +19,6 @@ import com.tls.recipe.entity.single.Recipe;
 import com.tls.ingredient.entity.composite.UserIngr;
 import com.tls.recipe.repository.UserRecipeRepository;
 import com.tls.user.dto.UserProfileDto;
-import com.tls.user.converter.UserConverter;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import com.tls.user.repository.VeganRepository;
@@ -63,9 +62,7 @@ public class UserServiceImpl implements UserService {
     private final AllergyRepository allergyRepository;
     private final AllergyIngredientRepository allergyIngredientRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
-    private final IngrRepository ingrRepository;
 
-    private final UserConverter userConverter;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -106,6 +103,7 @@ public class UserServiceImpl implements UserService {
 
             });
             userAllergyRepository.saveAll(userAllergyList);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();
             List<IngredientPreference> list = new ArrayList<>();
@@ -121,6 +119,7 @@ public class UserServiceImpl implements UserService {
                 }
             );
             ingredientPreferenceRepository.saveAll(list);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,6 +230,7 @@ public class UserServiceImpl implements UserService {
                 });
             });
             userAllergyRepository.saveAll(userAllergyList);
+            HttpConnectionConfig.callDjangoConn(updateUser.get().getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
@@ -246,6 +246,7 @@ public class UserServiceImpl implements UserService {
                     })
             );
             ingredientPreferenceRepository.saveAll(list);
+            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
