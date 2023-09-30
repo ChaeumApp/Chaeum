@@ -19,7 +19,7 @@ class RecipeDetailPage extends StatefulWidget {
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   bool isSet = false;
   bool tmpSaved = false;
@@ -203,10 +203,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                              '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1]}',
-                              style: TextStyle(
-                                  color: Color(0xff4C8C4C),
-                                  fontWeight: FontWeight.w600)),
+                            '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1] != null ? snapshot.data['recipeIngredients'][index][1] : ''}',
+                            style: TextStyle(
+                                color: Color(0xff4C8C4C),
+                                fontWeight: FontWeight.w600
+                            ),
+                          ),
                         ),
                       )),
                     ),

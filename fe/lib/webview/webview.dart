@@ -66,7 +66,7 @@ class _WebviewPageState extends State<WebviewPage> {
 
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'https://j9c204.p.ssafy.io:8080';
 
   Future<dynamic> purchaseItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
@@ -135,8 +135,7 @@ class _WebviewPageState extends State<WebviewPage> {
                     webViewController = controller;
                     controller.addJavaScriptHandler(handlerName: 'onButtonClick', callback: (args){
                       print('Button Clicked: $args');
-                      // 뭐샀는지 넣어줘야함!!!!!
-                      purchaseItem(1);
+                      purchaseItem(widget.itemId);
                     });
                   },
                   onLoadStart: (controller, url) {

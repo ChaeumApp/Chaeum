@@ -68,7 +68,7 @@ arr03 = [
 
 ["기장", "율무", "녹두", "귀리"],
 
-["카카오닙스", "오트밀", "퀴노아", "치아씨드" "햄프씨드", "렌틸콩"],
+["카카오닙스", "오트밀", "퀴노아", "치아씨드", "햄프씨드", "렌틸콩"],
 
 ["땅콩", "호두"],
  
@@ -214,7 +214,7 @@ arr08 = [
 
 ["쌀국수", "월남쌈", "또띠아"],
 
-["스파게티", "페투치네", "링귀니", "펜네", "파르펠리", "리가토니", "푸실리", "로티니"],
+["스파게티", "페투치네", "링귀니", "펜네", "파르펠레", "리가토니", "푸실리", "로티니"],
 
 "사리면"
 ]
@@ -280,11 +280,11 @@ group_id = 0
 
 for arr in [arr01,arr02,arr03,arr04,arr05,arr06,arr07,arr08,arr09,arr10,arr11]:
     for lst in arr:
-        group_id += 1
         if type(lst) == list:
+            group_id += 1
             for ingr in lst:
                 ingr_inst = Ingredient.objects.get(ingr_name=ingr)
-                print(ingr_inst.ingr_name)
+                # print(ingr_inst.ingr_name)
                 IngredientGroup.objects.create(
                     ingr_id = ingr_inst.ingr_id,
                     group_id = group_id
