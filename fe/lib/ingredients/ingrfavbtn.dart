@@ -23,7 +23,7 @@ class _IngrFavBtnState extends State<IngrFavBtn> {
   }
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<dynamic> likeIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;

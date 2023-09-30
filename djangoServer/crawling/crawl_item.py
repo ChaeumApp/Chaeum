@@ -120,12 +120,10 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                     print(e)
                     error_cnt += 1
 
-        # filename = f'coupang_{keyword}'
-        # df = pd.DataFrame(result_list, columns = ['id', 'title', 'price', 'link', 'thumbnail'])
-        print(f'error 발생 횟수 : {error_cnt}')
+    print(f'error 발생 횟수 : {error_cnt}')
 
-        length = len(result_list)
-        print(f"갯수: {length}")
+    length = len(result_list)
+    print(f"갯수: {length}")
 
 def main():
 
@@ -170,11 +168,7 @@ def main():
 
             for line in r:
                 keyword, inclusions, exclusions = line
-                if keyword == '건무화과':
-                    inclusions = list(inclusions.split(","))
-                    exclusions = list(exclusions.split(","))
-
-                    cp_crawling(keyword, inclusions, exclusions, category, debug)
+                cp_crawling(keyword, inclusions, exclusions, category, debug)
 
     
 

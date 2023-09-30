@@ -13,7 +13,7 @@ class ClickApi extends StatefulWidget {
 class _ClickApiState extends State<ClickApi> {
 
   Dio dio = Dio();
-  final serverURL = 'http://j9c204.p.ssafy.io:8080';
+  final serverURL = 'https://j9c204.p.ssafy.io:8080';
 
 
 // 상품 클릭하는거
