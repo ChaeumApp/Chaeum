@@ -13,7 +13,7 @@ def start():
 
     scheduler.add_job(
         main,
-        trigger=CronTrigger(hour="12", minute="20"),
+        trigger=CronTrigger(hour="16", minute="40"),
         id = "main",
         max_instances=1,
         replace_existing=True
