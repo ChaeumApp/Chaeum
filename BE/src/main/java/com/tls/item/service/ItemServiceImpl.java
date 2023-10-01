@@ -3,7 +3,7 @@ package com.tls.item.service;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.single.Ingredient;
-import com.tls.ingredient.repository.IngrRepository;
+import com.tls.ingredient.repository.IngredientRepository;
 import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.item.converter.ItemConverter;
 import com.tls.item.dto.ItemDto;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final IngrRepository ingrRepository;
+    private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
     private final UserItemLogRepository userItemLogRepository;
     private final ItemPurchaseLogRepository itemPurchaseLogRepository;
@@ -42,11 +42,11 @@ public class ItemServiceImpl implements ItemService {
             List<ItemDto> results = new ArrayList<>();
             // 가장 최근 갱신된 업데이트 날짜 가져온다.
             LocalDate recentUpdatedDate = itemRepository.findTopByIngrIdOrderByItemCrawlingDateDesc(
-                    ingrRepository.findByIngrId(ingrId).orElseThrow())
+                    ingredientRepository.findByIngrId(ingrId).orElseThrow())
                 .orElseThrow().get(0).getItemCrawlingDate();
 
             itemRepository.findByIngredientAndItemCrawlingDate(
-                    ingrRepository.findByIngrId(ingrId).orElseThrow(), recentUpdatedDate)
+                    ingredientRepository.findByIngrId(ingrId).orElseThrow(), recentUpdatedDate)
                 .orElseThrow().forEach(item ->
                     results.add(itemConverter.entityToDto(item))
                 );
