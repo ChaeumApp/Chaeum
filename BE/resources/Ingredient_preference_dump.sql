@@ -1,5 +1,5 @@
-DELETE FROM `ingredient_preference_tb`;
-
+# DELETE FROM `ingredient_preference_tb`;
+#
 INSERT INTO `ingredient_preference_tb` (`user_id`, `ingr_id`, `pref_rating`)
 VALUES (1, 188, 5),
        (1, 166, 10),
