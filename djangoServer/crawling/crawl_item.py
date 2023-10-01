@@ -117,7 +117,6 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                         result_list.append([id, item_name, price, link, thumbnail])
 
                 except Exception as e:
-                    print(e)
                     error_cnt += 1
 
     print(f'error 발생 횟수 : {error_cnt}')
