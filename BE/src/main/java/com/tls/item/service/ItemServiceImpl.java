@@ -62,6 +62,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getBestItems() {
         try {
+            System.out.println(userItemLogRepository.findBestItems());
             return userItemLogRepository.findBestItems().stream()
                     .map(itemConverter::entityToDto)
                     .collect(Collectors.toList());
@@ -76,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto viewItem(long itemId) {
+    public ItemDto viewItem(String itemId) {
         try {
             return itemConverter.entityToDto(itemRepository.findByItemId(itemId).orElseThrow());
         } catch (Exception e) {

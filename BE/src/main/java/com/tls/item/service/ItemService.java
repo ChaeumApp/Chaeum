@@ -10,7 +10,7 @@ public interface ItemService {
 
     List<ItemDto> getBestItems();
 
-    ItemDto viewItem(long itemId);
+    ItemDto viewItem(String itemId);
 
     int dislikeItem(String userEmail, ItemVO itemVO);
 
