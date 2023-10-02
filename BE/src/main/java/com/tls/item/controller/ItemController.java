@@ -35,7 +35,7 @@ public class ItemController {
     @Operation(summary = "상품 상세 조회 메서드", description = "상품 번호에 대한 상세 조회", tags = "상품 API")
     @ApiResponse(responseCode = "200", description = "상품 상세 조회 시 해당 상품 정보를 반환한다.\n"
         + "해당 상품 번호가 없을 경우 fail 을 반환한다.")
-    public ResponseEntity<?> viewItem(@PathVariable("itemId") long itemId) {
+    public ResponseEntity<?> viewItem(@PathVariable("itemId") String itemId) {
         ItemDto itemDto = itemService.viewItem(itemId);
         if (itemDto != null) {
             return new ResponseEntity<>(itemDto, HttpStatus.OK);
