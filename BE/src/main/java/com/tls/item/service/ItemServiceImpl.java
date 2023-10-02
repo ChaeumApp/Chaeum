@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,8 +60,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getTodaysBestItems() {
-        return null;
+    public List<ItemDto> getBestItems() {
+        try {
+            return userItemLogRepository.findBestItems().stream()
+                    .map(itemConverter::entityToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
