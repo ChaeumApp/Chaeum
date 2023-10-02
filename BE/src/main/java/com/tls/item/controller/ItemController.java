@@ -63,7 +63,7 @@ public class ItemController {
         + "실패 시 fail 을 반환한다.")
     public ResponseEntity<?> getTodaysBestItems() {
         log.info("getTodaysBestItems call :: ");
-        List<ItemDto> itemDtoList = itemService.getTodaysBestItems();
+        List<ItemDto> itemDtoList = itemService.getBestItems();
         if (itemDtoList != null) {
             return new ResponseEntity<>(itemDtoList, HttpStatus.OK);
         } else {

@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,8 +171,15 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
+    @Override
     public List<IngredientDto> getBestIngredients() {
-        return null;
+        try {
+            return userIngrLogRepository.findBestIngredients().stream()
+                    .map(ingredientConverter::entityToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

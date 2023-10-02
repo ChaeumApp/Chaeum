@@ -8,7 +8,7 @@ public interface ItemService {
 
     List<ItemDto> getItems(int ingrId);
 
-    List<ItemDto> getTodaysBestItems();
+    List<ItemDto> getBestItems();
 
     ItemDto viewItem(long itemId);
 
