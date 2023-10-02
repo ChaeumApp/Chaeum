@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class ItemDto implements Serializable {
 
-    long itemId;
+    String itemId;
     String itemName;
     String itemImage;
     int itemPrice;

@@ -25,7 +25,7 @@ public class Item {
 
     @Id
     @Column(name = "item_id")
-    private long itemId;
+    private String itemId;
 
     @Column(name = "item_name")
     private String itemName;

@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ItemVO {
 
-    private long itemId;
+    private String itemId;
 }
