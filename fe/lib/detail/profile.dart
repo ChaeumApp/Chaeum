@@ -188,19 +188,19 @@ class _ProfileViewState extends State<ProfileView>{
                         ),
                       ),
                     ),
-                    // Container(
-                    //  margin: EdgeInsets.only(bottom: 3),
-                    //  child: Text(
-                    //    '어제보다 ${data['saleper']}%(${data['salewon']}원) 더 비싸졌어요.',
-                    //    style: TextStyle(
-                    //      color: Color(0xff73324C),
-                    //      fontWeight: FontWeight.w700,
-                    //      fontSize: 16
-                    //   ),
-                    //  ),
-                    //),
+                    Container(
+                     margin: EdgeInsets.only(bottom: 3),
+                     child: Text(
+                       '상품, 가격정보, 레시피를 제공합니다.',
+                       style: TextStyle(
+                         color: Color(0xff73324C),
+                         fontWeight: FontWeight.w700,
+                         fontSize: 16
+                      ),
+                     ),
+                    ),
                     Text(
-                       '식재료에 대한 정보를 확인하세요.',
+                       '하단에서 식재료에 대한 정보를 확인하세요.',
                       style: TextStyle(
                         color: Color(0xff73324C),
                         fontWeight: FontWeight.w700,
