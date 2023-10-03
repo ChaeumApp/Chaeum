@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fe/recipe/player.dart';
+import 'package:fe/recipe/similarrecipe.dart';
 import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
@@ -90,11 +91,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       Alertlogin().needLogin(context);
     }
   }
-
-  var videolist = [
-    'https://img.youtube.com/vi/jIG4AaIy-5k/0.jpg',
-    'https://img.youtube.com/vi/iuIzniSa1Hs/0.jpg'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -277,17 +273,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           ],
                         )),
                   ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                    return Container(
-                      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      child: Image.network(videolist[index],
-                          height: 230,
-                          width: double.infinity,
-                          fit: BoxFit.cover),
-                    );
-                  }, childCount: videolist.length))
+                  SimilarRecipe(recipeId : widget.recipeId),
                 ],
               ),
             );
