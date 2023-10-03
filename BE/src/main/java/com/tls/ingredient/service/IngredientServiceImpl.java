@@ -23,7 +23,6 @@ import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.repository.RecipeIngredientRepository;
 import com.tls.recipe.repository.RecipeProcRepository;
-import com.tls.recipe.repository.RecipeRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -53,7 +52,6 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientConverter ingredientConverter;
     private final IngredientRecommendRepository ingredientRecommendRepository;
     private final IngredientPriceRepository ingredientPriceRepository;
-    private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeProcRepository recipeProcRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
@@ -354,6 +352,7 @@ public class IngredientServiceImpl implements IngredientService {
     public List<Recipe> getRelatedRecipeList(int ingrId) {
         try {
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
+            /* 이렇게 비교하면 매우 오래걸린다
             List<Recipe> results = new ArrayList<>();
             List<Recipe> selectAll = recipeRepository.findAll();
             selectAll.forEach(recipe -> {
@@ -365,7 +364,8 @@ public class IngredientServiceImpl implements IngredientService {
                     }
                 }
             });
-            return results;
+            return results; 따라서 JPA를 활용하여 시간을 단축할 수 있다.*/
+            return recipeIngredientRepository.findDistinctRecipesByIngredientNameContains(ingredient.getIngrName());
         } catch (Exception e) {
             e.printStackTrace();
             return null;
