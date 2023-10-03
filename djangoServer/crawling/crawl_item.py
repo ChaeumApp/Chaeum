@@ -163,7 +163,7 @@ def main():
     logger.info("crawling start...")
     date = datetime.now().strftime('%Y-%m-%d')
     startTime = time.time()
-    for i in range(2, 12):
+    for i in range(1, 12):
     # for i in range(1, 2):
         num = str(i).zfill(2)
         with open(f'./crawling/subcate_list/subcategory_{num}.csv', 'r', encoding='UTF-8') as file:
