@@ -56,7 +56,8 @@ def update_price(ingr_id, item_crawling_date):
         pieces = find_pieces(title)
         
         if gram:
-            price_per_100g.append(100 * price // (gram * pieces))
+            if gram * pieces == 0: pass
+            else: price_per_100g.append(100 * price // (gram * pieces))
 
     average_price = trimmed_mean(price_per_100g)
     if average_price == -1:
