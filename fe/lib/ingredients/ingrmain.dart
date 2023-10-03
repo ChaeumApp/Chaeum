@@ -86,7 +86,6 @@ class _IngrMainState extends State<IngrMain> {
             headers: {'Authorization': 'Bearer $accessToken'},
           ),
         );
-        print('관심없음 ${response.data}');
         return response.data;
       } catch (e) {
         print(e);
@@ -382,7 +381,6 @@ class _IngrMainState extends State<IngrMain> {
       onTap: () {
         if(context.read<UserStore>().accessToken != ''){
           dislikeIngr(ingrId);
-          setState(() {});
         } else {
           Alertlogin().needLogin(context);
         }
