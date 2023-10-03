@@ -1,7 +1,7 @@
 package com.tls.ingredient.controller;
 
 import com.tls.ingredient.dto.IngredientDto;
-import com.tls.ingredient.entity.single.Ingredient;
+import com.tls.ingredient.dto.IngredientPriceDropDto;
 import com.tls.ingredient.service.IngredientService;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
@@ -61,20 +61,26 @@ public class IngredientController {
     @GetMapping("category/{catId}/{subCatId}")
     @Operation(summary = "대분류 ID와 중분류 ID로 소분류를 조회하는 메서드",
         description = "대분류 ID와 중분류 ID로 해당하는 소분류를 조회합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getIngredientsByCatAndSubCat(@RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
+    public ResponseEntity<?> getIngredientsByCatAndSubCat(
+        @RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
         @PathVariable int catId, @PathVariable(required = false) String subCatId) {
         log.info("getIngredients call :: ");
         try {
             List<List<IngredientDto>> ingredientDtoList = new ArrayList<>();
             int subCatIdInteger = subCatId == null ? 0 : Integer.parseInt(subCatId);
             if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
-                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7)).getName();
+                String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
+                    .getName();
                 ingredientDtoList.add(ingredientService
                     .getIngredients(catId, subCatIdInteger, userEmail));
-                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, userEmail));
+                ingredientDtoList.add(
+                    ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger,
+                        userEmail));
             } else {
-                ingredientDtoList.add(ingredientService.getIngredients(catId, subCatIdInteger, null));
-                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, null));
+                ingredientDtoList.add(
+                    ingredientService.getIngredients(catId, subCatIdInteger, null));
+                ingredientDtoList.add(
+                    ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, null));
             }
             return new ResponseEntity<>(ingredientDtoList, HttpStatus.OK);
         } catch (Exception e) {
@@ -91,7 +97,7 @@ public class IngredientController {
         log.info("getIngredient call :: {}", ingrId);
         try {
             IngredientDto ingredientDto;
-            if (tokenWithPrefix!= null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+            if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
                 String userEmail = jwtTokenProvider
                     .getAuthentication(tokenWithPrefix.substring(7))
                     .getName();
@@ -111,11 +117,11 @@ public class IngredientController {
 
     @GetMapping("price/{ingrId}")
     @Operation(summary = "소분류 가격정보를 조회하는 메서드", description = "소분류의 기간에 따른 가격 정보 리스트를 반환합니다.", tags = "소분류 API")
-    public ResponseEntity<?> getPriceList(@PathVariable(name = "ingrId") int ingrId){
+    public ResponseEntity<?> getPriceList(@PathVariable(name = "ingrId") int ingrId) {
         log.info("getPriceList call :: {}", ingrId);
         try {
             return new ResponseEntity<>(ingredientService.getPriceList(ingrId), HttpStatus.OK);
-        } catch (Exception e){
+        } catch (Exception e) {
             return getResponseEntity(-1);
         }
     }
@@ -124,7 +130,7 @@ public class IngredientController {
     @Operation(summary = "오늘의 최저가 소분류 조회하는 메서드", description = "오늘의 최저가 소분류를 조회합니다", tags = "소분류 API")
     public ResponseEntity<?> getBestIngredients() {
         log.info("getTodaysBestIngredients call :: ");
-        List<Ingredient> ingredientList = ingredientService.getBestIngredients();
+        List<IngredientPriceDropDto> ingredientList = ingredientService.getBestIngredients();
         if (ingredientList != null) {
             return new ResponseEntity<>(ingredientList, HttpStatus.OK);
         } else {
@@ -155,18 +161,21 @@ public class IngredientController {
 
     @PostMapping("/dislike")
     @Operation(summary = "소분류 관심없음 반영 메서드", description = "사용자가 특정 소분류를 관심없음 설정한 내용을 저장합니다.", tags = "소분류 API")
-    public ResponseEntity<?> dislikeIngredient(@RequestHeader("Authorization")String tokenWithPrefix, @RequestBody IngredientVO ingredientVO) {
-        try{
+    public ResponseEntity<?> dislikeIngredient(
+        @RequestHeader("Authorization") String tokenWithPrefix,
+        @RequestBody IngredientVO ingredientVO) {
+        try {
             Authentication authentication = jwtTokenProvider
                 .getAuthentication(tokenWithPrefix.substring(7));
-            log.info("dislikeIngredient call :: {} : {}", authentication.getName(), ingredientVO.getIngrId());
+            log.info("dislikeIngredient call :: {} : {}", authentication.getName(),
+                ingredientVO.getIngrId());
             int n = ingredientService.dislikeIngredient(authentication.getName(), ingredientVO);
             if (n == 1) {
                 return new ResponseEntity<>("success", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("fail", HttpStatus.OK);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return getResponseEntity(0);
         }
     }
@@ -189,9 +198,9 @@ public class IngredientController {
 
     @GetMapping("/{ingrId}/recipe")
     @Operation(summary = "소분류 관련 레시피 반환 메서드", description = "소분류 id 를 주면 관련 레시피 리시트를 반환한다.", tags = "소분류 API")
-    public ResponseEntity<?> getRelatedRecipeList(@PathVariable(name = "ingrId") int ingrId){
+    public ResponseEntity<?> getRelatedRecipeList(@PathVariable(name = "ingrId") int ingrId) {
         List<Recipe> results = ingredientService.getRelatedRecipeList(ingrId);
-        if(results == null){
+        if (results == null) {
             return getResponseEntity(-1);
         }
         return new ResponseEntity<>(results, HttpStatus.OK);
