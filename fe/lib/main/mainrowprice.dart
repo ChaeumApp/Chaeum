@@ -161,12 +161,12 @@ class _MainRowPriceState extends State<MainRowPrice> {
                     itemBuilder: (c, i) {
                       return InkWell(
                         onTap: () {
-                          clickIngr(snapshot.data[i]['ingrId']);
+                          clickIngr(snapshot.data[i]['ingredient']['ingrId']);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      Detail(category: snapshot.data[i]['ingrId'])));
+                                      Detail(category: snapshot.data[i]['ingredient']['ingrId'])));
                         },
                         child: Container(
                           width: 120,
@@ -180,7 +180,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(5),
                                     child: Image.asset(
-                                      'assets/images/ingr/${snapshot.data[i]['ingrName']}.jpg',
+                                      'assets/images/ingr/${snapshot.data[i]['ingredient']['ingrName']}.jpg',
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.fill,
@@ -218,7 +218,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                               Container(
                                 margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 child: Text(
-                                  '${snapshot.data[i]['ingrName']}',
+                                  '${snapshot.data[i]['ingredient']['ingrName']}',
                                   style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600,
@@ -228,7 +228,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                               Container(
                                   margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text(
-                                    '어제보다 ${snapshot.data[i]['saleprice']}원(${snapshot.data[i]['saleper']}%) 더 싸요!',
+                                    '어제보다 ${snapshot.data[i]['priceDropAmount']}원(${snapshot.data[i]['priceDropPercentage'].toInt()}%) 더 싸요!',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
