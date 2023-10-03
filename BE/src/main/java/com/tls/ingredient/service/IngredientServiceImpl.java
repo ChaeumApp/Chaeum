@@ -23,7 +23,6 @@ import com.tls.recipe.dto.RecipeDto;
 import com.tls.recipe.entity.single.Recipe;
 import com.tls.recipe.repository.RecipeIngredientRepository;
 import com.tls.recipe.repository.RecipeProcRepository;
-import com.tls.recipe.repository.RecipeRepository;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -33,9 +32,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +52,6 @@ public class IngredientServiceImpl implements IngredientService {
     private final IngredientConverter ingredientConverter;
     private final IngredientRecommendRepository ingredientRecommendRepository;
     private final IngredientPriceRepository ingredientPriceRepository;
-    private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeProcRepository recipeProcRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
@@ -172,12 +171,15 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getBestIngredients() {
+    public List<Ingredient> getBestIngredients() {
         try {
-            return userIngrLogRepository.findBestIngredients().stream()
-                    .map(ingredientConverter::entityToDto)
-                    .collect(Collectors.toList());
+            LocalDate today = LocalDate.now();
+            LocalDate yesterday = today.minusDays(1);
+
+            Pageable pageable = PageRequest.of(0, 10);
+            return ingredientPriceRepository.findTop10PriceDrops(today, yesterday, pageable);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -322,7 +324,7 @@ public class IngredientServiceImpl implements IngredientService {
         try {
             List<IngredientPriceVO> ingredientPriceVOs = new ArrayList<>();
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
-            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient)
+            List<IngredientPrice> list = ingredientPriceRepository.findByIngrIdOrderByDateDesc(ingredient)
                 .orElseThrow();
             for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
@@ -350,6 +352,7 @@ public class IngredientServiceImpl implements IngredientService {
     public List<Recipe> getRelatedRecipeList(int ingrId) {
         try {
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
+            /* 이렇게 비교하면 매우 오래걸린다
             List<Recipe> results = new ArrayList<>();
             List<Recipe> selectAll = recipeRepository.findAll();
             selectAll.forEach(recipe -> {
@@ -361,7 +364,8 @@ public class IngredientServiceImpl implements IngredientService {
                     }
                 }
             });
-            return results;
+            return results; 따라서 JPA를 활용하여 시간을 단축할 수 있다.*/
+            return recipeIngredientRepository.findDistinctRecipesByIngredientNameContains(ingredient.getIngrName());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

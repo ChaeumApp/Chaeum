@@ -59,6 +59,10 @@ dependencies {
 
 	// send Firebase notification
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+	// Apache Lucene
+	implementation 'org.apache.lucene:lucene-core:8.10.1'
+	implementation 'org.apache.lucene:lucene-analyzers-common:8.10.1'
 }
 
 tasks.named('test') {

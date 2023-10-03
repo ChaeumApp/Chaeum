@@ -1,8 +1,10 @@
+import 'package:fe/detail/detail.dart';
 import 'package:flutter/material.dart';
 
 class FavFood extends StatefulWidget {
-  FavFood({super.key, this.favorIngr});
+  FavFood({super.key, this.favorIngr, this.scrollController});
   final favorIngr;
+  final scrollController;
 
   @override
   State<FavFood> createState() => _FavFoodState();
@@ -11,27 +13,26 @@ class FavFood extends StatefulWidget {
 class _FavFoodState extends State<FavFood> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: GridView.count(
-                crossAxisCount: 3, // 열 개수
-                childAspectRatio: 5 / 5,
-                // mainAxisSpacing: 10,
-                // crossAxisSpacing: 25,
-                children: List<Widget>.generate(widget.favorIngr.length, (idx) {
-                  return Container(
-                    child: Image.asset(
-                      '',
-                    ),
-                  );
-                }).toList()),
+    return GridView.count(
+      crossAxisCount: 2,
+      children: List<Widget>.generate(widget.favorIngr.length, (index) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Detail(category: widget.favorIngr[index]['ingrId'])));
+          },
+          child: Container(
+            margin: EdgeInsets.all(3),
+            child: Image.asset(
+              'assets/images/ingr/${widget.favorIngr[index]['ingrName']}.jpg',
+              fit: BoxFit.fill,
+            ),
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }
