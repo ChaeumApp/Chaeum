@@ -61,14 +61,18 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                     item_name_blankless = item_name
                     item_name_blankless.replace(" ", "")
 
+                    include_flag = False
                     if inclusions:
                         for i in inclusions:
                             i = i.replace(" ", "")
                             if i in item_name_blankless:
+                                include_flag = True
                                 break
                             else:
                                 if debug: print("포함 단어가 하나도 없는 상품 제외")
                                 continue
+                        if not include_flag:
+                            continue
 
                     exclude_flag = False
                     if exclusions:
@@ -76,6 +80,7 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                             e = e.replace(" ", "")
                             if e and e in item_name_blankless:
                                 if debug: print("제외 단어 하나라도 있는 상품 제외")
+                                print(f"{e}: {item_name_blankless}")
                                 exclude_flag = True
                                 break
                         if exclude_flag:
@@ -158,8 +163,8 @@ def main():
     logger.info("crawling start...")
     date = datetime.now().strftime('%Y-%m-%d')
     startTime = time.time()
-    # for i in range(1, 12):
-    for i in range(1, 2):
+    for i in range(2, 12):
+    # for i in range(1, 2):
         num = str(i).zfill(2)
         with open(f'./crawling/subcate_list/subcategory_{num}.csv', 'r', encoding='UTF-8') as file:
             category = num_to_category[i]
@@ -167,6 +172,8 @@ def main():
 
             for line in r:
                 keyword, inclusions, exclusions = line
+                inclusions = inclusions.split(",")
+                exclusions = exclusions.split(",")
                 cp_crawling(keyword, inclusions, exclusions, category, debug)
 
     
