@@ -57,6 +57,9 @@ dependencies {
 	implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
 	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
 
+	// elastic search
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
 	// send Firebase notification
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
