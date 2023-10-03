@@ -32,6 +32,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeProcRepository recipeProcRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeSimilarityCalculator recipeSimilarityCalculator = new RecipeSimilarityCalculator();
 
     @Override
     public int updateRecipe() {
@@ -163,5 +164,16 @@ public class RecipeServiceImpl implements RecipeService {
         List<Recipe> results = recipeRepository.findAll();
         Collections.shuffle(results);
         return results;
+    }
+
+    @Override
+    public List<Recipe> similarRecipes(int recipeId) {
+        try {
+            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
+            return recipeSimilarityCalculator.getTop3SimilarRecipes(recipe, recipeRepository.findAll());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
