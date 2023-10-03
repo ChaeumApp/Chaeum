@@ -560,18 +560,17 @@ class _MyPageState extends State<MyPage> {
                                   : null,
                               child: favoringredient.isNotEmpty
                                   ? GridView.count(
-                                      crossAxisCount: 3, // 열 개수
+                                      crossAxisCount: 2, // 열 개수
+                                      childAspectRatio: 1 / 0.9,
                                       children: List<Widget>.generate(
-                                          favorrecipe.length > 3
+                                          favoringredient.length > 3
                                               ? 3
-                                              : favorrecipe.length, (idx) {
+                                              : favoringredient.length, (idx) {
                                         return Container(
-                                          color: Colors.amber,
                                           margin: const EdgeInsets.all(3),
                                           child: Image.asset(
-                                            'assets/images/main/bakery.png',
-                                            width: 100,
-                                            height: 100,
+                                            'assets/images/ingr/${favoringredient[idx]['ingrName']}.jpg',
+                                            fit: BoxFit.fill,
                                           ),
                                         );
                                       }).toList())
