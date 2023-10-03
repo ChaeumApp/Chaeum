@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             Ingredient ingredient = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow().getIngredient();
             IngredientPreference ingredientPreference = IngredientPreference.builder()
-                .prefRating(15)
+                .prefRating(10)
                 .ingredient(ingredient)
                 .user(user)
                 .build();
@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             Ingredient ingredient = itemRepository.findByItemId(itemVO.getItemId()).orElseThrow().getIngredient();
             IngredientPreference ingredientPreference = IngredientPreference.builder()
-                .prefRating(15)
+                .prefRating(100)
                 .ingredient(ingredient)
                 .user(user)
                 .build();
