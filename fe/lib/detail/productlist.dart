@@ -25,7 +25,6 @@ class _ProductListState extends State<ProductList> {
 
   Future<dynamic> clickItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
     if(accessToken != ''){
       try {
         final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
@@ -44,7 +43,7 @@ class _ProductListState extends State<ProductList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('여기입니다 ${widget.product}');
+    // print('여기입니다 ${widget.product}');
   }
 
   @override

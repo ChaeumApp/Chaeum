@@ -22,8 +22,14 @@ class _MainBestState extends State<MainBest> {
   // 얻어오는거
   Future<dynamic> getMainBest() async {
     try {
-      final response = await dio.get('$serverURL/recipe');
-      return response.data;
+      final response = await dio.get('$serverURL/item/best');
+      var responseData = response.data;
+
+      if (responseData.length > 10) {
+        return responseData.sublist(0, 10);
+      } else {
+        return responseData;
+      }
     } catch (e) {
       print(e);
     }
@@ -50,19 +56,6 @@ class _MainBestState extends State<MainBest> {
 
   @override
   Widget build(BuildContext context) {
-    var ranking = [
-      {'rank': '1', 'title': '여기는1위자리의그것입니다', 'image': 'paper_plane'},
-      {'rank': '2', 'title': '여기는2위자리의제목입니다자를예정이죠', 'image': 'paper_plane'},
-      {'rank': '3', 'title': '여기는3위자리입니다하하', 'image': 'paper_plane'},
-      {'rank': '4', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '5', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '6', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '7', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '8', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '9', 'title': '여기는4위', 'image': 'paper_plane'},
-      {'rank': '10', 'title': '여기는4위', 'image': 'paper_plane'},
-    ];
-
     return FutureBuilder(future: getMainBest(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
@@ -172,13 +165,12 @@ class _MainBestState extends State<MainBest> {
                 margin: EdgeInsets.fromLTRB(0, 8, 10, 0),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 10,
+                    itemCount: snapshot.data.length,
                     itemBuilder: (c, i) {
                       return GestureDetector(
                         onTap: (){
-                          clickItem(ranking[i]['rank']);
-                          // 웹뷰페이지에 전달하는 주소도!! 아이템아이디도 보내야됨!!!!!
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : 'url', itemId : 'itemId')));
+                          clickItem(snapshot.data[i]['itemId']);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : snapshot.data[i]['itemStoreLink'], itemId : snapshot.data[i]['itemId'])));
                         },
                         child: Container(
                           width: 120,
@@ -191,8 +183,7 @@ class _MainBestState extends State<MainBest> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(5),
-                                    child: Image.asset(
-                                      'assets/images/temporary/${ranking[i]['image']}.jpg',
+                                    child: Image.network(snapshot.data[i]['itemImage'],
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.cover,
@@ -216,7 +207,7 @@ class _MainBestState extends State<MainBest> {
                                             bottomRight: Radius.circular(5))),
                                     child: Center(
                                         child: Text(
-                                          '${ranking[i]['rank']}',
+                                          '${i+1}',
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w700,
@@ -228,8 +219,8 @@ class _MainBestState extends State<MainBest> {
                               Container(
                                   margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                   child: Text(
-                                    '${ranking[i]['title']!.length > 15 ? ranking[i]['title']?.substring(0, 15) : ranking[i]['title']}'
-                                        '${ranking[i]['title']!.length > 15 ? "..." : ""}',
+                                    '${snapshot.data[i]['itemName']!.length > 15 ? snapshot.data[i]['itemName']?.substring(0, 15) : snapshot.data[i]['itemName']}'
+                                        '${snapshot.data[i]['itemName']!.length > 15 ? "..." : ""}',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,

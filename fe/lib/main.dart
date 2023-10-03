@@ -145,6 +145,7 @@ class _MainState extends State<Main> {
       );
       return Future.value(false);
     }
+    SystemNavigator.pop();
     return Future.value(true);
   }
 
