@@ -33,9 +33,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -172,11 +173,13 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getBestIngredients() {
+    public List<Ingredient> getBestIngredients() {
         try {
-            return userIngrLogRepository.findBestIngredients().stream()
-                    .map(ingredientConverter::entityToDto)
-                    .collect(Collectors.toList());
+            LocalDate today = LocalDate.now();
+            LocalDate yesterday = today.minusDays(1);
+
+            Pageable pageable = PageRequest.of(0, 10);
+            return ingredientPriceRepository.findTop10PriceDrops(today, yesterday, pageable);
         } catch (Exception e) {
             return null;
         }
