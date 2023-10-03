@@ -25,7 +25,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class ItemPurchaseLog {
 
     @Id
-    @Column(name = "item_purchaseed_log_pk")
+    @Column(name = "item_purchased_log_pk")
     private long itemPurchasedLogPk;
 
     @ManyToOne(fetch = FetchType.LAZY)
