@@ -98,8 +98,8 @@ class _MainState extends State<Main> {
     print('------');
     if (userToken != null) {
       try {
-        final response = await pageapi
-            .tokenValidation(userToken.toString().split(" ")[1].toString());
+        final response =
+            await pageapi.tokenValidation(userToken.toString().split(" ")[1]);
         print(response);
 
         if (response == 'success') {
@@ -113,17 +113,21 @@ class _MainState extends State<Main> {
           print('토큰 제거 실행여부');
           await storage.delete(key: "login");
           await context.read<UserStore>().changeAccessToken('');
+          userToken = null;
           setState(() {});
         }
       } catch (e) {
         print('그냥 다 로그아웃');
         await storage.delete(key: "login");
         await context.read<UserStore>().changeAccessToken('');
+        userToken = null;
         setState(() {});
       }
     } else {
       await storage.delete(key: "login");
       await context.read<UserStore>().changeAccessToken('');
+      userToken = null;
+
       setState(() {});
     }
     final devicetoken = await getMyDeviceToken();

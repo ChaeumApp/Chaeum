@@ -37,10 +37,7 @@ class _FavRecState extends State<FavRec> {
                   Flexible(
                     flex: 3,
                     child: Image.network(
-                        // getYoutubeThumbnail(
-                        '${widget.favorRec[index]['recipeThumbnail']}'
-                        // ),
-                        ,
+                        '${widget.favorRec[index]['recipeThumbnail']}',
                         height: 100),
                   ),
                   Flexible(
