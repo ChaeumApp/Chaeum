@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse
 
 import os
 import sys
@@ -15,10 +15,9 @@ from itertools import product
 
 # django.setup()
 
-from recommend.models import *
+from recommend.models import *  
+from django.db.models import F, Q
 
-# from implicit.evaluation import *
-from implicit.als import AlternatingLeastSquares as ALS
 import scipy
 import numpy as np
 
@@ -26,63 +25,82 @@ import numpy as np
 def recommend(request, user_id):
     IngredientRecommend.objects.all().delete()
     
-    user_num = len(User.objects.all())
+    user_ids = User.objects.values_list('user_id', flat=True)
+    user_num = len(user_ids)
     ingr_num = len(Ingredient.objects.all())
-    combis = product(range(1, user_num+1), range(1, ingr_num+1))
+    combis = product(list(user_ids), range(1, ingr_num+1))
+
+    ingredient_recommend_list = []
 
     for combi in combis:
-        IngredientRecommend.objects.create(
+        ingredient_recommend = IngredientRecommend(
             user_id=combi[0],
             ingr_id=combi[1],
             ingr_recommend_score=0
-        ).save()
-    
-    recommend_substitute(request, user_id, 0.5)
-    recommend_als(request, user_id, user_num, ingr_num, 0.5)
+        )
+        ingredient_recommend_list.append(ingredient_recommend)
 
-    # ingredient_preference_init = [IngredientRecommend.objects.create(
-    #         user_id=combi[0],
-    #         ingr_id=combi[1],
-    #         ingr_recommend_score=0
-    #     ) for combi in combis]
-    
-    # IngredientRecommend.objects.bulk_create(ingredient_preference_init)
-    
-    
-def recommend_substitute(request, user_id, weight):
-    if weight == 0: return
+    # ingredient_recommend_list를 한꺼번에 저장합니다.
+    IngredientRecommend.objects.bulk_create(ingredient_recommend_list)
+
     ingr_prefs = IngredientPreference.objects.filter(user_id=user_id)
-
-    groups_lst = []
-
     for pref in ingr_prefs:
         ingredient = pref.ingr_id
         pref_rating = pref.pref_rating
-        groups = IngredientGroup.objects.filter(ingr_id=ingredient)
-        for group in groups:
-            groups_lst.append([group.group_id, pref_rating])
-
         ingr_recommend = IngredientRecommend.objects.get(
-                ingr_id = pref.ingr_id,
-                user_id = user_id
-        )
-
-        ingr_recommend.ingr_recommend_score += 0.5 * pref_rating * weight
+            user_id=user_id,
+            ingr_id=ingredient)
+        ingr_recommend.ingr_recommend_score += pref_rating
         ingr_recommend.save()
 
-    for group in groups_lst:
-        related_ingredients = IngredientGroup.objects.filter(group_id=group[0])
-        for ingredient in related_ingredients:
-            ingr_recommend = IngredientRecommend.objects.get(
-                    ingr_id = ingredient.ingr_id,
-                    user_id = user_id
-            )
-
-            ingr_recommend.ingr_recommend_score += 0.5 * group[1] * weight
-            ingr_recommend.save()
+    recommend_substitute(request, user_id, 0.5)
+    recommend_als(request, user_id, user_ids, ingr_num, 0.5)
+    response = HttpResponse("Recommendation process completed successfully")
+    return response
+    
 
 
-def recommend_als(request, user_id, user_num, ingr_num, weight):
+def recommend_substitute(request, user_id, weight):
+    if weight == 0:
+        return
+
+    ingr_prefs = IngredientPreference.objects.filter(user_id=user_id)
+
+    # 모든 그룹에 대한 스코어 업데이트를 계산할 딕셔너리
+    update_dict = {}
+
+    # 재료별 선호도를 그룹 스코어 업데이트에 반영
+    for pref in ingr_prefs:
+        ingredient = pref.ingr_id
+        pref_rating = pref.pref_rating
+
+        # 해당 ingredient에 대한 관련 그룹을 가져옴
+        groups = IngredientGroup.objects.filter(ingr_id=ingredient)
+
+        for group in groups:
+            group_id = group.group_id
+            # IngredientRecommend 업데이트를 위한 딕셔너리에 추가
+            if group_id not in update_dict:
+                update_dict[group_id] = 0.0
+            update_dict[group_id] += 0.5 * pref_rating * weight
+
+
+    # 그룹별로 스코어 업데이트
+    for group_id, score_delta in update_dict.items():
+        # 해당 그룹에 속하는 모든 재료
+        ingredients = IngredientGroup.objects.filter(group_id=group_id)
+
+        # 사용자와 재료의 관련 IngredientRecommend 업데이트
+        IngredientRecommend.objects.filter(
+            user_id=user_id,
+            ingr_id__in=ingredients.values('ingr_id')
+        ).update(ingr_recommend_score=F('ingr_recommend_score') + score_delta)
+
+
+def recommend_als(request, user_id, user_ids, ingr_num, weight):
+    print("recommend als init start")
+    if weight == 0:
+        return
     class AlternatingLeastSquares():
         def __init__(self, R, k, reg_param, epochs, verbose=False):
             """
@@ -180,53 +198,29 @@ def recommend_als(request, user_id, user_num, ingr_num, weight):
             """
             return self._users.dot(self._items.T)
         
-    # R = np.array([
-    #     [10, 0, 0, 0, 0],
-    #     [10, 9, 2, 2, 0],
-    #     [0, 0, 0, 2, 0],
-    #     [0, 0, 0, 0, 4],
-    #     [0, 0, 0, 2, 0],
-    #     [0, 0, 0, 0, 4],
-    #     [0, 0, 0, 2, 0],
-    #     [0, 0, 0, 0, 4],
-    #     ])
     
-    R = np.zeros((user_num+1, ingr_num+1))
-    
+    R = np.zeros((len(user_ids), ingr_num+1))
+    userid_to_idx = {value: index for index, value in enumerate(user_ids)}
     ingr_prefs = IngredientPreference.objects.all()
 
     for ingr_pref in ingr_prefs:
-        R[ingr_pref.user_id][ingr_pref.ingr_id] = ingr_pref.pref_rating
-        print(ingr_pref.ingr_pref_pk)
+        R[userid_to_idx[ingr_pref.user_id]][ingr_pref.ingr_id] = ingr_pref.pref_rating
+        # print(ingr_pref.ingr_pref_pk)
 
-    als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=300, verbose=True, k=30)
+    als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=100, verbose=False, k=25)
     als.fit()
 
     result = als.get_complete_matrix()
     for user, user_pref in enumerate(result):
+        user = user_ids[user]
         for ingr, user_ingr_pref in enumerate(user_pref):
-            if user_ingr_pref > 1e-8 or user_ingr_pref < -1e-8:
-                print(f'user: {user}    ingr: {ingr}    user_ingr_pref:{user_ingr_pref}') 
-                ingr_recommend = IngredientRecommend.objects.get(
-                        ingr_id = ingr,
-                        user_id = user
+            if abs(user_ingr_pref) > 0.01:
+                # Update the IngredientRecommend score using Django ORM
+                ingr_recommend,created = IngredientRecommend.objects.get_or_create(
+                    user_id=user,
+                    ingr_id=ingr,
+                    defaults={'ingr_recommend_score': 0}
                 )
-
-                ingr_recommend.ingr_recommend_score += user_ingr_pref * weight
+                ingr_recommend.ingr_recommend_score = F('ingr_recommend_score') + user_ingr_pref * weight
                 ingr_recommend.save()
         
-    
-    # R = scipy.sparse.csr_matrix(np.array([
-    #     [1, 0, 0, 1, 3],
-    #     [2, 0, 3, 1, 1],
-    #     [1, 2, 0, 5, 0],
-    #     [1, 0, 0, 4, 4],
-    #     [2, 1, 5, 4, 0],
-    #     [5, 1, 5, 4, 0],
-    #     [0, 0, 0, 1, 0],
-    #     ]))
-
-    # als_model = ALS(factors=2, regulariztion=0.01, iterations=10)
-    # als_model.fit(R.T)
-
-    # print(np.dot(als_model.user_factors, als_model.item_factors.T))
