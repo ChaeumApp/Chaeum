@@ -181,6 +181,7 @@ public class IngredientServiceImpl implements IngredientService {
             Pageable pageable = PageRequest.of(0, 10);
             return ingredientPriceRepository.findTop10PriceDrops(today, yesterday, pageable);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

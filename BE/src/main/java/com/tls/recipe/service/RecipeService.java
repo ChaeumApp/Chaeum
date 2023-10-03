@@ -19,4 +19,5 @@ public interface RecipeService {
     List<Recipe> findByIngrName(String ingrName);
 
     List<Recipe> listAllRecipes();
+    List<Recipe> similarRecipes(int recipeId);
 }

@@ -131,4 +131,11 @@ public class RecipeController {
     public ResponseEntity<?> listAllRecipes() {
         return new ResponseEntity<>(recipeService.listAllRecipes(), HttpStatus.OK);
     }
+
+    @GetMapping("/similar/{recipeId}")
+    @Operation(summary = "레시피 유사 레시피", description = "레시피 제목과 코사인 유사도를 계산하여 가장 유사한 레시피 3개를 반환한다.", tags = "레시피 API")
+    public ResponseEntity<?> similarRecipes(@PathVariable("recipeId") int recipeId){
+        log.info("{} recipe 유사 레시피 call", recipeId);
+        return new ResponseEntity<>(recipeService.similarRecipes(recipeId), HttpStatus.OK);
+    }
 }
