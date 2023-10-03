@@ -322,7 +322,7 @@ public class IngredientServiceImpl implements IngredientService {
         try {
             List<IngredientPriceVO> ingredientPriceVOs = new ArrayList<>();
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
-            List<IngredientPrice> list = ingredientPriceRepository.findByIngrId(ingredient)
+            List<IngredientPrice> list = ingredientPriceRepository.findByIngrIdOrderByDateDesc(ingredient)
                 .orElseThrow();
             for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
