@@ -1,6 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import register_events, DjangoJobStore
 from .crawl_item import main
+from .noti_price import IngredientPriceManager
 from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
 import logging
@@ -15,6 +16,14 @@ def start():
         main,
         trigger=CronTrigger(hour="2", minute="58"),
         id = "main",
+        max_instances=1,
+        replace_existing=True
+    )
+    
+    scheduler.add_job(
+        IngredientPriceManager.notify_pricedrop,
+        trigger=CronTrigger(hour="22", minute="22"),
+        id = "notiPrice",
         max_instances=1,
         replace_existing=True
     )
