@@ -77,9 +77,9 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                             if e and e in item_name_blankless:
                                 if debug: print("제외 단어 하나라도 있는 상품 제외")
                                 exclude_flag = True
-                                continue
-                            if exclude_flag:
-                                continue
+                                break
+                        if exclude_flag:
+                            continue
 
                     id = item.select_one('a').get('data-item-id')
 
