@@ -6,7 +6,7 @@ import java.net.URL;
 public class HttpConnectionConfig {
     public static int callDjangoConn(int userId) {
         try {
-            URL url = new URL("https://j9c204.p.ssafy.io:8000/recommend/" +userId);
+            URL url = new URL("http://j9c204.p.ssafy.io:8000/recommend/" +userId);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
             conn.setRequestMethod("GET"); // http 메서드
