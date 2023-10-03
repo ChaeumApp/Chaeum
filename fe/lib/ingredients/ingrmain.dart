@@ -81,7 +81,7 @@ class _IngrMainState extends State<IngrMain> {
       try {
         final response = await dio.post(
           '$serverURL/ingr/dislike',
-          queryParameters: {'ingrId': ingrId},
+          data : {'ingrId': ingrId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),
