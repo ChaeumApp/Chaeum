@@ -219,8 +219,8 @@ class _MainBestState extends State<MainBest> {
                               Container(
                                   margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                   child: Text(
-                                    '${snapshot.data[i]['itemName']!.length > 15 ? snapshot.data[i]['itemName']?.substring(0, 15) : snapshot.data[i]['itemName']}'
-                                        '${snapshot.data[i]['itemName']!.length > 15 ? "..." : ""}',
+                                    '${snapshot.data[i]['itemName']!.length > 18 ? snapshot.data[i]['itemName']?.substring(0, 18) : snapshot.data[i]['itemName']}'
+                                        '${snapshot.data[i]['itemName']!.length > 18 ? "..." : ""}',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,
