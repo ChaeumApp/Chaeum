@@ -4,6 +4,7 @@ import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
 import com.tls.ingredient.dto.IngredientDto;
+import com.tls.ingredient.dto.IngredientPriceDropDto;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.composite.UserIngr;
@@ -117,8 +118,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId,
-        String userEmail) {
+    public List<IngredientDto> getIngredientsOrderByScore(int catId, int subCatId, String userEmail) {
         List<IngredientDto> results = new ArrayList<>();
         try {
             if (subCatId == 0) {
@@ -171,7 +171,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public List<Ingredient> getBestIngredients() {
+    public List<IngredientPriceDropDto> getBestIngredients() { // 가격이 어제보다 많이 떨어진 10개 항목 LIST 반환
         try {
             LocalDate today = LocalDate.now();
             LocalDate yesterday = today.minusDays(1);
