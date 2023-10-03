@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IngredientPriceRepository extends JpaRepository<IngredientPrice, Integer> {
 
-    Optional<List<IngredientPrice>> findByIngrId(Ingredient ingredient);
+    Optional<List<IngredientPrice>> findByIngrIdOrderByDateDesc(Ingredient ingredient);
 
 }
