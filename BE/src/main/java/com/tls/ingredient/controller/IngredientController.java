@@ -65,18 +65,15 @@ public class IngredientController {
     public ResponseEntity<?> getIngredientsByCatAndSubCat(
         @RequestHeader(value = "Authorization", required = false) String tokenWithPrefix,
         @PathVariable int catId, @PathVariable(required = false) String subCatId) {
-        log.info("getIngredients call :: ");
+        log.info("getIngredients call :: {} / {}", catId, subCatId);
         try {
             List<List<IngredientDto>> ingredientDtoList = new ArrayList<>();
             int subCatIdInteger = subCatId == null ? 0 : Integer.parseInt(subCatId);
             if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
                 String userEmail = jwtTokenProvider.getAuthentication(tokenWithPrefix.substring(7))
                     .getName();
-                ingredientDtoList.add(ingredientService
-                    .getIngredients(catId, subCatIdInteger, userEmail));
-                ingredientDtoList.add(
-                    ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger,
-                        userEmail));
+                ingredientDtoList.add(ingredientService.getIngredients(catId, subCatIdInteger, userEmail)); // 가나다 순서
+                ingredientDtoList.add(ingredientService.getIngredientsOrderByScore(catId, subCatIdInteger, userEmail)); // 추천 순서
             } else {
                 ingredientDtoList.add(
                     ingredientService.getIngredients(catId, subCatIdInteger, null));

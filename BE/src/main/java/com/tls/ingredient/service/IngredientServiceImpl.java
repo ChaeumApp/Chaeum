@@ -137,9 +137,11 @@ public class IngredientServiceImpl implements IngredientService {
                 } else {
                     Category category = categoryRepository.findByCatId(catId).orElseThrow();
 
-                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategory(category).orElse(null);
-                    if (topIngredient != null) {
-                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    List<Ingredient> topIngredientList = ingredientRepository.findTopIngredientByCategory(category).orElse(null);
+                    if (topIngredientList != null) {
+                        for(Ingredient ingredient : topIngredientList){
+                            results.add(ingredientConverter.entityToDto(ingredient));
+                        }
                     }
                 }
             } else {
@@ -161,9 +163,11 @@ public class IngredientServiceImpl implements IngredientService {
                     Category category = categoryRepository.findByCatId(catId).orElseThrow();
                     SubCategory subCategory = subCategoryRepository.findBySubCatId(subCatId).orElseThrow();
 
-                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategoryAndSubCategory(category, subCategory).orElse(null);
-                    if (topIngredient != null) {
-                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    List<Ingredient> topIngredientList = ingredientRepository.findTopIngredientByCategoryAndSubCategory(category, subCategory).orElse(null);
+                    if (topIngredientList != null) {
+                        for(Ingredient ingredient : topIngredientList){
+                            results.add(ingredientConverter.entityToDto(ingredient));
+                        }
                     }
                 }
             }
