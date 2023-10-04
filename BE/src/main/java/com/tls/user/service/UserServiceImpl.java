@@ -1,5 +1,6 @@
 package com.tls.user.service;
 
+import com.tls.allergy.entity.composite.AllergyIngredient;
 import com.tls.allergy.entity.composite.UserAllergy;
 import com.tls.allergy.entity.single.Allergy;
 import com.tls.allergy.repository.AllergyIngredientRepository;
@@ -84,6 +85,7 @@ public class UserServiceImpl implements UserService {
                     && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
                 return 200;
             }
+            log.info("test1");
             User user = User.builder()
                     .userEmail(userDto.getUserEmail())
                     .userPwd(userDto.getUserPwd() != null ? passwordEncoder.encode(userDto.getUserPwd()) : "")
@@ -94,22 +96,38 @@ public class UserServiceImpl implements UserService {
                             veganRepository.findByVeganId(userDto.getVeganId()).get() : null)
                     .build();
             userRepository.save(user);
+            log.info("test2");
+
+//            // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
+//            int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
+//            // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
+//            if (saveDefaultPreference(user, groupId) == -1) throw new Exception();
+
+
             // user 가 가지고 있는 allergy 정보를 저장한다.
             List<UserAllergy> userAllergyList = new ArrayList<>();
 
             userDto.getAllergyList().forEach(allergy -> {
+                log.info(String.valueOf(allergy));
                 UserAllergy userAllergy = UserAllergy.builder()
                         .userId(user)
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
-
-                allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
-                    IngredientPreference ingredientPreference = ingredientPreferenceRepository
-                        .findByUserAndIngredient(user, allergyIngredient.getIngrId()).orElseThrow();
-                    ingredientPreference.updatePrefRating(-10000);
-                });
-
+                List<AllergyIngredient> aiList = allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null));
+                for (AllergyIngredient ai : aiList) {
+                    Optional<IngredientPreference> ip = ingredientPreferenceRepository.findByUserAndIngredient(user, ai.getIngrId());
+                    if (ip.isPresent()) {
+                        ip.get().updatePrefRating(-10000);
+                    } else {
+                        IngredientPreference ingredientPreference = IngredientPreference.builder()
+                                .prefRating(-10000)
+                                .ingredient(ai.getIngrId())
+                                .user(user)
+                                .build();
+                        ingredientPreferenceRepository.save(ingredientPreference);
+                    }
+                };
             });
             userAllergyRepository.saveAll(userAllergyList);
             List<IngredientRecommend> irList = new ArrayList<>();
@@ -122,30 +140,7 @@ public class UserServiceImpl implements UserService {
                 );
             }
             ingredientRecommendRepository.saveAll(irList);
-
-            // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
-            int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
-            // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
-            if (saveDefaultPreference(user, groupId) == -1) throw new Exception();
-
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
-        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
-            User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();
-            List<IngredientPreference> list = new ArrayList<>();
-            userDto.getAllergyList().forEach(allergy -> {
-                    allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
-                        IngredientPreference ingredientPreference = IngredientPreference.builder()
-                            .prefRating(-10000)
-                            .ingredient(allergyIngredient.getIngrId())
-                            .user(user)
-                            .build();
-                        list.add(ingredientPreference);
-                    });
-                }
-            );
-            ingredientPreferenceRepository.saveAll(list);
-            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
-            return 1;
         } catch (Exception e) {
             log.info("signup fail");
             return 406;
@@ -156,11 +151,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public int saveDefaultPreference(User user, int groupId) {
         try {
-            List<IngredientDefaultPreference> ingredientDefaultPreferenceList = ingredientDefaultPreferenceRepository.findAllByGroupId(groupId).orElse(null);
-            System.out.println(ingredientDefaultPreferenceList.size());
-            if (ingredientDefaultPreferenceList != null) {
+            log.info("save default preference start!");
+            List<IngredientDefaultPreference> ingredientDefaultPreferenceList = ingredientDefaultPreferenceRepository.findAllByGroupId(groupId);
+            if (!ingredientDefaultPreferenceList.isEmpty()) {
                 for (IngredientDefaultPreference defaultPreference : ingredientDefaultPreferenceList) {
-                    System.out.println(defaultPreference.getIngredient());
                     IngredientPreference newPreference = IngredientPreference.builder()
                         .user(user)
                         .ingredient(defaultPreference.getIngredient())
@@ -168,6 +162,7 @@ public class UserServiceImpl implements UserService {
                         .build();
                     ingredientPreferenceRepository.save(newPreference);
                 }
+                log.info("save default preference end!");
                 return 1;
             } else {
                 return -1;
