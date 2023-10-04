@@ -129,12 +129,10 @@ class _FindPasswordState extends State<FindPassword> {
                               .hasMatch(value)) {
                             setState(() {
                               yearcheck = false;
-                              print(yearcheck);
                             });
                           } else {
                             setState(() {
                               yearcheck = true;
-                              print(yearcheck);
                             });
                           }
                         },
@@ -176,12 +174,10 @@ class _FindPasswordState extends State<FindPassword> {
                           if (!RegExp(r"^(0?[1-9]|1[0-2])$").hasMatch(value)) {
                             setState(() {
                               monthcheck = false;
-                              print(monthcheck);
                             });
                           } else {
                             setState(() {
                               monthcheck = true;
-                              print(monthcheck);
                             });
                           }
                         },
@@ -275,9 +271,45 @@ class _FindPasswordState extends State<FindPassword> {
                         }
                         final birthday =
                             '${controller2.text}-${controller3.text}-${controller4.text}';
-                        print(birthday);
+
                         final findpwdres = await pageapi.findPassword(
                             controller.text, birthday);
+
+                        if (findpwdres == 'success') {
+                          showDialog(
+                              context: context,
+                              builder: ((context) {
+                                return AlertDialog(
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('닫기'))
+                                  ],
+                                  content: SingleChildScrollView(
+                                    child: Text('새로운 비밀번호를 확인해주세요.'),
+                                  ),
+                                );
+                              }));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: ((context) {
+                                return AlertDialog(
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('닫기'))
+                                  ],
+                                  content: SingleChildScrollView(
+                                    child: Text('이메일과 생년월일을 확인해주세요.'),
+                                  ),
+                                );
+                              }));
+                        }
                       }
                     : null,
                 style: ButtonStyle(
