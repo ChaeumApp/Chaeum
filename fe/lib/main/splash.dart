@@ -12,25 +12,22 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SystemChrome.setEnabledSystemUIMode((SystemUiMode.immersive));
 
-    Future.delayed(Duration(seconds: 4), (){
+    Future.delayed(Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_)=> const Main(),
-          ));
+        builder: (_) => const Main(),
+      ));
     });
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +39,27 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         margin: EdgeInsets.fromLTRB(0, 0, 0, 35),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/splash_logo.png',
-              width: 70,),
-              Image.asset('assets/images/splash.gif',
-              width: 200,)
-            ],
+          children: [
+            Image.asset(
+              'assets/images/splash_logo.png',
+              width: 70,
+            ),
+            Image.asset(
+              'assets/images/splash.gif',
+              width: 200,
+            )
+          ],
         ),
       ),
       bottomNavigationBar: Container(
         margin: EdgeInsets.fromLTRB(0, 0, 0, 35),
-        child: Text('ⓒ The LEGEND SIX. SSAFY',
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
+        child: Text(
+          'ⓒ The LEGEND SIX. SSAFY',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+          ),
+          textAlign: TextAlign.center,
         ),
-        textAlign: TextAlign.center,),
       ),
     );
   }
