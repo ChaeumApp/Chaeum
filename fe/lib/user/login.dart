@@ -600,16 +600,5 @@ class _LogInState extends State<LogIn> {
 void showSnackBar(BuildContext context, Text text) {
   final snackBar = SnackBar(content: text, backgroundColor: Color(0xffA1CBA1));
 
-// Find the ScaffoldMessenger in the widget tree
-// and use it to show a SnackBar.
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
-
-// class NextPage extends StatelessWidget {
-//   const NextPage({Key key}) : super(key: key
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }

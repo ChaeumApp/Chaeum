@@ -89,9 +89,6 @@ class _MainState extends State<Main> {
   }
 
   _asyncMethod() async {
-    //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
-    //(데이터가 없을때는 null을 반환을 합니다.)
-    var key = await KakaoSdk.origin;
     userToken = await storage.read(key: "login");
     if (userToken != null) {
       try {
@@ -101,7 +98,6 @@ class _MainState extends State<Main> {
           await context
               .read<UserStore>()
               .changeAccessToken(userToken.toString().split(" ")[1].toString());
-          final storetoken = context.read<UserStore>().accessToken;
         } else {
           await storage.delete(key: "login");
           await context.read<UserStore>().changeAccessToken('');
