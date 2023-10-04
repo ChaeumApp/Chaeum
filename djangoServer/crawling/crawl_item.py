@@ -127,31 +127,31 @@ def cp_crawling(keyword, inclusions, exclusions, category, debug):
                     try:
                         ingredient = Ingredient.objects.get(ingr_name=keyword)
                         ingr_id = ingredient.ingr_id
-                        item = Item.objects.get(item_id="Coupang_"+id) # 없는 정보면 터짐
-                        item.item_name = item_name
+                        
+                        try:
+                            # 아이템이 이미 존재하는지 확인
+                            item = Item.objects.get(item_id="Naver_"+id)
+                        except Item.DoesNotExist:
+                            # 존재하지 않으면 새로 생성
+                            item = Item()
+                            item.ingr_id = ingr_id
+                            item.item_id = "Naver_" + id
+
+                        # 속성 수정
+                        item.item_name = re.sub(clean, '', item_name)
                         item.item_image = thumbnail
                         item.item_price = int(price)
-                        item.item_store = "Coupang"
-                        item.item_id = "Coupang_" + id
+                        item.item_store = "Naver"
                         item.item_storelink = link
                         item.item_crawling_date = datetime.now().date()
+                        
+                        # 저장
                         item.save()
                     except Ingredient.DoesNotExist:
                         logger.info(keyword)
                         pass
-                    except Item.DoesNotExist:
-                        item_obj = Item(
-                            ingr_id = ingr_id,
-                            item_name = item_name,
-                            item_image = thumbnail,
-                            item_price = int(price),
-                            item_store = "Coupang",
-                            item_id = "Coupang_" + id,
-                            item_storelink = link,
-                            item_crawling_date = datetime.now().date()
-                        )
-                        item_obj.save(item_obj)
-                        result_list.append([id, item_name, price, link, thumbnail])
+                    except Exception as e:
+                        pass
 
                 except Exception as e:
                     error_cnt += 1
@@ -222,7 +222,7 @@ def naver_api(keyword):
         except Ingredient.DoesNotExist:
             logger.info(keyword)
             pass
-        except:
+        except Exception as e:
             pass
 
 def main():
