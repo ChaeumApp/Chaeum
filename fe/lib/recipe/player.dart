@@ -32,7 +32,6 @@ class _PlayerState extends State<Player> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
     super.dispose();
   }
@@ -47,9 +46,7 @@ class _PlayerState extends State<Player> {
         showVideoProgressIndicator: true,
         width: double.infinity,
         progressColors: ProgressBarColors(
-          playedColor: Color(0xff4C8C4C),
-          handleColor: Color(0xff4C8C4C)
-        ),
+            playedColor: Color(0xff4C8C4C), handleColor: Color(0xff4C8C4C)),
         progressIndicatorColor: Color(0xff164D16),
       ),
     );

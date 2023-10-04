@@ -152,8 +152,6 @@ class _MyPageState extends State<MyPage> {
                                         Navigator.of(context).pop();
                                         openDialog();
                                       });
-                                      print(havAllergie);
-                                      print(havAllergie.runtimeType);
                                     } else {
                                       setState(() {
                                         algdropdown = false;
@@ -219,7 +217,6 @@ class _MyPageState extends State<MyPage> {
                                     }
                                   }
                                   selectedAllergieNumber = resultList;
-                                  print(selectedAllergieNumber);
                                 },
                                 initialValue: selectedAllergie,
                                 chipDisplay: MultiSelectChipDisplay(
@@ -250,7 +247,6 @@ class _MyPageState extends State<MyPage> {
                               context.read<UserStore>().accessToken,
                               selectedVeganNumber,
                               selectedAllergieNumber);
-                          print('여기는 회원정보 수정 $response');
 
                           if (response == 'success') {
                             showDialog(
@@ -324,9 +320,7 @@ class _MyPageState extends State<MyPage> {
     Future.delayed(Duration.zero, () async {
       final userStore = Provider.of<UserStore>(context, listen: false);
       final accessToken = userStore.accessToken;
-      print(accessToken);
       final info = await pageapi.getinfo(accessToken);
-      print(info);
 
       if (info != null) {
         await userStore.changeUserInfo(info['userEmail']);
@@ -336,10 +330,7 @@ class _MyPageState extends State<MyPage> {
         selectedVegan = veganList[selectedVeganNumber];
 
         final resallergyList = (info['allergyList']);
-        print(resallergyList);
-        print(resallergyList.runtimeType);
         if (resallergyList.isNotEmpty) {
-          print(1);
           algdropdown = true;
           havAllergie = '있음';
         }
@@ -347,8 +338,6 @@ class _MyPageState extends State<MyPage> {
           selectedAllergieNumber.add(resallergyList[i]['algyId']);
           selectedAllergie.add(resallergyList[i]['algyName']);
         }
-        print(selectedAllergieNumber);
-        print(selectedAllergie);
       }
       setState(() {});
       // 이제 userStore를 사용할 수 있습니다.
@@ -414,7 +403,7 @@ class _MyPageState extends State<MyPage> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: Text(
-                          '오늘도 긍살!',
+                          '오늘도 채움하세요 !',
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w600),
                         ),
@@ -906,17 +895,56 @@ class _MyPageState extends State<MyPage> {
                                                       '[K]') {
                                                     await UserApi.instance
                                                         .unlink();
-                                                    print('카카오 연동 해제 성공');
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return AlertDialog(
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                      '닫기'))
+                                                            ],
+                                                            content:
+                                                                SingleChildScrollView(
+                                                              child: Text(
+                                                                  '회원탈퇴 되었습니다.'),
+                                                            ),
+                                                          );
+                                                        }));
                                                   } else if (context
                                                           .read<UserStore>()
                                                           .userId
                                                           .substring(0, 3) ==
                                                       '[N]') {
-                                                    print(
-                                                        '회원탈퇴 되었습니다. 네이버에서 정보 제공 동의를 제거하세요');
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return AlertDialog(
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                      '닫기'))
+                                                            ],
+                                                            content:
+                                                                SingleChildScrollView(
+                                                              child: Text(
+                                                                  '회원탈퇴 되었습니다. 네이버에서 정보 제공 동의를 제거하세요'),
+                                                            ),
+                                                          );
+                                                        }));
                                                   }
-                                                  print(
-                                                      '연결 끊기 성공, SDK에서 토큰 삭제');
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
@@ -925,11 +953,29 @@ class _MyPageState extends State<MyPage> {
                                                               Main()),
                                                       (route) => false);
                                                 } else {
-                                                  print('서버 연결을 확인해주세요');
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: ((context) {
+                                                        return AlertDialog(
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    Text('닫기'))
+                                                          ],
+                                                          content:
+                                                              SingleChildScrollView(
+                                                            child: Text(
+                                                                '서버 연결을 확인해주세요'),
+                                                          ),
+                                                        );
+                                                      }));
                                                 }
-                                              } catch (e) {
-                                                print('무슨 에러이니 ㅇ려줘 $e');
-                                              }
+                                              } catch (e) {}
                                             },
                                             child: Container(
                                               padding: EdgeInsets.fromLTRB(
@@ -984,7 +1030,5 @@ class _MyPageState extends State<MyPage> {
 void showSnackBar(BuildContext context, Text text) {
   final snackBar = SnackBar(content: text, backgroundColor: Color(0xffA1CBA1));
 
-// Find the ScaffoldMessenger in the widget tree
-// and use it to show a SnackBar.
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
