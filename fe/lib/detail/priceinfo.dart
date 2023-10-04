@@ -26,7 +26,19 @@ class PriceInfo extends StatelessWidget {
               children: [
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
-                    child: Text('최근 3개월 가격 변동', style: titleStyle())),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(right: 5),
+                            child: Text('최근 3개월 가격 변동', style: titleStyle())),
+                        Text('100g(ml)당 가격', style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xffA7A7A7)
+                        )),
+                      ],
+                    )),
                 PriceChart(ingrId : ingrId),
                 Container(
                     margin: EdgeInsets.fromLTRB(0, 35, 0, 10),
