@@ -58,13 +58,11 @@ class _IngrMainState extends State<IngrMain> {
             headers: {'Authorization' : 'Bearer $accessToken'},
           ));
         final data = response.data[1];
-        print(response.data[1]);
         final sortedData = sortData(data, num);
         return sortedData;
       } else {
         final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
         final data = response.data[1];
-        print(response.data[1]);
         final sortedData = sortData(data, num);
         return sortedData;
       }
@@ -295,11 +293,6 @@ class _IngrMainState extends State<IngrMain> {
                                             ),
                                           ),
                                         )
-                                        // Image.network(
-                                        //   snapshot.data[index]['recipeThumbnail'],
-                                        //   height: 250,
-                                        //   fit: BoxFit.fill,
-                                        // ),
                                         ),
                                   ),
                                   Flexible(

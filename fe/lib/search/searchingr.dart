@@ -2,10 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fe/detail/detail.dart';
 import 'package:fe/ingredients/ingrmain.dart';
 import 'package:fe/store/userstore.dart';
-import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class SearchIngr extends StatefulWidget {

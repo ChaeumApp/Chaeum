@@ -74,48 +74,6 @@ class _RecommendProductState extends State<RecommendProduct> {
                         children: [
                           Text('${snapshot.data.length}개 상품',
                           style: TextStyle(fontSize: 15),),
-                          // SizedBox(
-                          //   height: 30,
-                          //   child: DecoratedBox(
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(color: Color(0xffA1CBA1), width: 1.5),
-                          //       borderRadius: BorderRadius.circular(30),
-                          //     ),
-                          //     child: DropdownButton(
-                          //         underline: Container(),
-                          //         icon: Icon(Icons.keyboard_arrow_down,
-                          //         color: Color(0xffA1CBA1),
-                          //         size: 25),
-                          //         padding: EdgeInsets.fromLTRB(15, 0, 7, 0),
-                          //         style: TextStyle(color: Colors.black,
-                          //         fontSize: 14),
-                          //         value: selectedVal,
-                          //         items: sort.map((e) => DropdownMenuItem(
-                          //           value: e,
-                          //           child: Container(
-                          //               width: 55,
-                          //               child: Text(e),),
-                          //                 ))
-                          //             .toList(),
-                          //         onChanged: (val) {
-                          //           setState(() {
-                          //             selectedVal = val as String;
-                          //           });
-                          //         },
-                          //         selectedItemBuilder: (BuildContext context){
-                          //           return sort.map((String value){
-                          //             return Center(
-                          //               child: Text(
-                          //                 selectedVal ?? "", style: TextStyle(
-                          //                   color: Color(0xffA1CBA1),
-                          //               fontWeight: FontWeight.w700),
-                          //               ),
-                          //             );
-                          //           }).toList();
-                          //         },
-                          //     itemHeight: 50),
-                          //   ),
-                          // )
                         ],
                       ),
                     ),

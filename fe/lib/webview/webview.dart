@@ -66,19 +66,18 @@ class _WebviewPageState extends State<WebviewPage> {
 
 
   Dio dio = Dio();
-  final serverURL = 'https://j9c204.p.ssafy.io:8080';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<dynamic> purchaseItem(itemId) async {
-    print('아이템아이디 $itemId');
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
+    print('아이템아이디 $itemId');
     if(accessToken != ''){
       try {
         final response = await dio.post('$serverURL/item/purchased', data: {'itemId' : itemId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
+        print('음... ${response.data}');
         return response.data;
       } catch (e) {
         print(e);

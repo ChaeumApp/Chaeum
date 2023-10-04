@@ -1,7 +1,6 @@
 import 'package:fe/search/searchresult.dart';
 import 'package:fe/store/searchstore.dart';
 import 'package:flutter/material.dart';
-import 'package:fe/store/userstore.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

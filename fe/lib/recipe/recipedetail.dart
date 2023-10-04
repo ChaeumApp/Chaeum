@@ -38,7 +38,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             },
           ),
         );
-        print(response.data);
         if (!isSet) {
           setState(() {
             tmpSaved = response.data['savedRecipe'];
@@ -53,7 +52,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       try {
         final response = await dio.get('$serverURL/recipe/detail/$recipeId',
             data: {'recipeId': recipeId});
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
@@ -85,7 +83,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           }
         });
       }
-      print(response.data);
       return Future.value(tmpSaved);
     } else {
       Alertlogin().needLogin(context);
@@ -139,9 +136,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         decelerationCurve: Curves.easeOut,
                       ),
                     ),
-                    // Text(snapshot.data['recipeName'],
-                    //     style: TextStyle(
-                    //         color: Colors.black, fontWeight: FontWeight.w700)),
                     centerTitle: true,
                     backgroundColor: Colors.grey[50],
                     titleSpacing: 0,
