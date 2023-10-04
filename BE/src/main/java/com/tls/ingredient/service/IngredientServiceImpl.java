@@ -1,5 +1,7 @@
 package com.tls.ingredient.service;
 
+import com.tls.category.entity.Category;
+import com.tls.category.entity.SubCategory;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
@@ -29,12 +31,9 @@ import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -136,11 +135,12 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+
+                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategory(category).orElse(null);
+                    if (topIngredient != null) {
+                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    }
                 }
             } else {
                 if (userEmail != null) {
@@ -158,12 +158,13 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategoryAndSubCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow(),
-                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+                    SubCategory subCategory = subCategoryRepository.findBySubCatId(subCatId).orElseThrow();
+
+                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategoryAndSubCategory(category, subCategory).orElse(null);
+                    if (topIngredient != null) {
+                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    }
                 }
             }
             return results;
@@ -341,6 +342,7 @@ public class IngredientServiceImpl implements IngredientService {
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
             List<IngredientPrice> list = ingredientPriceRepository.findByIngrIdOrderByDateDesc(ingredient)
                 .orElseThrow();
+            int cnt = 0;
             for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
                 if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM
@@ -352,7 +354,7 @@ public class IngredientServiceImpl implements IngredientService {
                     .date(ingredientPrice.getDate())
                     .build();
                 ingredientPriceVOs.add(ingredientPriceVO);
-                if (i + 1 == NUMBERS) {
+                if (++cnt >= NUMBERS) {
                     break;
                 }
             }

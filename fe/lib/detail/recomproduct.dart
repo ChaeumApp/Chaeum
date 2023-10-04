@@ -19,13 +19,11 @@ class _RecommendProductState extends State<RecommendProduct> {
   Future<dynamic> getProductList() async {
     try {
       final response = await dio.get('$serverURL/item/${widget.ingrId}');
-      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
     }
   }
-
 
   _RecommendProductState() {
     selectedVal = sort[0];
@@ -38,7 +36,7 @@ class _RecommendProductState extends State<RecommendProduct> {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: getProductList(),
-        builder: (BuildContext context, AsyncSnapshot snapshot){
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return Scaffold(
               body: Center(child: SpinKitPulse(
@@ -50,9 +48,7 @@ class _RecommendProductState extends State<RecommendProduct> {
                 },
               )),
             );
-          }
-
-          else if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -60,69 +56,29 @@ class _RecommendProductState extends State<RecommendProduct> {
                 style: TextStyle(fontSize: 15),
               ),
             );
-          }
-
-          else {
+          } else {
             return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text('${snapshot.data.length}개 상품',
-                          style: TextStyle(fontSize: 15),),
-                          // SizedBox(
-                          //   height: 30,
-                          //   child: DecoratedBox(
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(color: Color(0xffA1CBA1), width: 1.5),
-                          //       borderRadius: BorderRadius.circular(30),
-                          //     ),
-                          //     child: DropdownButton(
-                          //         underline: Container(),
-                          //         icon: Icon(Icons.keyboard_arrow_down,
-                          //         color: Color(0xffA1CBA1),
-                          //         size: 25),
-                          //         padding: EdgeInsets.fromLTRB(15, 0, 7, 0),
-                          //         style: TextStyle(color: Colors.black,
-                          //         fontSize: 14),
-                          //         value: selectedVal,
-                          //         items: sort.map((e) => DropdownMenuItem(
-                          //           value: e,
-                          //           child: Container(
-                          //               width: 55,
-                          //               child: Text(e),),
-                          //                 ))
-                          //             .toList(),
-                          //         onChanged: (val) {
-                          //           setState(() {
-                          //             selectedVal = val as String;
-                          //           });
-                          //         },
-                          //         selectedItemBuilder: (BuildContext context){
-                          //           return sort.map((String value){
-                          //             return Center(
-                          //               child: Text(
-                          //                 selectedVal ?? "", style: TextStyle(
-                          //                   color: Color(0xffA1CBA1),
-                          //               fontWeight: FontWeight.w700),
-                          //               ),
-                          //             );
-                          //           }).toList();
-                          //         },
-                          //     itemHeight: 50),
-                          //   ),
-                          // )
-                        ],
-                      ),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${snapshot.data.length}개 상품',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
                     ),
                   ),
-                  ProductList(product : snapshot.data, scrollController : widget.scrollController)
-                ],
-              );
+                ),
+                ProductList(
+                    product: snapshot.data,
+                    scrollController: widget.scrollController)
+              ],
+            );
           }
         });
   }
