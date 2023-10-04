@@ -14,19 +14,19 @@ def start():
 
     scheduler.add_job(
         main,
-        trigger=CronTrigger(hour="2", minute="58"),
+        trigger=CronTrigger(hour="9", minute="23"),
         id = "main",
         max_instances=1,
         replace_existing=True
     )
     
-    scheduler.add_job(
-        IngredientPriceManager.notify_pricedrop,
-        trigger=CronTrigger(hour="22", minute="22"),
-        id = "notiPrice",
-        max_instances=1,
-        replace_existing=True
-    )
+    # scheduler.add_job(
+    #     IngredientPriceManager.notify_pricedrop,
+    #     trigger=CronTrigger(hour="12", minute="0"),
+    #     id = "notiPrice",
+    #     max_instances=1,
+    #     replace_existing=True
+    # )
     
     register_events(scheduler)
 
