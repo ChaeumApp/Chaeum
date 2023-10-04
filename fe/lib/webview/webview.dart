@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WebviewPage extends StatefulWidget {
-
   const WebviewPage({super.key, this.url, this.itemId});
   final url;
   final itemId;
@@ -26,19 +25,13 @@ class _WebviewPageState extends State<WebviewPage> {
         useShouldOverrideUrlLoading: true,
         mediaPlaybackRequiresUserGesture: false,
       ),
-      android: AndroidInAppWebViewOptions(
-          useHybridComposition: true
-      ),
-      ios: IOSInAppWebViewOptions(
-          allowsAirPlayForMediaPlayback: true
-      )
-  );
+      android: AndroidInAppWebViewOptions(useHybridComposition: true),
+      ios: IOSInAppWebViewOptions(allowsAirPlayForMediaPlayback: true));
 
   late PullToRefreshController pullToRefreshController;
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
-
 
   @override
   void initState() {
@@ -64,28 +57,28 @@ class _WebviewPageState extends State<WebviewPage> {
     super.dispose();
   }
 
-
   Dio dio = Dio();
-  final serverURL = 'https://j9c204.p.ssafy.io:8080';
+  final serverURL = 'https://j9c204.p.ssafy.io';
 
   Future<dynamic> purchaseItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
-    if(accessToken != ''){
+    print('아이템아이디 $itemId');
+    if (accessToken != '') {
       try {
-        final response = await dio.post('$serverURL/item/purchased', data: {'itemId' : itemId},
+        final response = await dio.post(
+          '$serverURL/item/purchased',
+          data: {'itemId': itemId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
-        print(response.data);
+          ),
+        );
+        print('음... ${response.data}');
         return response.data;
       } catch (e) {
         print(e);
       }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,22 +100,19 @@ class _WebviewPageState extends State<WebviewPage> {
                 decoration: InputDecoration(
                   suffixIcon: Icon(Icons.search),
                   prefixIcon: GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
-                    },
-                    child: Icon(Icons.close)
-                  )
-                  ,
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.close)),
                 ),
                 controller: urlController,
                 keyboardType: TextInputType.url,
                 onSubmitted: (value) {
                   var url = Uri.parse(value);
                   if (url.scheme.isEmpty) {
-                    url = Uri.parse("https://www.google.com/search?q=" + value);
+                    url = Uri.parse("https://www.google.com/search?q=$value");
                   }
-                  webViewController?.loadUrl(
-                      urlRequest: URLRequest(url: url));
+                  webViewController?.loadUrl(urlRequest: URLRequest(url: url));
                 },
               ),
               Expanded(
@@ -133,10 +123,12 @@ class _WebviewPageState extends State<WebviewPage> {
                   pullToRefreshController: pullToRefreshController,
                   onWebViewCreated: (InAppWebViewController controller) {
                     webViewController = controller;
-                    controller.addJavaScriptHandler(handlerName: 'onButtonClick', callback: (args){
-                      print('Button Clicked: $args');
-                      purchaseItem(widget.itemId);
-                    });
+                    controller.addJavaScriptHandler(
+                        handlerName: 'onButtonClick',
+                        callback: (args) {
+                          print('Button Clicked: $args');
+                          purchaseItem(widget.itemId);
+                        });
                   },
                   onLoadStart: (controller, url) {
                     setState(() {
@@ -144,26 +136,33 @@ class _WebviewPageState extends State<WebviewPage> {
                       urlController.text = this.url;
                     });
                   },
-                  androidOnPermissionRequest: (controller, origin, resources) async {
+                  androidOnPermissionRequest:
+                      (controller, origin, resources) async {
                     return PermissionRequestResponse(
                         resources: resources,
                         action: PermissionRequestResponseAction.GRANT);
                   },
-                  shouldOverrideUrlLoading: (controller, navigationAction) async {
+                  shouldOverrideUrlLoading:
+                      (controller, navigationAction) async {
                     var uri = navigationAction.request.url!;
-                    if (![ "http", "https", "file", "chrome",
-                      "data", "javascript", "about"].contains(uri.scheme)) {
+                    if (![
+                      "http",
+                      "https",
+                      "file",
+                      "chrome",
+                      "data",
+                      "javascript",
+                      "about"
+                    ].contains(uri.scheme)) {
                       if (await canLaunchUrl(uri)) {
                         // Launch the App
                         await launchUrl(uri);
                         return NavigationActionPolicy.CANCEL;
-                      } else {
-
-                      }
+                      } else {}
                     }
                     return NavigationActionPolicy.ALLOW;
                   },
-                  onLoadStop: (InAppWebViewController controller, Uri? url){
+                  onLoadStop: (InAppWebViewController controller, Uri? url) {
                     controller.evaluateJavascript(source: '''
                     var myButtons = document.querySelectorAll('button');
                     myButtons.forEach(function(button) {
@@ -185,19 +184,19 @@ class _WebviewPageState extends State<WebviewPage> {
                     }
                     setState(() {
                       this.progress = progress / 100;
-                      urlController.text = this.url;
+                      urlController.text = url;
                     });
                   },
                   onUpdateVisitedHistory: (controller, url, androidIsReload) {
                     setState(() {
-                    this.url = url.toString();
-                    urlController.text = this.url;
+                      this.url = url.toString();
+                      urlController.text = this.url;
                     });
                   },
                   onConsoleMessage: (controller, consoleMessage) {
                     print(consoleMessage);
                   },
-                  ),
+                ),
               ),
             ],
           ),

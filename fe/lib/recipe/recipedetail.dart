@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fe/recipe/player.dart';
+import 'package:fe/recipe/similarrecipe.dart';
 import 'package:fe/repeat/needlogin.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   bool tmpSaved = false;
   Future<dynamic> loadRecipe(recipeId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
     if (accessToken != '') {
       try {
         final response = await dio.get(
@@ -37,7 +37,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             },
           ),
         );
-        print(response.data);
         if (!isSet) {
           setState(() {
             tmpSaved = response.data['savedRecipe'];
@@ -52,7 +51,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       try {
         final response = await dio.get('$serverURL/recipe/detail/$recipeId',
             data: {'recipeId': recipeId});
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
@@ -60,13 +58,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     }
   }
 
-
-
   Future<bool?> toggleLike(bool isLiked) async {
     bool liked = false;
     var accessToken = context.read<UserStore>().accessToken;
     if (accessToken != '') {
-      print(widget.recipeId);
       final response = await dio.get(
         '$serverURL/recipe/favorite/${widget.recipeId}',
         data: {'recipeId': widget.recipeId},
@@ -84,17 +79,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           }
         });
       }
-      print(response.data);
       return Future.value(tmpSaved);
     } else {
       Alertlogin().needLogin(context);
     }
+    return null;
   }
-
-  var videolist = [
-    'https://img.youtube.com/vi/jIG4AaIy-5k/0.jpg',
-    'https://img.youtube.com/vi/iuIzniSa1Hs/0.jpg'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -104,13 +94,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           if (snapshot.hasData == false) {
             return Scaffold(
               body: Center(child: SpinKitPulse(
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                      child: Image.asset('assets/images/repeat/bottom_logo.png',
-                          height: 40),
-                    );
-                  },
-                )),
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                    child: Image.asset('assets/images/repeat/bottom_logo.png',
+                        height: 40),
+                  );
+                },
+              )),
             );
           } else if (snapshot.hasError) {
             return Padding(
@@ -143,9 +133,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         decelerationCurve: Curves.easeOut,
                       ),
                     ),
-                    // Text(snapshot.data['recipeName'],
-                    //     style: TextStyle(
-                    //         color: Colors.black, fontWeight: FontWeight.w700)),
                     centerTitle: true,
                     backgroundColor: Colors.grey[50],
                     titleSpacing: 0,
@@ -203,11 +190,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1] != null ? snapshot.data['recipeIngredients'][index][1] : ''}',
+                            '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1] ?? ''}',
                             style: TextStyle(
                                 color: Color(0xff4C8C4C),
-                                fontWeight: FontWeight.w600
-                            ),
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       )),
@@ -277,17 +263,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           ],
                         )),
                   ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                    return Container(
-                      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      child: Image.network(videolist[index],
-                          height: 230,
-                          width: double.infinity,
-                          fit: BoxFit.cover),
-                    );
-                  }, childCount: videolist.length))
+                  SimilarRecipe(recipeId: widget.recipeId),
                 ],
               ),
             );

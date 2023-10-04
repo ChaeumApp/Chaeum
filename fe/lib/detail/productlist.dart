@@ -1,12 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:fe/api/click.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key, this.product, this.scrollController});
@@ -31,7 +28,6 @@ class _ProductListState extends State<ProductList> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
@@ -39,12 +35,6 @@ class _ProductListState extends State<ProductList> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // print('여기입니다 ${widget.product}');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,43 +61,52 @@ class _ProductListState extends State<ProductList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
-                    child: Image.network(
-                      '${widget.product[index]['itemImage']}',
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 35,
-                    child: Text(
-                      '${widget.product[index]['itemName']!.length > 25 ? widget.product[index]['itemName']?.substring(0, 25) : widget.product[index]['itemName']}'
-                          '${widget.product[index]['itemName']!.length > 25 ? "..." : ""}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                  Flexible(
+                    flex: 8,
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                      child: Image.network(
+                        '${widget.product[index]['itemImage']}',
+                        height: 200,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${NumberFormat('#,###').format(widget.product[index]['itemPrice'])}원',
+                  Flexible(
+                    flex: 2,
+                    child: SizedBox(
+                      height: 35,
+                      child: Text(
+                        '${widget.product[index]['itemName']!.length > 25 ? widget.product[index]['itemName']?.substring(0, 25) : widget.product[index]['itemName']}'
+                            '${widget.product[index]['itemName']!.length > 25 ? "..." : ""}',
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xff73324C),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(
-                        width: 45,
-                        child: Image.asset(
-                          '${widget.product[index]['itemStore'] == 'Naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${NumberFormat('#,###').format(widget.product[index]['itemPrice'])}원',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff73324C),
+                          ),
                         ),
-                      )
-                    ],
+                        SizedBox(
+                          width: 45,
+                          child: Image.asset(
+                            '${widget.product[index]['itemStore'] == 'Naver' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

@@ -9,10 +9,9 @@ class MainCarousel extends StatefulWidget {
 }
 
 class _MainCarouselState extends State<MainCarousel> {
-
   List imageList = [
-  {'id': 1, 'image_path':'assets/images/main/main_banner1.png'},
-  {'id': 2, 'image_path':'assets/images/main/main_banner2.png'},
+    {'id': 1, 'image_path': 'assets/images/main/main_banner1.png'},
+    {'id': 2, 'image_path': 'assets/images/main/main_banner2.png'},
   ];
   final CarouselController carouselController = CarouselController();
   int currentIndex = 0;
@@ -23,20 +22,18 @@ class _MainCarouselState extends State<MainCarousel> {
       children: [
         Stack(
           children: [
-            InkWell(
-              onTap: (){
-                print(currentIndex);
-              },
-              child: CarouselSlider(
-                items: imageList.map(
-                    (item)=> Image.asset(
+            CarouselSlider(
+              items: imageList
+                  .map(
+                    (item) => Image.asset(
                       item['image_path'],
                       fit: BoxFit.cover,
                       width: double.infinity,
                     ),
-                ).toList(),
-                carouselController: carouselController,
-                options: CarouselOptions(
+                  )
+                  .toList(),
+              carouselController: carouselController,
+              options: CarouselOptions(
                   scrollPhysics: const BouncingScrollPhysics(),
                   autoPlay: true,
                   aspectRatio: 2,
@@ -47,20 +44,17 @@ class _MainCarouselState extends State<MainCarousel> {
                     setState(() {
                       currentIndex = index;
                     });
-                  }
-                ),
-              ),
+                  }),
             ),
             Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:
-                imageList.asMap().entries.map((entry){
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: imageList.asMap().entries.map((entry) {
                   return GestureDetector(
-                    onTap: ()=> carouselController.animateToPage(entry.key),
+                    onTap: () => carouselController.animateToPage(entry.key),
                     child: Container(
                       width: currentIndex == entry.key ? 17 : 7,
                       height: 7,
@@ -71,12 +65,11 @@ class _MainCarouselState extends State<MainCarousel> {
                           borderRadius: BorderRadius.circular(10),
                           color: currentIndex == entry.key
                               ? Color(0xffA1CBA1)
-                              : Color(0xff868E96)
-                      ),
+                              : Color(0xff868E96)),
                     ),
                   );
                 }).toList(),
-            ),
+              ),
             ),
           ],
         )

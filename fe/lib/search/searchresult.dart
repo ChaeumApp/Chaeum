@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fe/search/searchingr.dart';
 import 'package:fe/search/searchrecipe.dart';
 import 'package:fe/store/searchstore.dart';
-import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +22,6 @@ class _SearchResultState extends State<SearchResult> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     word.text = widget.searchWord;
   }
@@ -169,7 +167,9 @@ class _SearchResultState extends State<SearchResult> {
                         SearchIngr(
                             scrollController: scrollController,
                             data: snapshot.data['ingrList']),
-                        SearchRecipe(scrollController : scrollController, data : snapshot.data['recipeList'])
+                        SearchRecipe(
+                            scrollController: scrollController,
+                            data: snapshot.data['recipeList'])
                       ],
                     ),
                     floatingActionButton: FloatingActionButton.small(

@@ -119,3 +119,19 @@ class Item(models.Model):
     
     class Meta:
         db_table = 'item_tb'  # 테이블 이름 지정
+
+class SavedIngredient(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ingr = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "saved_ingredient_tb"
+        unique_together = (('user', 'ingr'),)
+
+class UserDeviceToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token_id = models.CharField(max_length=30)
+
+    class Meta:
+        db_table = "user_devtoken_tb"
+        unique_together = (('user', 'token_id'),)
