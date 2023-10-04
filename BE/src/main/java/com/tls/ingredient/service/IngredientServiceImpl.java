@@ -30,7 +30,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -341,6 +340,7 @@ public class IngredientServiceImpl implements IngredientService {
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
             List<IngredientPrice> list = ingredientPriceRepository.findByIngrIdOrderByDateDesc(ingredient)
                 .orElseThrow();
+            int cnt = 0;
             for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
                 if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM
@@ -352,7 +352,7 @@ public class IngredientServiceImpl implements IngredientService {
                     .date(ingredientPrice.getDate())
                     .build();
                 ingredientPriceVOs.add(ingredientPriceVO);
-                if (i + 1 == NUMBERS) {
+                if (++cnt >= NUMBERS) {
                     break;
                 }
             }
