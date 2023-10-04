@@ -7,9 +7,11 @@ import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.config.RandomStringCreator;
+import com.tls.ingredient.entity.composite.IngredientDefaultPreference;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.single.Ingredient;
+import com.tls.ingredient.repository.IngredientDefaultPreferenceRepository;
 import com.tls.ingredient.repository.IngredientPreferenceRepository;
 import com.tls.ingredient.repository.IngredientRecommendRepository;
 import com.tls.ingredient.repository.IngredientRepository;
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService {
     private final AllergyRepository allergyRepository;
     private final AllergyIngredientRepository allergyIngredientRepository;
     private final IngredientRepository ingredientRepository;
+    private final IngredientDefaultPreferenceRepository ingredientDefaultPreferenceRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
     private final IngredientRecommendRepository ingredientRecommendRepository;
 
@@ -73,6 +76,7 @@ public class UserServiceImpl implements UserService {
     private String secretKey;
 
     @Override
+    @Transactional
     public int signUp(UserSignUpVO userDto) {
         try {
             // user 정보 먼저 저장한다.
@@ -118,6 +122,12 @@ public class UserServiceImpl implements UserService {
                 );
             }
             ingredientRecommendRepository.saveAll(irList);
+
+            // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
+            int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
+            // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
+            if (saveDefaultPreference(user, groupId) == -1) throw new Exception();
+
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();
@@ -137,11 +147,66 @@ public class UserServiceImpl implements UserService {
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
             log.info("signup fail");
             return 406;
         }
         return 200;
+    }
+
+    @Transactional
+    public int saveDefaultPreference(User user, int groupId) {
+        try {
+            List<IngredientDefaultPreference> ingredientDefaultPreferenceList = ingredientDefaultPreferenceRepository.findAllByGroupId(groupId).orElse(null);
+            System.out.println(ingredientDefaultPreferenceList.size());
+            if (ingredientDefaultPreferenceList != null) {
+                for (IngredientDefaultPreference defaultPreference : ingredientDefaultPreferenceList) {
+                    System.out.println(defaultPreference.getIngredient());
+                    IngredientPreference newPreference = IngredientPreference.builder()
+                        .user(user)
+                        .ingredient(defaultPreference.getIngredient())
+                        .prefRating(defaultPreference.getPrefRating())
+                        .build();
+                    ingredientPreferenceRepository.save(newPreference);
+                }
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    private int getGroupId(java.util.Date userBirthday, String userGender) {
+        // 현재 년도 구하기
+        Calendar today = Calendar.getInstance();
+        Calendar birth = Calendar.getInstance();
+        birth.setTime(userBirthday);
+
+        int age = today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+
+        // 생일이 아직 안 지났으면 나이에서 1 빼기
+        if (today.get(Calendar.MONTH) < birth.get(Calendar.MONTH) ||
+            (today.get(Calendar.MONTH) == birth.get(Calendar.MONTH) && today.get(Calendar.DAY_OF_MONTH) < birth.get(Calendar.DAY_OF_MONTH))) {
+            age--;
+        }
+
+        if (userGender.equals("m")) {
+            if (age < 18) return 1;
+            if (age >= 19 && age < 29) return 2;
+            if (age >= 30 && age < 49) return 3;
+            if (age >= 50 && age < 64) return 4;
+            if (age >= 65) return 5;
+        } else if (userGender.equals("f")) {
+            if (age < 18) return 6;
+            if (age >= 19 && age < 29) return 7;
+            if (age >= 30 && age < 49) return 8;
+            if (age >= 50 && age < 64) return 9;
+            if (age >= 65) return 10;
+        }
+
+        // 유효하지 않은 성별이 입력될 경우 -1 리턴
+        return -1;
     }
 
     @Override
