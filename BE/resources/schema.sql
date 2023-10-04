@@ -620,3 +620,17 @@ values (0, '난류'),
        (14, '쇠고기'),
        (15, '오징어'),
        (16, '조개류(굴, 전복, 홍합)');
+
+CREATE TABLE `ingredient_default_preference_tb` (
+	`ingr_default_pref_id`	INT	NOT NULL primary key auto_increment,
+	`group_id`	SMALLINT	NOT NULL,
+	`ingr_id`	INT	NOT NULL,
+	`pref_rating`	DOUBLE	NOT NULL
+);
+
+ALTER TABLE `ingredient_default_preference_tb` ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_default_preference_tb_1` FOREIGN KEY (
+	`ingr_id`
+)
+REFERENCES `ingredient_tb` (
+	`ingr_id`
+);
