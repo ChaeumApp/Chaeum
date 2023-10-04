@@ -1,5 +1,7 @@
 package com.tls.ingredient.service;
 
+import com.tls.category.entity.Category;
+import com.tls.category.entity.SubCategory;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
@@ -29,11 +31,9 @@ import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -135,11 +135,12 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+
+                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategory(category).orElse(null);
+                    if (topIngredient != null) {
+                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    }
                 }
             } else {
                 if (userEmail != null) {
@@ -157,12 +158,13 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategoryAndSubCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow(),
-                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+                    SubCategory subCategory = subCategoryRepository.findBySubCatId(subCatId).orElseThrow();
+
+                    Ingredient topIngredient = ingredientRepository.findTopIngredientByCategoryAndSubCategory(category, subCategory).orElse(null);
+                    if (topIngredient != null) {
+                        results.add(ingredientConverter.entityToDto(topIngredient));
+                    }
                 }
             }
             return results;
