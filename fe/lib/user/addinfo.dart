@@ -2,7 +2,7 @@ import 'package:fe/main.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/user/pageapi.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -82,13 +82,8 @@ class _AddInfoState extends State<AddInfo> {
     }
 
     if (widget.user.containsKey('birth')) {
-      print('ggggg');
       setState(() {
-        print('111');
-
         controller.text = widget.user['birth'].toString().substring(0, 4);
-        print(controller.text);
-        print(controller.text.runtimeType);
         if (controller.text != '0000') {
           yearcheck = true;
         } else {
@@ -96,8 +91,6 @@ class _AddInfoState extends State<AddInfo> {
         }
 
         controller2.text = widget.user['birth'].toString().substring(4, 6);
-        print(controller2.text);
-        print(controller2.text.runtimeType);
         if (controller2.text != 'nu') {
           monthcheck = true;
         } else {
@@ -105,8 +98,6 @@ class _AddInfoState extends State<AddInfo> {
         }
 
         controller3.text = widget.user['birth'].toString().substring(6, 8);
-        print(controller3.text);
-        print(controller3.text.runtimeType);
         if (controller3.text != 'll') {
           daycheck = true;
         } else {
@@ -179,12 +170,10 @@ class _AddInfoState extends State<AddInfo> {
                                 .hasMatch(value)) {
                               setState(() {
                                 yearcheck = false;
-                                print(yearcheck);
                               });
                             } else {
                               setState(() {
                                 yearcheck = true;
-                                print(yearcheck);
                               });
                             }
                           },
@@ -227,12 +216,10 @@ class _AddInfoState extends State<AddInfo> {
                                 .hasMatch(value)) {
                               setState(() {
                                 monthcheck = false;
-                                print(monthcheck);
                               });
                             } else {
                               setState(() {
                                 monthcheck = true;
-                                print(monthcheck);
                               });
                             }
                           },
@@ -418,8 +405,6 @@ class _AddInfoState extends State<AddInfo> {
                                 setState(() {
                                   algdropdown = true;
                                 });
-                                print(havAllergie);
-                                print(havAllergie.runtimeType);
                               } else {
                                 setState(() {
                                   algdropdown = false;
@@ -462,7 +447,6 @@ class _AddInfoState extends State<AddInfo> {
                                   MultiSelectItem<String>(allergie, allergie))
                               .toList(),
                           onConfirm: (values) async {
-                            print(values);
                             setState(() {
                               selectedAllergie = values;
                             });
@@ -479,7 +463,6 @@ class _AddInfoState extends State<AddInfo> {
                               }
                             }
                             selectedAllergieNumber = resultList;
-                            print(selectedAllergieNumber);
                           },
                           chipDisplay: MultiSelectChipDisplay(
                             chipColor: Color(0xffA1CBA1),
@@ -493,7 +476,6 @@ class _AddInfoState extends State<AddInfo> {
                                   i++) {
                                 if (allergieNameList[i] == value) {
                                   selectedAllergieNumber.remove(i);
-                                  print(selectedAllergieNumber);
                                 }
                               }
                             },
@@ -529,13 +511,6 @@ class _AddInfoState extends State<AddInfo> {
                                       '${controller.text}-${controller2.text}-${controller3.text}';
                                   final deviceToken =
                                       context.read<UserStore>().deviceToken;
-                                  print(widget.user['userEmail']);
-                                  print(widget.user['userPwd']);
-                                  print(birthday);
-                                  print(selectedGenderString);
-                                  print(selectedVeganNumber);
-                                  print(selectedAllergieNumber);
-                                  print(deviceToken);
 
                                   final loginres = await pageapi.signup(
                                       widget.user['userEmail'].toString(),
@@ -545,15 +520,13 @@ class _AddInfoState extends State<AddInfo> {
                                       selectedVeganNumber,
                                       selectedAllergieNumber,
                                       deviceToken.toString());
-                                  print('여기 회원가입 요청 ');
-                                  print('여기 리턴값 $loginres');
+
                                   if (loginres is Map &&
                                       loginres.containsKey('accessToken')) {
                                     final accessToken = loginres['accessToken'];
                                     final refreshToken =
                                         loginres['refreshToken'];
-                                    print(accessToken);
-                                    print(refreshToken);
+
                                     await widget.storage.write(
                                         key: "login",
                                         value:
@@ -565,6 +538,23 @@ class _AddInfoState extends State<AddInfo> {
                                             builder: (BuildContext context) =>
                                                 Main()),
                                         (route) => false);
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: ((context) {
+                                          return AlertDialog(
+                                            actions: <Widget>[
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('닫기'))
+                                            ],
+                                            content: SingleChildScrollView(
+                                              child: Text('나중에 다시 시도해주세요.'),
+                                            ),
+                                          );
+                                        }));
                                   }
                                 }
                               : null,

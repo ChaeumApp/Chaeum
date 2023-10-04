@@ -19,7 +19,6 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
   Future<dynamic> getRecipe() async {
     try {
       final response = await dio.get('$serverURL/recipe');
-      print(response.data.runtimeType);
       return response.data;
     } catch (e) {
       print(e);
@@ -28,14 +27,15 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
 
   Future<dynamic> clickRecipe(recipeId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+        final response = await dio.get(
+          '$serverURL/recipe/selected/$recipeId',
+          queryParameters: {'recipeId': recipeId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
-        print(response.data);
+          ),
+        );
         return response.data;
       } catch (e) {
         print(e);
@@ -43,12 +43,11 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: getRecipe(),
-        builder: (BuildContext context, AsyncSnapshot snapshot){
+    return FutureBuilder(
+        future: getRecipe(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return SliverToBoxAdapter(
               child: Container(
@@ -57,52 +56,42 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                   shrinkWrap: true,
                   itemCount: 2,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             ));
-                      },
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              height: 210,
-                              width: double.infinity,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 200.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 3.0,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 250.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                          ],
-                        ),
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            height: 210,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                            width: 200.0,
+                            child: Container(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 3.0,
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                            width: 250.0,
+                            child: Container(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                        ],
                       ),
                     );
                   },
                 ),
               ),
             );
-          }
-          else if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -112,18 +101,18 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                 ),
               ),
             );
-          }
-          else {
+          } else {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   return GestureDetector(
                     onTap: () {
                       clickRecipe(snapshot.data[index]['recipeId']);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => RecipeDetailPage(recipeId : snapshot.data[index]['recipeId'])));
+                              builder: (context) => RecipeDetailPage(
+                                  recipeId: snapshot.data[index]['recipeId'])));
                     },
                     child: Container(
                       margin: EdgeInsets.fromLTRB(20, 0, 20, 10),
@@ -148,7 +137,8 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                           ),
                           Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                            child: Text('${snapshot.data[index]['recipeName']}'),
+                            child:
+                                Text('${snapshot.data[index]['recipeName']}'),
                           )
                         ],
                       ),
@@ -158,7 +148,7 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                 childCount: 2, // 아이템 개수에 따라 설정
               ),
             );
-        }
+          }
         });
   }
 }
