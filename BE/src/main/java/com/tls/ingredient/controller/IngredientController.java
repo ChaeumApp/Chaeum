@@ -2,6 +2,7 @@ package com.tls.ingredient.controller;
 
 import com.tls.ingredient.dto.IngredientDto;
 import com.tls.ingredient.dto.IngredientPriceDropDto;
+import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.service.IngredientService;
 import com.tls.ingredient.vo.IngredientVO;
 import com.tls.jwt.JwtTokenProvider;
@@ -135,6 +136,25 @@ public class IngredientController {
             return new ResponseEntity<>(ingredientList, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("fail", HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/ateez")
+    @Operation(summary = "사용자 추천 점수 상위 10개 소분류 조회하는 메서드", description = "사용자 추천 점수 상위 10개 소분류를 조회합니다", tags = "소분류 API")
+    public ResponseEntity<?> getAteezIngredients(@RequestHeader(value = "Authorization", required = false) String tokenWithPrefix) {
+        log.info("getAteezIngredients call :: ");
+        if (tokenWithPrefix != null && tokenWithPrefix.split(" ")[0].equals("Bearer")) {
+            String userEmail = jwtTokenProvider
+                .getAuthentication(tokenWithPrefix.substring(7))
+                .getName();
+            List<Ingredient> ingredientList = ingredientService.getAteezIngredients(userEmail);
+            if (ingredientList != null) {
+                return new ResponseEntity<>(ingredientList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("fail", HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity<>("unauthorized", HttpStatus.OK);
         }
     }
 
