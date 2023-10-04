@@ -11,13 +11,21 @@ def update_price(ingr_id, item_crawling_date):
     def find_gram(title):
         g_pattern = r'(\d+(\.\d+)?)g'
         kg_pattern = r'(\d+(\.\d+)?)kg'
+        ml_pattern = r'(\d+(\.\d+)?)ml'
+        l_pattern = r'(\d+(\.\d+)?)L'
         g_matches = re.findall(g_pattern, title, re.IGNORECASE)
         kg_matches = re.findall(kg_pattern, title, re.IGNORECASE)
+        ml_matches = re.findall(ml_pattern, title, re.IGNORECASE)
+        l_matches = re.findall(l_pattern, title, re.IGNORECASE)
 
         if kg_matches:
             return float(kg_matches[-1][0]) * 1000
         elif g_matches:
             return float(g_matches[-1][0])
+        elif ml_matches:
+            return float(ml_matches[-1][0])
+        elif l_matches:
+            return float(l_matches[-1][0]) * 1000
         return None
 
     def find_pieces(title):
