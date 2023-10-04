@@ -30,10 +30,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -180,6 +182,19 @@ public class IngredientServiceImpl implements IngredientService {
             return ingredientPriceRepository.findTop10PriceDrops(today, yesterday, pageable);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Ingredient> getAteezIngredients(String userEmail) {
+        try {
+            Pageable pageable = PageRequest.of(0, 10);
+            return ingredientRecommendRepository.findTop10ByUserOrderByIngrRecommendScoreDesc(
+                userRepository.findByUserEmail(userEmail).orElse(null), pageable).stream()
+                    .map(IngredientRecommend::getIngredient)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
             return null;
         }
     }
