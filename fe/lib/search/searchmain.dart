@@ -1,9 +1,7 @@
 import 'package:fe/repeat/search.dart';
 import 'package:fe/search/searchlist.dart';
 import 'package:fe/search/searchmainrecipe.dart';
-import 'package:fe/store/searchstore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SearchMain extends StatefulWidget {
   const SearchMain({super.key});

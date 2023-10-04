@@ -41,7 +41,6 @@ class _PriceTableState extends State<PriceTable> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);

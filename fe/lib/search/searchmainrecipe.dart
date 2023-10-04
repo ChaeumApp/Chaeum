@@ -35,7 +35,6 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
@@ -57,44 +56,35 @@ class _SearchMainRecipeState extends State<SearchMainRecipe> {
                   shrinkWrap: true,
                   itemCount: 2,
                   itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             ));
-                      },
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              height: 210,
-                              width: double.infinity,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 200.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 3.0,
-                            ),
-                            SizedBox(
-                              height: 16.0,
-                              width: 250.0,
-                              child: Container(color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                          ],
-                        ),
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            height: 210,
+                            width: double.infinity,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                            width: 200.0,
+                            child: Container(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 3.0,
+                          ),
+                          SizedBox(
+                            height: 16.0,
+                            width: 250.0,
+                            child: Container(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                        ],
                       ),
                     );
                   },

@@ -238,7 +238,6 @@ class _DetailState extends State<Detail> {
           length: 3,
           child: NestedScrollView(
             controller: scrollController,
-            // physics: NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, isScrolled) {
               return [
                 SliverAppBar(

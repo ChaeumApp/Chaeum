@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fe/search/searchingr.dart';
 import 'package:fe/search/searchrecipe.dart';
 import 'package:fe/store/searchstore.dart';
-import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';

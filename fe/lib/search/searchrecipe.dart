@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fe/recipe/recipedetail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 class SearchRecipe extends StatefulWidget {
@@ -28,7 +27,6 @@ class _SearchRecipeState extends State<SearchRecipe> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);

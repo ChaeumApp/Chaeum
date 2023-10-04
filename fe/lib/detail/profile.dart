@@ -24,7 +24,6 @@ class _ProfileViewState extends State<ProfileView>{
 
   Future<dynamic> getProductInfo() async {
     var accessToken = context.read<UserStore>().accessToken;
-    print('토큰은 $accessToken');
     try {
       final response = await dio.get(
         '$serverURL/ingr/detail/${widget.category}',
@@ -33,29 +32,12 @@ class _ProfileViewState extends State<ProfileView>{
           headers: {'Authorization': accessToken != '' ? 'Bearer $accessToken' : ''},
         ),
       );
-
-      // Response response;
-      // if (accessToken != '') {
-      //   response = await dio.get(
-      //     '$serverURL/ingr/detail/${widget.category}',
-      //     queryParameters: {'ingrId' : widget.category},
-      //     options: Options(
-      //       headers: {'Authorization': 'Bearer $accessToken'},
-      //     ),
-      //   );
-      // } else {
-      //   response = await dio.get(
-      //     '$serverURL/ingr/detail/${widget.category}',
-      //     queryParameters: {'ingrId' : widget.category},
-      //   );
-      // }
       if (!isSet) {
         setState(() {
           data['like'] = response.data['savedIngredient'];
           isSet = true;
         });
       }
-      // print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -85,7 +67,6 @@ class _ProfileViewState extends State<ProfileView>{
           }
         });
       }
-      print(response.data);
       return Future.value(liked);
     } else {
       Alertlogin().needLogin(context);
