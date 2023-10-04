@@ -13,7 +13,6 @@ class MainBest extends StatefulWidget {
 }
 
 class _MainBestState extends State<MainBest> {
-
   Dio dio = Dio();
   final serverURL = 'https://j9c204.p.ssafy.io';
   // 얻어오는거
@@ -31,16 +30,19 @@ class _MainBestState extends State<MainBest> {
       print(e);
     }
   }
+
   // 상품 클릭하는거
   Future<dynamic> clickItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+        final response = await dio.post(
+          '$serverURL/item/selected',
+          data: {'itemId': itemId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
+          ),
+        );
         return response.data;
       } catch (e) {
         print(e);
@@ -48,99 +50,103 @@ class _MainBestState extends State<MainBest> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(future: getMainBest(),
+    return FutureBuilder(
+        future: getMainBest(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return SliverToBoxAdapter(
-              child: Container(
-                width: 450,
-                height: 170,
-                margin: EdgeInsets.fromLTRB(15, 8, 10, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                child: Container(
+                    width: 450,
+                    height: 170,
+                    margin: EdgeInsets.fromLTRB(15, 8, 10, 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                  width: 120,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
+                            ],
                           ),
-                          SizedBox(height: 5,),
-                          Container(
-                            width: 120,
-                            height: 15,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(5),)
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                        ),
+                        SizedBox(width: 10),
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                  width: 120,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
+                            ],
                           ),
-                          SizedBox(height: 5,),
-                          Container(
-                              width: 120,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(5),)
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade100,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                        ),
+                        SizedBox(width: 10),
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                  width: 120,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
+                            ],
                           ),
-                          SizedBox(height: 5,),
-                          Container(
-                              width: 120,
-                              height: 15,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(5),)
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-            ));
-          }
-          else if (snapshot.hasError) {
+                        ),
+                      ],
+                    )));
+          } else if (snapshot.hasError) {
             return SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -150,9 +156,7 @@ class _MainBestState extends State<MainBest> {
                 ),
               ),
             );
-          }
-
-          else {
+          } else {
             return SliverToBoxAdapter(
               child: Container(
                 width: 1500,
@@ -163,9 +167,14 @@ class _MainBestState extends State<MainBest> {
                     itemCount: snapshot.data.length,
                     itemBuilder: (c, i) {
                       return GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           clickItem(snapshot.data[i]['itemId']);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => WebviewPage(url : snapshot.data[i]['itemStoreLink'], itemId : snapshot.data[i]['itemId'])));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WebviewPage(
+                                      url: snapshot.data[i]['itemStoreLink'],
+                                      itemId: snapshot.data[i]['itemId'])));
                         },
                         child: Container(
                           width: 120,
@@ -178,7 +187,8 @@ class _MainBestState extends State<MainBest> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(5),
-                                    child: Image.network(snapshot.data[i]['itemImage'],
+                                    child: Image.network(
+                                      snapshot.data[i]['itemImage'],
                                       width: 120,
                                       height: 120,
                                       fit: BoxFit.cover,
@@ -202,12 +212,12 @@ class _MainBestState extends State<MainBest> {
                                             bottomRight: Radius.circular(5))),
                                     child: Center(
                                         child: Text(
-                                          '${i+1}',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 15),
-                                        )),
+                                      '${i + 1}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 15),
+                                    )),
                                   )
                                 ],
                               ),
@@ -215,7 +225,7 @@ class _MainBestState extends State<MainBest> {
                                   margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                   child: Text(
                                     '${snapshot.data[i]['itemName']!.length > 18 ? snapshot.data[i]['itemName']?.substring(0, 18) : snapshot.data[i]['itemName']}'
-                                        '${snapshot.data[i]['itemName']!.length > 18 ? "..." : ""}',
+                                    '${snapshot.data[i]['itemName']!.length > 18 ? "..." : ""}',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w600,

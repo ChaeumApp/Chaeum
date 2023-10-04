@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:fe/api/click.dart';
 import 'package:fe/detail/detail.dart';
 import 'package:fe/ingredients/ingrfavbtn.dart';
 import 'package:fe/repeat/needlogin.dart';
@@ -9,7 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class IngrMain extends StatefulWidget {
-  const IngrMain({super.key, this.catId, this.subCatId, this.catName, this.sortNum});
+  const IngrMain(
+      {super.key, this.catId, this.subCatId, this.catName, this.sortNum});
 
   final catId;
   final subCatId;
@@ -40,7 +40,6 @@ class _IngrMainState extends State<IngrMain> {
   Dio dio = Dio();
   final serverURL = 'https://j9c204.p.ssafy.io';
 
-
   List<dynamic> sortData(List<dynamic> data, int sortNum) {
     if (sortNum == 1) {
       data.sort((a, b) => (a['ingrName']).compareTo(b['ingrName']));
@@ -53,15 +52,17 @@ class _IngrMainState extends State<IngrMain> {
     var accessToken = context.read<UserStore>().accessToken;
     try {
       if (accessToken != '') {
-        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}',
-          options: Options(
-            headers: {'Authorization' : 'Bearer $accessToken'},
-          ));
+        final response = await dio.get(
+            '$serverURL/ingr/category/${widget.catId}/${widget.subCatId}',
+            options: Options(
+              headers: {'Authorization': 'Bearer $accessToken'},
+            ));
         final data = response.data[1];
         final sortedData = sortData(data, num);
         return sortedData;
       } else {
-        final response = await dio.get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
+        final response = await dio
+            .get('$serverURL/ingr/category/${widget.catId}/${widget.subCatId}');
         final data = response.data[1];
         final sortedData = sortData(data, num);
         return sortedData;
@@ -74,12 +75,11 @@ class _IngrMainState extends State<IngrMain> {
   // 관심없음
   Future<dynamic> dislikeIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
     if (accessToken != '') {
       try {
         final response = await dio.post(
           '$serverURL/ingr/dislike',
-          data : {'ingrId': ingrId},
+          data: {'ingrId': ingrId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),
@@ -95,7 +95,6 @@ class _IngrMainState extends State<IngrMain> {
   // 클릭
   Future<dynamic> clickIngr(ingrId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
     if (accessToken != '') {
       try {
         final response = await dio.post(
@@ -151,8 +150,8 @@ class _IngrMainState extends State<IngrMain> {
                 body: RefreshIndicator(
                   onRefresh: () async {
                     getIngr();
-                    setState(() {
-                    });},
+                    setState(() {});
+                  },
                   child: CustomScrollView(
                     controller: scrollController,
                     slivers: [
@@ -179,7 +178,8 @@ class _IngrMainState extends State<IngrMain> {
                                 child: Text(
                                   '이런 재료들은 어때요?',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w700, fontSize: 18),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18),
                                 ),
                               ),
                               Container(
@@ -196,17 +196,21 @@ class _IngrMainState extends State<IngrMain> {
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
                                           border: Border.all(
-                                              color: Color(0xffA1CBA1), width: 1),
-                                          borderRadius: BorderRadius.circular(3),
+                                              color: Color(0xffA1CBA1),
+                                              width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(3),
                                         ),
                                         child: DropdownButton(
                                           underline: Container(),
                                           icon: Icon(Icons.keyboard_arrow_down,
-                                              color: Color(0xffA1CBA1), size: 25),
+                                              color: Color(0xffA1CBA1),
+                                              size: 25),
                                           padding:
                                               EdgeInsets.fromLTRB(8, 0, 1, 0),
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 14),
+                                              color: Colors.black,
+                                              fontSize: 14),
                                           value: selectedVal,
                                           items: sort
                                               .map((e) => DropdownMenuItem(
@@ -220,7 +224,7 @@ class _IngrMainState extends State<IngrMain> {
                                           onChanged: (val) {
                                             setState(() {
                                               selectedVal = val as String;
-                                              if(val == '추천순'){
+                                              if (val == '추천순') {
                                                 setState(() {
                                                   num = 0;
                                                 });
@@ -256,7 +260,8 @@ class _IngrMainState extends State<IngrMain> {
                       SliverPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         sliver: SliverGrid(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 20,
                             mainAxisSpacing: 15,
@@ -277,43 +282,50 @@ class _IngrMainState extends State<IngrMain> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => Detail(
-                                                        category:
-                                                            snapshot.data[index]
+                                                    builder: (context) =>
+                                                        Detail(
+                                                            category: snapshot
+                                                                    .data[index]
                                                                 ['ingrId'])));
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5)
-                                            ),
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
                                             child: Image.asset(
                                               'assets/images/ingr/${snapshot.data[index]['ingrName']}.jpg',
                                               height: 250,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                        )
-                                        ),
+                                        )),
                                   ),
                                   Flexible(
-                                      child: IngrFavBtn(isFav: snapshot.data[index]['savedIngredient'], ingrId : snapshot.data[index]['ingrId'])),
+                                      child: IngrFavBtn(
+                                          isFav: snapshot.data[index]
+                                              ['savedIngredient'],
+                                          ingrId: snapshot.data[index]
+                                              ['ingrId'])),
                                   Flexible(
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                          margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                          margin:
+                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
                                           child: GestureDetector(
                                             onTap: () {
-                                              clickIngr(
-                                                  snapshot.data[index]['ingrId']);
+                                              clickIngr(snapshot.data[index]
+                                                  ['ingrId']);
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => Detail(
-                                                          category:
-                                                              snapshot.data[index]
+                                                      builder: (context) =>
+                                                          Detail(
+                                                              category: snapshot
+                                                                          .data[
+                                                                      index]
                                                                   ['ingrId'])));
                                             },
                                             child: Text(
@@ -328,10 +340,15 @@ class _IngrMainState extends State<IngrMain> {
                                         PopupMenuButton(
                                           onSelected: (result) {
                                             final snackBar = SnackBar(
-                                              content: Text("$result 설정 되었습니다."),
-                                              backgroundColor: Color(0xff4C8C4C),
+                                              content:
+                                                  Text("$result 설정 되었습니다."),
+                                              backgroundColor:
+                                                  Color(0xff4C8C4C),
                                             );
-                                            if(context.read<UserStore>().accessToken != ''){
+                                            if (context
+                                                    .read<UserStore>()
+                                                    .accessToken !=
+                                                '') {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(snackBar);
                                             }
@@ -344,8 +361,10 @@ class _IngrMainState extends State<IngrMain> {
                                           ),
                                           itemBuilder: (BuildContext context) {
                                             return [
-                                              _menuItem("관심없음",
-                                                  snapshot.data[index]['ingrId'])
+                                              _menuItem(
+                                                  "관심없음",
+                                                  snapshot.data[index]
+                                                      ['ingrId'])
                                             ];
                                           },
                                         )
@@ -385,7 +404,7 @@ class _IngrMainState extends State<IngrMain> {
     return PopupMenuItem<String>(
       enabled: true,
       onTap: () {
-        if(context.read<UserStore>().accessToken != ''){
+        if (context.read<UserStore>().accessToken != '') {
           dislikeIngr(ingrId);
         } else {
           Alertlogin().needLogin(context);
