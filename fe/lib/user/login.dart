@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:provider/provider.dart';
-import '../user/mypage.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main.dart';
 import 'pageapi.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -133,10 +131,8 @@ class _LogInState extends State<LogIn> {
                                                           .read<UserStore>()
                                                           .deviceToken
                                                           .toString());
-                                              print(1);
                                               if (response["accessToken"] !=
                                                   null) {
-                                                print(2);
                                                 final accessToken =
                                                     await response[
                                                         "accessToken"];
@@ -147,11 +143,6 @@ class _LogInState extends State<LogIn> {
                                                     value:
                                                         "accessToken $accessToken refreshToken $refreshToken");
 
-                                                print('여기는 로그인 버튼');
-                                                // await context
-                                                //     .read<UserStore>()
-                                                //     .changeAccessToken(
-                                                //         accessToken);
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
@@ -220,7 +211,7 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token =
                                                         await UserApi.instance
                                                             .loginWithKakaoTalk();
-                                                    print(token.accessToken);
+
                                                     final sociallogininfo =
                                                         await pageapi
                                                             .kakaologin(token
@@ -261,11 +252,29 @@ class _LogInState extends State<LogIn> {
                                                                         .storage)),
                                                       );
                                                     }
-                                                    print(token.accessToken);
                                                   } catch (error) {
-                                                    print(
-                                                        '카카오톡으로 로그인 실패 $error');
-                                                    print('1');
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return AlertDialog(
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                      '닫기'))
+                                                            ],
+                                                            content:
+                                                                SingleChildScrollView(
+                                                              child: Text(
+                                                                  '카카오 계정을 확인해주세요.'),
+                                                            ),
+                                                          );
+                                                        }));
 
                                                     // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
                                                     // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
@@ -280,7 +289,7 @@ class _LogInState extends State<LogIn> {
                                                       OAuthToken token =
                                                           await UserApi.instance
                                                               .loginWithKakaoAccount();
-                                                      print(token.accessToken);
+
                                                       final sociallogininfo =
                                                           await pageapi
                                                               .kakaologin(token
@@ -300,9 +309,6 @@ class _LogInState extends State<LogIn> {
                                                             key: "login",
                                                             value:
                                                                 "accessToken $accessToken refreshToken $refreshToken");
-                                                        print(widget.storage
-                                                            .read(
-                                                                key: "login"));
 
                                                         Navigator.pushAndRemoveUntil(
                                                             context,
@@ -326,11 +332,29 @@ class _LogInState extends State<LogIn> {
                                                                               .storage)),
                                                         );
                                                       }
-                                                      print(token.accessToken);
                                                     } catch (error) {
-                                                      print(
-                                                          '카카오계정으로 로그인 실패 $error');
-                                                      print('2');
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: ((context) {
+                                                            return AlertDialog(
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                    child: Text(
+                                                                        '닫기'))
+                                                              ],
+                                                              content:
+                                                                  SingleChildScrollView(
+                                                                child: Text(
+                                                                    '카카오 계정을 확인해주세요.'),
+                                                              ),
+                                                            );
+                                                          }));
                                                     }
                                                   }
                                                 } else {
@@ -338,7 +362,6 @@ class _LogInState extends State<LogIn> {
                                                     OAuthToken token = await UserApi
                                                         .instance
                                                         .loginWithKakaoAccount();
-                                                    print(token.accessToken);
                                                     final sociallogininfo =
                                                         await pageapi
                                                             .kakaologin(token
@@ -358,8 +381,6 @@ class _LogInState extends State<LogIn> {
                                                           key: "login",
                                                           value:
                                                               "accessToken $accessToken refreshToken $refreshToken");
-                                                      print(widget.storage
-                                                          .read(key: "login"));
 
                                                       Navigator.pushAndRemoveUntil(
                                                           context,
@@ -381,11 +402,29 @@ class _LogInState extends State<LogIn> {
                                                                         .storage)),
                                                       );
                                                     }
-                                                    print(token.accessToken);
                                                   } catch (error) {
-                                                    print(
-                                                        '카카오계정으로 로그인 실패 $error');
-                                                    print('3');
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return AlertDialog(
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                      '닫기'))
+                                                            ],
+                                                            content:
+                                                                SingleChildScrollView(
+                                                              child: Text(
+                                                                  '카카오 계정을 확인해주세요.'),
+                                                            ),
+                                                          );
+                                                        }));
                                                   }
                                                 }
                                               },
@@ -413,19 +452,16 @@ class _LogInState extends State<LogIn> {
                                                   final NaverLoginResult res =
                                                       await FlutterNaverLogin
                                                           .logIn();
-                                                  // print('이건$res');
                                                   NaverAccessToken nlog =
                                                       await FlutterNaverLogin
                                                           .currentAccessToken;
-                                                  print('저건$nlog');
-
                                                   final token =
                                                       nlog.accessToken;
-                                                  print(token);
+
                                                   final sociallogininfo =
                                                       await pageapi
                                                           .naverlogin(token);
-                                                  print(sociallogininfo);
+
                                                   if (sociallogininfo
                                                       .containsKey(
                                                           'accessToken')) {
@@ -439,8 +475,7 @@ class _LogInState extends State<LogIn> {
                                                         key: "login",
                                                         value:
                                                             "accessToken $accessToken refreshToken $refreshToken");
-                                                    print(widget.storage
-                                                        .read(key: "login"));
+
                                                     Navigator.pushAndRemoveUntil(
                                                         context,
                                                         MaterialPageRoute(
@@ -463,8 +498,27 @@ class _LogInState extends State<LogIn> {
                                                     );
                                                   }
                                                 } catch (error) {
-                                                  print(
-                                                      'naver login error $error');
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: ((context) {
+                                                        return AlertDialog(
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    Text('닫기'))
+                                                          ],
+                                                          content:
+                                                              SingleChildScrollView(
+                                                            child: Text(
+                                                                '네이버 계정을 확인해주세요.'),
+                                                          ),
+                                                        );
+                                                      }));
                                                 }
                                               },
                                             ),

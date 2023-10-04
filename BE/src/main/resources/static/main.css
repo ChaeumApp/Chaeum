@@ -210,11 +210,6 @@ body {
   justify-content: space-evenly;
 }
 
-.appinfo img {
-  height: 40rem;
-  width: 18rem;
-}
-
 .appinfo p {
   margin: 0;
   /* 기본 마진을 제거합니다. */
@@ -228,6 +223,9 @@ body {
 .appinfo .infoDetail {
   font-size: 1.6vw;
   font-weight: 500;
+}
+.appinfo img {
+  width: 20vw;
 }
 @media (max-width: 1024px) {
   .appinfo {
@@ -245,6 +243,10 @@ body {
     font-size: 2vw;
     font-weight: 500;
   }
+
+  .appinfo img {
+    width: 28vw;
+  }
 }
 @media (max-width: 769px) {
   .appinfo {
@@ -260,6 +262,9 @@ body {
   .appinfo .infoDetail {
     font-size: 3vw;
     font-weight: 500;
+  }
+  .appinfo img {
+    width: 60vw;
   }
 }
 
