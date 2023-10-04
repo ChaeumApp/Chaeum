@@ -227,6 +227,7 @@ body {
 .appinfo img {
   width: 20vw;
 }
+
 @media (max-width: 1024px) {
   .appinfo {
     display: flex;
@@ -264,7 +265,7 @@ body {
     font-weight: 500;
   }
   .appinfo img {
-    width: 40vw;
+    width: 38vmin;
   }
 }
 

@@ -538,6 +538,23 @@ class _AddInfoState extends State<AddInfo> {
                                             builder: (BuildContext context) =>
                                                 Main()),
                                         (route) => false);
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: ((context) {
+                                          return AlertDialog(
+                                            actions: <Widget>[
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('닫기'))
+                                            ],
+                                            content: SingleChildScrollView(
+                                              child: Text('나중에 다시 시도해주세요.'),
+                                            ),
+                                          );
+                                        }));
                                   }
                                 }
                               : null,
