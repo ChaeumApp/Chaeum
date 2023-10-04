@@ -268,44 +268,10 @@ class _IngrMainState extends State<IngrMain> {
                             (BuildContext context, int index) {
                               return Column(
                                 children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(3),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          clickIngr(
-                                              snapshot.data[index]['ingrId']);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Detail(
-                                                      category:
-                                                          snapshot.data[index]
-                                                              ['ingrId'])));
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5)
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/ingr/${snapshot.data[index]['ingrName']}.jpg',
-                                            height: 250,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
-                                      // Image.network(
-                                      //   snapshot.data[index]['recipeThumbnail'],
-                                      //   height: 250,
-                                      //   fit: BoxFit.fill,
-                                      // ),
-                                      ),
-                                  IngrFavBtn(isFav: snapshot.data[index]['savedIngredient'], ingrId : snapshot.data[index]['ingrId']),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  Flexible(
+                                    flex: 6,
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(3),
                                         child: GestureDetector(
                                           onTap: () {
                                             clickIngr(
@@ -318,40 +284,80 @@ class _IngrMainState extends State<IngrMain> {
                                                             snapshot.data[index]
                                                                 ['ingrId'])));
                                           },
-                                          child: Text(
-                                            '${snapshot.data[index]['ingrName']!.length > 8 ? snapshot.data[index]['ingrName']?.substring(0, 8) : snapshot.data[index]['ingrName']}'
-                                            '${snapshot.data[index]['ingrName']!.length > 8 ? "..." : ""}',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w700),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            child: Image.asset(
+                                              'assets/images/ingr/${snapshot.data[index]['ingrName']}.jpg',
+                                              height: 250,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        )
+                                        // Image.network(
+                                        //   snapshot.data[index]['recipeThumbnail'],
+                                        //   height: 250,
+                                        //   fit: BoxFit.fill,
+                                        // ),
+                                        ),
+                                  ),
+                                  Flexible(
+                                      child: IngrFavBtn(isFav: snapshot.data[index]['savedIngredient'], ingrId : snapshot.data[index]['ingrId'])),
+                                  Flexible(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              clickIngr(
+                                                  snapshot.data[index]['ingrId']);
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => Detail(
+                                                          category:
+                                                              snapshot.data[index]
+                                                                  ['ingrId'])));
+                                            },
+                                            child: Text(
+                                              '${snapshot.data[index]['ingrName']!.length > 8 ? snapshot.data[index]['ingrName']?.substring(0, 8) : snapshot.data[index]['ingrName']}'
+                                              '${snapshot.data[index]['ingrName']!.length > 8 ? "..." : ""}',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      PopupMenuButton(
-                                        onSelected: (result) {
-                                          final snackBar = SnackBar(
-                                            content: Text("$result 설정 되었습니다."),
-                                            backgroundColor: Color(0xff4C8C4C),
-                                          );
-                                          if(context.read<UserStore>().accessToken != ''){
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackBar);
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 36,
-                                          width: 18,
-                                          alignment: Alignment.centerRight,
-                                          child: Icon(Icons.more_vert),
-                                        ),
-                                        itemBuilder: (BuildContext context) {
-                                          return [
-                                            _menuItem("관심없음",
-                                                snapshot.data[index]['ingrId'])
-                                          ];
-                                        },
-                                      )
-                                    ],
+                                        PopupMenuButton(
+                                          onSelected: (result) {
+                                            final snackBar = SnackBar(
+                                              content: Text("$result 설정 되었습니다."),
+                                              backgroundColor: Color(0xff4C8C4C),
+                                            );
+                                            if(context.read<UserStore>().accessToken != ''){
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                            }
+                                          },
+                                          child: Container(
+                                            height: 36,
+                                            width: 18,
+                                            alignment: Alignment.centerRight,
+                                            child: Icon(Icons.more_vert),
+                                          ),
+                                          itemBuilder: (BuildContext context) {
+                                            return [
+                                              _menuItem("관심없음",
+                                                  snapshot.data[index]['ingrId'])
+                                            ];
+                                          },
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               );
