@@ -4,7 +4,6 @@ import 'package:fe/user/my_more_rec.dart';
 import 'package:fe/user/pageapi.dart';
 
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import 'package:provider/provider.dart';
@@ -158,6 +157,9 @@ class _MyPageState extends State<MyPage> {
                                     } else {
                                       setState(() {
                                         algdropdown = false;
+                                        selectedAllergie = [];
+                                        selectedAllergieNumber = [];
+
                                         Navigator.of(context).pop();
                                         openDialog();
                                       });
@@ -248,6 +250,7 @@ class _MyPageState extends State<MyPage> {
                               context.read<UserStore>().accessToken,
                               selectedVeganNumber,
                               selectedAllergieNumber);
+                          print('여기는 회원정보 수정 $response');
 
                           if (response == 'success') {
                             showDialog(
@@ -267,7 +270,7 @@ class _MyPageState extends State<MyPage> {
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
-                                                          MyPage()),
+                                                          Main()),
                                                   (route) => false);
                                             },
                                             child: Text("닫기"),
@@ -477,7 +480,7 @@ class _MyPageState extends State<MyPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 200,
+                          height: 110,
                           child: GestureDetector(
                               onTap: favorrecipe.isNotEmpty
                                   ? () {
@@ -495,8 +498,8 @@ class _MyPageState extends State<MyPage> {
                                       crossAxisCount: 2,
                                       childAspectRatio: 2 / 1.1,
                                       children: List<Widget>.generate(
-                                          favorrecipe.length > 4
-                                              ? 4
+                                          favorrecipe.length > 2
+                                              ? 2
                                               : favorrecipe.length, (idx) {
                                         return Container(
                                           margin: const EdgeInsets.all(5),
@@ -563,8 +566,8 @@ class _MyPageState extends State<MyPage> {
                                       crossAxisCount: 2, // 열 개수
                                       childAspectRatio: 1 / 0.9,
                                       children: List<Widget>.generate(
-                                          favoringredient.length > 3
-                                              ? 3
+                                          favoringredient.length > 2
+                                              ? 2
                                               : favoringredient.length, (idx) {
                                         return Container(
                                           margin: const EdgeInsets.all(3),
