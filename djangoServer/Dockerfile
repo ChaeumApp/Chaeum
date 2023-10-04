@@ -9,10 +9,10 @@ RUN apt-get -y install vim
 RUN pip3 install -r requirements.txt
 
 # Make sure the entrypoint.sh file is executable
-RUN chmod +x entrypoint.sh
+# RUN chmod +x entrypoint.sh
 
-RUN exec python manage.py makemigrations
-RUN exec python manage.py migrate
+# RUN exec python manage.py makemigrations
+# RUN exec python manage.py migrate
 
 EXPOSE 8000
 
