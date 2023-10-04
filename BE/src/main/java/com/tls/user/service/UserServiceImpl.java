@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
                         .build();
                 userAllergyList.add(userAllergy);
 
-                allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
                     IngredientPreference ingredientPreference = ingredientPreferenceRepository
                         .findByUserAndIngredient(user, allergyIngredient.getIngrId()).orElseThrow();
                     ingredientPreference.updatePrefRating(-10000);
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();
             List<IngredientPreference> list = new ArrayList<>();
             userDto.getAllergyList().forEach(allergy -> {
-                    allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                    allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
                         IngredientPreference ingredientPreference = IngredientPreference.builder()
                             .prefRating(-10000)
                             .ingredient(allergyIngredient.getIngrId())
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
-                allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
                     IngredientPreference ingredientPreference = ingredientPreferenceRepository
                         .findByUserAndIngredient(updateUser.get(), allergyIngredient.getIngrId()).orElseThrow();
                     ingredientPreference.updatePrefRating(-10000);
@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
             User user = userRepository.findByUserEmail(userEmail).orElseThrow();
             List<IngredientPreference> list = new ArrayList<>();
             userVO.getAllergyList().forEach(allergy ->
-                    allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
+                    allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
                         IngredientPreference ingredientPreference = IngredientPreference.builder()
                             .prefRating(-10000)
                             .ingredient(allergyIngredient.getIngrId())
@@ -249,7 +249,6 @@ public class UserServiceImpl implements UserService {
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
             return -1;
         }
     }
