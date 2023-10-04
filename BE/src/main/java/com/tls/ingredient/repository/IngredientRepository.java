@@ -20,4 +20,5 @@ public interface IngredientRepository extends Repository<Ingredient, Integer> {
     Optional<List<Ingredient>> findByCategoryAndSubCategory(Category category,
         SubCategory subCategory);
 
+    int count();
 }

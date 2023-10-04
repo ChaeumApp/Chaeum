@@ -8,8 +8,11 @@ import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.config.RandomStringCreator;
 import com.tls.ingredient.entity.composite.IngredientPreference;
+import com.tls.ingredient.entity.composite.IngredientRecommend;
 import com.tls.ingredient.entity.single.Ingredient;
 import com.tls.ingredient.repository.IngredientPreferenceRepository;
+import com.tls.ingredient.repository.IngredientRecommendRepository;
+import com.tls.ingredient.repository.IngredientRepository;
 import com.tls.jwt.JwtTokenProvider;
 import com.tls.jwt.TokenDto;
 import com.tls.mail.MailDto;
@@ -61,7 +64,9 @@ public class UserServiceImpl implements UserService {
     private final UserRecipeRepository userRecipeRepository;
     private final AllergyRepository allergyRepository;
     private final AllergyIngredientRepository allergyIngredientRepository;
+    private final IngredientRepository ingredientRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
+    private final IngredientRecommendRepository ingredientRecommendRepository;
 
 
     @Value("${jwt.secret}")
@@ -103,6 +108,16 @@ public class UserServiceImpl implements UserService {
 
             });
             userAllergyRepository.saveAll(userAllergyList);
+            List<IngredientRecommend> irList = new ArrayList<>();
+            for (int i = 1; i <= ingredientRepository.count(); i++) {
+                irList.add(IngredientRecommend.builder()
+                    .user(user)
+                    .ingredient(ingredientRepository.findByIngrId(i).orElse(null))
+                    .ingrRecommendScore(0f)
+                    .build()
+                );
+            }
+            ingredientRecommendRepository.saveAll(irList);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
             User user = userRepository.findByUserEmail(userDto.getUserEmail()).orElseThrow();

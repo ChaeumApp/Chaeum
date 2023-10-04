@@ -594,13 +594,13 @@ values (1, '소고기', 4),
 
 insert into user_tb(`user_email`, `user_pwd`, `user_birthday`, `user_gender`, `vegan_id`)
 values ('ww@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6',
-        '2000-01-01', 'M', 0);
+        '2000-01-01', 'm', 0);
 		-- ('xx@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6',
-        -- '1990-01-01', 'M', 0),
+        -- '1990-01-01', 'm', 0),
 		-- ('yy@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6',
-        -- '1980-01-01', 'F', 1),
+        -- '1980-01-01', 'f', 1),
 		-- ('zz@ssafy.com', '{bcrypt}$2a$10$NgAsWB9qRNjfl4OOWALIz.GTAJEzibygrLNwPSWO/2b/c37mbzfE6',
-        -- '1970-01-01', 'F', 2);   
+        -- '1970-01-01', 'f', 2);
         
 insert into allergy_tb
 values (0, '난류'),
