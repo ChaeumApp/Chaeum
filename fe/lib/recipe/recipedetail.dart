@@ -26,7 +26,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   bool tmpSaved = false;
   Future<dynamic> loadRecipe(recipeId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
     if (accessToken != '') {
       try {
         final response = await dio.get(
@@ -59,13 +58,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     }
   }
 
-
-
   Future<bool?> toggleLike(bool isLiked) async {
     bool liked = false;
     var accessToken = context.read<UserStore>().accessToken;
     if (accessToken != '') {
-      print(widget.recipeId);
       final response = await dio.get(
         '$serverURL/recipe/favorite/${widget.recipeId}',
         data: {'recipeId': widget.recipeId},
@@ -87,6 +83,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     } else {
       Alertlogin().needLogin(context);
     }
+    return null;
   }
 
   @override
@@ -97,13 +94,13 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           if (snapshot.hasData == false) {
             return Scaffold(
               body: Center(child: SpinKitPulse(
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                      child: Image.asset('assets/images/repeat/bottom_logo.png',
-                          height: 40),
-                    );
-                  },
-                )),
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                    child: Image.asset('assets/images/repeat/bottom_logo.png',
+                        height: 40),
+                  );
+                },
+              )),
             );
           } else if (snapshot.hasError) {
             return Padding(
@@ -193,11 +190,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1] != null ? snapshot.data['recipeIngredients'][index][1] : ''}',
+                            '${snapshot.data['recipeIngredients'][index][0]} ${snapshot.data['recipeIngredients'][index][1] ?? ''}',
                             style: TextStyle(
                                 color: Color(0xff4C8C4C),
-                                fontWeight: FontWeight.w600
-                            ),
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                       )),
@@ -267,7 +263,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           ],
                         )),
                   ),
-                  SimilarRecipe(recipeId : widget.recipeId),
+                  SimilarRecipe(recipeId: widget.recipeId),
                 ],
               ),
             );

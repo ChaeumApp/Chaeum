@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:fe/api/click.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,18 +25,19 @@ class _MainRowPriceState extends State<MainRowPrice> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     Future<dynamic> clickIngr(ingrId) async {
       var accessToken = context.read<UserStore>().accessToken;
-      print(accessToken);
-      if(accessToken != ''){
+      if (accessToken != '') {
         try {
-          final response = await dio.post('$serverURL/ingr/selected', data: {'ingrId' : ingrId},
+          final response = await dio.post(
+            '$serverURL/ingr/selected',
+            data: {'ingrId': ingrId},
             options: Options(
               headers: {'Authorization': 'Bearer $accessToken'},
-            ),);
+            ),
+          );
           return response.data;
         } catch (e) {
           print(e);
@@ -45,7 +45,8 @@ class _MainRowPriceState extends State<MainRowPrice> {
       }
     }
 
-    return FutureBuilder(future: getLowPrice(),
+    return FutureBuilder(
+        future: getLowPrice(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
             return SliverToBoxAdapter(
@@ -69,14 +70,16 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Container(
                                   width: 120,
                                   height: 15,
                                   decoration: BoxDecoration(
                                     color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(5),)
-                              )
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
                             ],
                           ),
                         ),
@@ -94,14 +97,16 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Container(
                                   width: 120,
                                   height: 15,
                                   decoration: BoxDecoration(
                                     color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(5),)
-                              )
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
                             ],
                           ),
                         ),
@@ -119,36 +124,32 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(height: 5,),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Container(
                                   width: 120,
                                   height: 15,
                                   decoration: BoxDecoration(
                                     color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(5),)
-                              )
+                                    borderRadius: BorderRadius.circular(5),
+                                  ))
                             ],
                           ),
                         ),
                       ],
-                    )
-                ));
-          }
-
-          else if (snapshot.hasError) {
+                    )));
+          } else if (snapshot.hasError) {
             return SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-
                 child: Text(
                   'Error: ${snapshot.error}',
                   style: TextStyle(fontSize: 15),
                 ),
               ),
             );
-          }
-
-          else {
+          } else {
             return SliverToBoxAdapter(
               child: Container(
                 width: 1500,
@@ -164,8 +165,9 @@ class _MainRowPriceState extends State<MainRowPrice> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      Detail(category: snapshot.data[i]['ingredient']['ingrId'])));
+                                  builder: (context) => Detail(
+                                      category: snapshot.data[i]['ingredient']
+                                          ['ingrId'])));
                         },
                         child: Container(
                           width: 120,
@@ -204,11 +206,12 @@ class _MainRowPriceState extends State<MainRowPrice> {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        '${i+1}',
+                                        '${i + 1}',
                                         style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 15,),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ),
                                   )

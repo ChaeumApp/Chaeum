@@ -17,23 +17,23 @@ class _SearchRecipeState extends State<SearchRecipe> {
   Dio dio = Dio();
   final serverURL = 'https://j9c204.p.ssafy.io';
 
-
   Future<dynamic> clickRecipe(recipeId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.get('$serverURL/recipe/selected/$recipeId', queryParameters: {'recipeId' : recipeId},
+        final response = await dio.get(
+          '$serverURL/recipe/selected/$recipeId',
+          queryParameters: {'recipeId': recipeId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
+          ),
+        );
         return response.data;
       } catch (e) {
         print(e);
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +59,13 @@ class _SearchRecipeState extends State<SearchRecipe> {
           );
         } else {
           return GestureDetector(
-            onTap: (){
+            onTap: () {
               clickRecipe(widget.data[index]['recipeId']);
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => RecipeDetailPage(recipeId : widget.data[index]['recipeId'])));
+                      builder: (context) => RecipeDetailPage(
+                          recipeId: widget.data[index]['recipeId'])));
             },
             child: Container(
               margin: EdgeInsets.fromLTRB(20, 5, 20, 0),
@@ -72,9 +73,7 @@ class _SearchRecipeState extends State<SearchRecipe> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(widget.data[index]['recipeThumbnail'],
-                      height: 220,
-                      width: double.infinity,
-                      fit: BoxFit.fill),
+                      height: 220, width: double.infinity, fit: BoxFit.fill),
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 15, 0, 30),
                     child: Row(
@@ -82,24 +81,30 @@ class _SearchRecipeState extends State<SearchRecipe> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: Image.asset('assets/images/recipe/recipe.png',
+                          child: Image.asset(
+                            'assets/images/recipe/recipe.png',
                             height: 40,
-                            width: 40,),
+                            width: 40,
+                          ),
                         ),
-                        SizedBox(width: 15,),
+                        SizedBox(
+                          width: 15,
+                        ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${widget.data[index]['recipeName']}',
+                              Text(
+                                '${widget.data[index]['recipeName']}',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
-                                ),softWrap: true,),
-                              Text('만개의 레시피',
-                                style: TextStyle(
-                                    color: Colors.black54
                                 ),
+                                softWrap: true,
+                              ),
+                              Text(
+                                '만개의 레시피',
+                                style: TextStyle(color: Colors.black54),
                               ),
                             ],
                           ),
