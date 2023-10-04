@@ -29,13 +29,13 @@ public interface IngredientRepository extends Repository<Ingredient, Integer> {
         "AND ir.ingredient.subCategory = :subCategory " +
         "GROUP BY ir.ingredient " +
         "ORDER BY SUM(ir.ingrRecommendScore) DESC")
-    Optional<Ingredient> findTopIngredientByCategoryAndSubCategory(Category category, SubCategory subCategory);
+    Optional<List<Ingredient>> findTopIngredientByCategoryAndSubCategory(Category category, SubCategory subCategory);
 
     @Query("SELECT ir.ingredient " +
         "FROM IngredientRecommend ir " +
         "WHERE ir.ingredient.category = :category " +
         "GROUP BY ir.ingredient " +
         "ORDER BY SUM(ir.ingrRecommendScore) DESC")
-    Optional<Ingredient> findTopIngredientByCategory(Category category);
+    Optional<List<Ingredient>> findTopIngredientByCategory(Category category);
 
 }
