@@ -18,7 +18,9 @@ import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItems(int ingrId) {
         try {
+            /*
             List<ItemDto> results = new ArrayList<>();
             // 가장 최근 갱신된 업데이트 날짜 가져온다.
             LocalDate recentUpdatedDate = itemRepository.findTopByIngrIdOrderByItemCrawlingDateDesc(
@@ -52,6 +55,47 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow().forEach(item ->
                     results.add(itemConverter.entityToDto(item))
                 );
+            return results;*/
+            List<ItemDto> results = new ArrayList<>();
+
+            // 1. 가장 최근 갱신된 업데이트 날짜 가져옵니다.
+            LocalDate recentUpdatedDate = itemRepository.findTopByIngrIdOrderByItemCrawlingDateDesc(
+                    ingredientRepository.findByIngrId(ingrId).orElseThrow())
+                .orElseThrow().get(0).getItemCrawlingDate();
+
+            // 해당 날짜에 해당하는 모든 상품들을 가져옵니다.
+            List<Item> items = itemRepository.findByIngredientAndItemCrawlingDate(
+                    ingredientRepository.findByIngrId(ingrId).orElseThrow(), recentUpdatedDate)
+                .orElseThrow();
+
+            // 상품들을 store 별로 그룹화합니다.
+            Map<String, List<Item>> groupedByStore = items.stream()
+                .collect(Collectors.groupingBy(Item::getItemStore));
+
+            while (!groupedByStore.isEmpty()) {
+                List<Item> batchItems = new ArrayList<>();
+
+                // 각 상점에서 상품을 5개씩 가져옵니다.
+                for (List<Item> storeItems : groupedByStore.values()) {
+                    List<Item> top5Items = storeItems.stream().limit(5).collect(Collectors.toList());
+                    batchItems.addAll(top5Items);
+                }
+
+                // 가져온 상품들을 무작위로 섞습니다.
+                Collections.shuffle(batchItems);
+
+                // 상품들을 DTO로 변환하고 results 배열에 추가
+                batchItems.forEach(item -> results.add(itemConverter.entityToDto(item)));
+
+                // 처리된 상품들을 목록에서 제거합니다.
+                for (List<Item> storeItems : groupedByStore.values()) {
+                    storeItems.removeAll(batchItems);
+                }
+
+                // 더 이상 상품이 없는 상점을 목록에서 제거합니다.
+                groupedByStore.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+            }
+
             return results;
         } catch (Exception e) {
             e.printStackTrace();

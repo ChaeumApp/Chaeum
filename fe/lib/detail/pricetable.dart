@@ -23,9 +23,10 @@ class _PriceTableState extends State<PriceTable> {
       final response = await dio.get('$serverURL/item/${widget.ingrId}');
       final resultData = List.from(response.data);
       resultData.sort((a, b) => a['itemPrice'].compareTo(b['itemPrice'])); // 정렬
-      if(resultData.length > 10) {
+      if (resultData.length > 10) {
         return resultData.take(10).toList();
-      } return resultData;
+      }
+      return resultData;
     } catch (e) {
       print(e);
       return [];
@@ -34,23 +35,21 @@ class _PriceTableState extends State<PriceTable> {
 
   Future<dynamic> clickItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
-    print(accessToken);
-    if(accessToken != ''){
+    if (accessToken != '') {
       try {
-        final response = await dio.post('$serverURL/item/selected', data: {'itemId' : itemId},
+        final response = await dio.post(
+          '$serverURL/item/selected',
+          data: {'itemId': itemId},
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
-          ),);
-        print(response.data);
+          ),
+        );
         return response.data;
       } catch (e) {
         print(e);
       }
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -123,16 +122,19 @@ class _PriceTableState extends State<PriceTable> {
                                   width: 50,
                                   margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: InkWell(
-                                    onTap: (){
+                                    onTap: () {
                                       clickItem(entry['itemId']);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => WebviewPage(url : entry['itemStoreLink'],
-                                                  itemId : entry['itemId'])));
+                                              builder: (context) => WebviewPage(
+                                                  url: entry['itemStoreLink'],
+                                                  itemId: entry['itemId'])));
                                     },
                                     child: Image.asset(
-                                      '${entry['itemStore'] != 'Coupang' ? 'assets/images/detail/naver_shopping_logo.png' : 'assets/images/detail/coupang_logo.png'}',
+                                      entry['itemStore'] != 'Coupang'
+                                          ? 'assets/images/detail/naver_shopping_logo.png'
+                                          : 'assets/images/detail/coupang_logo.png',
                                     ),
                                   ),
                                 )

@@ -16,7 +16,6 @@ class PageApi {
         'userPwd': password,
         'notiToken': deviceToken
       });
-      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -27,7 +26,6 @@ class PageApi {
     try {
       final response = await dio.get('$serverURL/user/checkemail',
           queryParameters: {'userEmail': id});
-      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -38,7 +36,6 @@ class PageApi {
     try {
       final response = await dio
           .post('$serverURL/user/auth/sendEmail', data: {'userEmail': id});
-      print(response.data);
       return response.data;
     } catch (e) {
       print(e);
@@ -49,7 +46,6 @@ class PageApi {
     try {
       final response = await dio.post('$serverURL/user/auth/checkEmail/$code',
           data: {'userEmail': id}, queryParameters: {'code': code});
-      print('코드 확인 여부 ${response.data}');
       return response.data;
     } catch (e) {
       print(e);
@@ -68,7 +64,6 @@ class PageApi {
         'allergyList': alergylist,
         'notiToken': deviceToken
       });
-      print('회원가입 여부 ${response.data}');
       return response.data;
     } catch (e) {
       print(e);
@@ -76,8 +71,6 @@ class PageApi {
   }
 
   Future<dynamic> getinfo(token) async {
-    print(token);
-    print(token.runtimeType);
     try {
       final response = await dio.post('$serverURL/user/mypage',
           options: Options(
@@ -86,7 +79,6 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('개인정보 조회 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -95,10 +87,8 @@ class PageApi {
 
   Future<dynamic> kakaologin(token) async {
     try {
-      print('받은토큰$token');
       final response = await dio.get('$serverURL/user/oAuth/kakao',
           queryParameters: {'token': token});
-      print('카카오 로그인 여부 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -107,10 +97,8 @@ class PageApi {
 
   Future<dynamic> naverlogin(token) async {
     try {
-      print('받은토큰$token');
       final response = await dio.get('$serverURL/user/oAuth/naver',
           queryParameters: {'token': token});
-      print('네이버 로그인 여부 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -142,7 +130,6 @@ class PageApi {
     try {
       final response = await dio.post('$serverURL/user/find/pwd',
           data: {'userBirthday': birth, 'userEmail': id});
-      print('비밀번호 찾기 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -159,7 +146,6 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('비밀번호 변경 ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -175,7 +161,6 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('로그아웃 api ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -191,7 +176,6 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('토큰유효 api ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());
@@ -208,7 +192,6 @@ class PageApi {
               // 다른 헤더도 필요한 경우 여기에 추가할 수 있습니다.
             },
           ));
-      print('회원탈퇴 api ${response.data}');
       return response.data;
     } catch (e) {
       print(e.toString());

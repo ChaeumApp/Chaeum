@@ -5,6 +5,7 @@ import com.tls.category.entity.Category;
 import com.tls.category.entity.SubCategory;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 public interface IngredientRepository extends Repository<Ingredient, Integer> {
@@ -21,4 +22,20 @@ public interface IngredientRepository extends Repository<Ingredient, Integer> {
         SubCategory subCategory);
 
     int count();
+
+    @Query("SELECT ir.ingredient " +
+        "FROM IngredientRecommend ir " +
+        "WHERE ir.ingredient.category = :category " +
+        "AND ir.ingredient.subCategory = :subCategory " +
+        "GROUP BY ir.ingredient " +
+        "ORDER BY SUM(ir.ingrRecommendScore) DESC")
+    Optional<Ingredient> findTopIngredientByCategoryAndSubCategory(Category category, SubCategory subCategory);
+
+    @Query("SELECT ir.ingredient " +
+        "FROM IngredientRecommend ir " +
+        "WHERE ir.ingredient.category = :category " +
+        "GROUP BY ir.ingredient " +
+        "ORDER BY SUM(ir.ingrRecommendScore) DESC")
+    Optional<Ingredient> findTopIngredientByCategory(Category category);
+
 }
