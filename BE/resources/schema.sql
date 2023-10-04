@@ -184,7 +184,7 @@ CREATE TABLE `ingredient_select_log_tb`
   DEFAULT CHARSET = utf8;
 CREATE TABLE `item_select_log_tb`
 (
-    `item_select_log_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `item_select_pk`  BIGINT    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `user_id`          INT       NOT NULL,
     `item_id`          VARCHAR(128)    NOT NULL,
     `item_select_time` TIMESTAMP NOT NULL
@@ -300,7 +300,7 @@ CREATE TABLE `user_devtoken_tb`
 
 CREATE TABLE `item_purchased_log_tb`
 (
-    `item_purchased_log_pk` BIGINT    NOT NULL,
+    `item_purchased_log_pk` BIGINT    NOT NULL AUTO_INCREMENT,
     `user_id`               INT       NOT NULL,
     `item_id`               VARCHAR(128)    NOT NULL,
     `item_purchased_time`   TIMESTAMP NOT NULL
