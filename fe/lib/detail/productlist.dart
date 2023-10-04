@@ -1,12 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:fe/api/click.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({super.key, this.product, this.scrollController});
@@ -31,7 +28,6 @@ class _ProductListState extends State<ProductList> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
@@ -39,12 +35,6 @@ class _ProductListState extends State<ProductList> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // print('여기입니다 ${widget.product}');
-  }
 
   @override
   Widget build(BuildContext context) {

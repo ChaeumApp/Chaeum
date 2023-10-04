@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:fe/api/click.dart';
 import 'package:fe/recipe/recipedetail.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailRecipe extends StatefulWidget {
   const DetailRecipe({super.key, this.ingrId});
@@ -37,7 +35,6 @@ class _DetailRecipeState extends State<DetailRecipe> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);

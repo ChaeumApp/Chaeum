@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../webview/webview.dart';
@@ -35,7 +32,6 @@ class _MainBestState extends State<MainBest> {
     }
   }
   // 상품 클릭하는거
-  // 상품아이디!!!!!
   Future<dynamic> clickItem(itemId) async {
     var accessToken = context.read<UserStore>().accessToken;
     print(accessToken);
@@ -45,7 +41,6 @@ class _MainBestState extends State<MainBest> {
           options: Options(
             headers: {'Authorization': 'Bearer $accessToken'},
           ),);
-        print(response.data);
         return response.data;
       } catch (e) {
         print(e);
