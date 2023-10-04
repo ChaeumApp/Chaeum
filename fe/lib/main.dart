@@ -92,32 +92,23 @@ class _MainState extends State<Main> {
     //read 함수를 통하여 key값에 맞는 정보를 불러오게 됩니다. 이때 불러오는 결과의 타입은 String 타입임을 기억해야 합니다.
     //(데이터가 없을때는 null을 반환을 합니다.)
     var key = await KakaoSdk.origin;
-    print('kakaokey$key');
     userToken = await storage.read(key: "login");
-    print(userToken);
-    print('------');
     if (userToken != null) {
       try {
         final response =
             await pageapi.tokenValidation(userToken.toString().split(" ")[1]);
-        print(response);
-
         if (response == 'success') {
           await context
               .read<UserStore>()
               .changeAccessToken(userToken.toString().split(" ")[1].toString());
           final storetoken = context.read<UserStore>().accessToken;
-          print('이닛 다시 하나요?');
-          print(storetoken);
         } else {
-          print('토큰 제거 실행여부');
           await storage.delete(key: "login");
           await context.read<UserStore>().changeAccessToken('');
           userToken = null;
           setState(() {});
         }
       } catch (e) {
-        print('그냥 다 로그아웃');
         await storage.delete(key: "login");
         await context.read<UserStore>().changeAccessToken('');
         userToken = null;
