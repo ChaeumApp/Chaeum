@@ -69,6 +69,7 @@ class _WebviewPageState extends State<WebviewPage> {
   final serverURL = 'https://j9c204.p.ssafy.io:8080';
 
   Future<dynamic> purchaseItem(itemId) async {
+    print('아이템아이디 $itemId');
     var accessToken = context.read<UserStore>().accessToken;
     print(accessToken);
     if(accessToken != ''){
