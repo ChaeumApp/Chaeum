@@ -38,7 +38,6 @@ class _MainRowPriceState extends State<MainRowPrice> {
             options: Options(
               headers: {'Authorization': 'Bearer $accessToken'},
             ),);
-          print(response.data);
           return response.data;
         } catch (e) {
           print(e);
