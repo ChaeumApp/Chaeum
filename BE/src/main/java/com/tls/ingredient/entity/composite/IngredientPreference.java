@@ -40,7 +40,7 @@ public class IngredientPreference {
     private double prefRating;
 
     public void updatePrefRating(double prefRating){
-        this.prefRating += prefRating;
+        this.prefRating = prefRating;
     }
 
 }

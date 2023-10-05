@@ -126,10 +126,10 @@ public class UserServiceImpl implements UserService {
                 for (AllergyIngredient ai : aiList) {
                     Optional<IngredientPreference> ip = ingredientPreferenceRepository.findByUserAndIngredient(user, ai.getIngrId());
                     if (ip.isPresent()) {
-                        ip.get().updatePrefRating(-10000);
+                        ip.get().updatePrefRating(-50);
                     } else {
                         IngredientPreference ingredientPreference = IngredientPreference.builder()
-                                .prefRating(-10000)
+                                .prefRating(-50)
                                 .ingredient(ai.getIngrId())
                                 .user(user)
                                 .build();
@@ -323,7 +323,7 @@ public class UserServiceImpl implements UserService {
                 allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
                     IngredientPreference ingredientPreference = ingredientPreferenceRepository
                         .findByUserAndIngredient(updateUser.orElse(null), allergyIngredient.getIngrId()).orElseThrow();
-                    ingredientPreference.updatePrefRating(10000);
+                    ingredientPreference.updatePrefRating(0);
                 });
             });
 
@@ -338,10 +338,10 @@ public class UserServiceImpl implements UserService {
                         Optional<IngredientPreference> ip = ingredientPreferenceRepository
                             .findByUserAndIngredient(updateUser.get(), ai.getIngrId());
                         if (ip.isPresent()) {
-                            ip.get().updatePrefRating(-10000);
+                            ip.get().updatePrefRating(-50);
                         } else {
                             IngredientPreference ingredientPreference = IngredientPreference.builder()
-                                .prefRating(-10000)
+                                .prefRating(-50)
                                 .ingredient(ai.getIngrId())
                                 .user(updateUser.get())
                                 .build();
