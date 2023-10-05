@@ -20,4 +20,6 @@ public interface RecipeService {
 
     List<Recipe> listAllRecipes();
     List<Recipe> similarRecipes(int recipeId);
+
+    int makeDescriptions();
 }

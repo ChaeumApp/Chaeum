@@ -1,6 +1,7 @@
 package com.tls.recipe.service;
 
 import com.tls.recipe.entity.single.Recipe;
+import com.tls.recipe.entity.single.RecipeDesc;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -13,26 +14,26 @@ public class RecipeSimilarityCalculator {
 
     private StandardAnalyzer analyzer = new StandardAnalyzer();
 
-    public List<Recipe> getTop3SimilarRecipes(Recipe targetRecipe, List<Recipe> allRecipes) throws IOException {
-        Map<Recipe, Double> similarityScores = computeCosineSimilarity(targetRecipe, allRecipes);
+    public List<RecipeDesc> getTop3SimilarRecipes(RecipeDesc targetRecipeDesc, List<RecipeDesc> allRecipeDescs) throws IOException {
+        Map<RecipeDesc, Double> similarityScores = computeCosineSimilarity(targetRecipeDesc, allRecipeDescs);
 
         return similarityScores.entrySet().stream()
-            .sorted(Map.Entry.<Recipe, Double>comparingByValue().reversed())
+            .sorted(Map.Entry.<RecipeDesc, Double>comparingByValue().reversed())
             .limit(3)
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
     }
 
-    private Map<Recipe, Double> computeCosineSimilarity(Recipe targetRecipe, List<Recipe> allRecipes) throws IOException {
-        Map<Recipe, Double> similarityScores = new HashMap<>();
+    private Map<RecipeDesc, Double> computeCosineSimilarity(RecipeDesc targetRecipeDesc, List<RecipeDesc> allRecipeDescs) throws IOException {
+        Map<RecipeDesc, Double> similarityScores = new HashMap<>();
 
-        Map<String, Double> targetVector = getTfIdfVector(targetRecipe.getRecipeName());
+        Map<String, Double> targetVector = getTfIdfVector(targetRecipeDesc.getRecipeDescription());
 
-        for (Recipe otherRecipe : allRecipes) {
-            if (otherRecipe.getRecipeId() != targetRecipe.getRecipeId()) {
-                Map<String, Double> otherVector = getTfIdfVector(otherRecipe.getRecipeName());
+        for (RecipeDesc otherRecipeDesc : allRecipeDescs) {
+            if (otherRecipeDesc.getRecipeId() != targetRecipeDesc.getRecipeId()) {
+                Map<String, Double> otherVector = getTfIdfVector(otherRecipeDesc.getRecipeDescription());
                 double similarity = cosineSimilarity(targetVector, otherVector);
-                similarityScores.put(otherRecipe, similarity);
+                similarityScores.put(otherRecipeDesc, similarity);
             }
         }
 

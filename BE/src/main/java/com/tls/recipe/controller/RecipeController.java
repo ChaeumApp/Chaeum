@@ -138,4 +138,11 @@ public class RecipeController {
         log.info("{} recipe 유사 레시피 call", recipeId);
         return new ResponseEntity<>(recipeService.similarRecipes(recipeId), HttpStatus.OK);
     }
+
+    @GetMapping("/makedesc")
+    @Operation(summary = "레시피 재료 정보 만들기", description = "레시피 재료 정보를 만든다.", tags = "레시피 API")
+    public ResponseEntity<?> makeDescriptions(){
+        log.info("유사 레시피 찾기에 사용할 재료 정보 만들기");
+        return new ResponseEntity<>(recipeService.makeDescriptions(), HttpStatus.OK);
+    }
 }
