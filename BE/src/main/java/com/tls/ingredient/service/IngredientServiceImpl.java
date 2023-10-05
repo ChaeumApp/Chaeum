@@ -1,5 +1,7 @@
 package com.tls.ingredient.service;
 
+import com.tls.category.entity.Category;
+import com.tls.category.entity.SubCategory;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.ingredient.IngredientPriceVO;
 import com.tls.ingredient.converter.IngredientConverter;
@@ -29,12 +31,9 @@ import com.tls.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -136,11 +135,14 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+
+                    List<Ingredient> topIngredientList = ingredientRepository.findTopIngredientByCategory(category).orElse(null);
+                    if (topIngredientList != null) {
+                        for(Ingredient ingredient : topIngredientList){
+                            results.add(ingredientConverter.entityToDto(ingredient));
+                        }
+                    }
                 }
             } else {
                 if (userEmail != null) {
@@ -158,12 +160,15 @@ public class IngredientServiceImpl implements IngredientService {
                         results.add(ingredientConverter.entityToDto(userEmail, ingredient));
                     }
                 } else {
-                    Objects.requireNonNull(ingredientRepository.findByCategoryAndSubCategory(
-                            categoryRepository.findByCatId(catId).orElseThrow(),
-                            subCategoryRepository.findBySubCatId(subCatId).orElseThrow()).orElse(null))
-                        .forEach(
-                            ingredient -> results.add(ingredientConverter.entityToDto(ingredient)));
-                    Collections.shuffle(results);
+                    Category category = categoryRepository.findByCatId(catId).orElseThrow();
+                    SubCategory subCategory = subCategoryRepository.findBySubCatId(subCatId).orElseThrow();
+
+                    List<Ingredient> topIngredientList = ingredientRepository.findTopIngredientByCategoryAndSubCategory(category, subCategory).orElse(null);
+                    if (topIngredientList != null) {
+                        for(Ingredient ingredient : topIngredientList){
+                            results.add(ingredientConverter.entityToDto(ingredient));
+                        }
+                    }
                 }
             }
             return results;
@@ -229,7 +234,7 @@ public class IngredientServiceImpl implements IngredientService {
 
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, ingredient).orElseThrow();
-            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
+            ingredientPreference.updatePrefRating(10);
 
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
 
@@ -268,7 +273,7 @@ public class IngredientServiceImpl implements IngredientService {
 
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, ingredient).orElseThrow();
-            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
+            ingredientPreference.updatePrefRating(-150);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
@@ -301,7 +306,7 @@ public class IngredientServiceImpl implements IngredientService {
                 tf = true;
                 IngredientPreference ingredientPreference = ingredientPreferenceRepository
                     .findByUserAndIngredient(user, ingredient).orElseThrow();
-                ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() - 150);
+                ingredientPreference.updatePrefRating(-150);
             } else {
                 userIngrRepository.save(
                     UserIngr.builder()
@@ -311,7 +316,7 @@ public class IngredientServiceImpl implements IngredientService {
                 );
                 IngredientPreference ingredientPreference = ingredientPreferenceRepository
                     .findByUserAndIngredient(user, ingredient).orElseThrow();
-                ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 150);
+                ingredientPreference.updatePrefRating(150);
             }
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
@@ -341,6 +346,7 @@ public class IngredientServiceImpl implements IngredientService {
             Ingredient ingredient = ingredientRepository.findByIngrId(ingrId).orElseThrow();
             List<IngredientPrice> list = ingredientPriceRepository.findByIngrIdOrderByDateDesc(ingredient)
                 .orElseThrow();
+            int cnt = 0;
             for (int i = 0; i < list.size(); i++) {
                 IngredientPrice ingredientPrice = list.get(i);
                 if ((ChronoUnit.DAYS.between(ingredientPrice.getDate(), LocalDate.now())) % TERM
@@ -352,7 +358,7 @@ public class IngredientServiceImpl implements IngredientService {
                     .date(ingredientPrice.getDate())
                     .build();
                 ingredientPriceVOs.add(ingredientPriceVO);
-                if (i + 1 == NUMBERS) {
+                if (++cnt >= NUMBERS) {
                     break;
                 }
             }
