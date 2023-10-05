@@ -8,6 +8,7 @@ import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.config.RandomStringCreator;
+import com.tls.config.VeganConfig;
 import com.tls.ingredient.entity.composite.IngredientDefaultPreference;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
     private final IngredientDefaultPreferenceRepository ingredientDefaultPreferenceRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
     private final IngredientRecommendRepository ingredientRecommendRepository;
+    private final VeganConfig veganConfig;
 
 
     @Value("${jwt.secret}")
@@ -99,6 +101,29 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
 
+            if (userDto.getVeganId() != 0){
+                List<IngredientPreference> veganList = new ArrayList<>();
+               if (userDto.getVeganId() == 7) {
+                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
+                       IngredientPreference ingredientPreference = IngredientPreference.builder()
+                           .prefRating(-10)
+                           .ingredient(ingredient)
+                           .user(user)
+                           .build();
+                       veganList.add(ingredientPreference);
+                   });
+               } else {
+                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
+                       IngredientPreference ingredientPreference = IngredientPreference.builder()
+                           .prefRating(-50)
+                           .ingredient(ingredient)
+                           .user(user)
+                           .build();
+                       veganList.add(ingredientPreference);
+                   });
+               }
+               ingredientPreferenceRepository.saveAll(veganList);
+            }
             // 토큰 정보 저장
             userDeviceTokenRepository.save(UserDeviceToken.builder()
                 .userId(user)
