@@ -275,7 +275,11 @@ public class UserServiceImpl implements UserService {
                                 TimeUnit.MILLISECONDS);
 
                 // user_notification_token table에 저장
-
+                userDeviceTokenRepository.save(UserDeviceToken.builder()
+                    .userId(userRepository.findByUserEmail(userEmail).get())
+                    .tokenId(userSignInVO.getNotiToken())
+                    .build()
+                );
             }
             return tokenDto;
         } catch (Exception e) {
