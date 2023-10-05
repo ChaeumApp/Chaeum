@@ -85,20 +85,20 @@ class PageApi {
     }
   }
 
-  Future<dynamic> kakaologin(token) async {
+  Future<dynamic> kakaologin(token, deviceToken) async {
     try {
       final response = await dio.get('$serverURL/user/oAuth/kakao',
-          queryParameters: {'token': token});
+          queryParameters: {'token': token, 'notiToken': deviceToken});
       return response.data;
     } catch (e) {
       print(e.toString());
     }
   }
 
-  Future<dynamic> naverlogin(token) async {
+  Future<dynamic> naverlogin(token, deviceToken) async {
     try {
       final response = await dio.get('$serverURL/user/oAuth/naver',
-          queryParameters: {'token': token});
+          queryParameters: {'token': token, 'notiToken': deviceToken});
       return response.data;
     } catch (e) {
       print(e.toString());
