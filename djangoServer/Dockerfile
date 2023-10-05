@@ -8,6 +8,8 @@ RUN apt-get -y install vim
 
 RUN pip3 install -r requirements.txt
 
+ENV TZ Asia/Seoul
+
 # Make sure the entrypoint.sh file is executable
 # RUN chmod +x entrypoint.sh
 
