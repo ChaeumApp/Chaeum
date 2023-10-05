@@ -634,3 +634,17 @@ ALTER TABLE `ingredient_default_preference_tb` ADD CONSTRAINT `FK_ingredient_tb_
 REFERENCES `ingredient_tb` (
 	`ingr_id`
 );
+
+CREATE TABLE `ingredient_month_tb` (
+	`ingr_month_id`	INT	NOT NULL primary key auto_increment,
+	`month_id`	SMALLINT	NOT NULL,
+	`ingr_id`	INT	NOT NULL
+);
+
+ALTER TABLE `ingredient_month_tb` ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_month_tb_1` FOREIGN KEY (
+	`ingr_id`
+)
+REFERENCES `ingredient_tb` (
+	`ingr_id`
+);
+
