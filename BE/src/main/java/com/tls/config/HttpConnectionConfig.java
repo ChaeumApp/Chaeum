@@ -22,8 +22,8 @@ public class HttpConnectionConfig {
                 int resultCode = conn.getResponseCode();  // 요청 보내기
                 log.info("{} django call :: response code : {}", userId, resultCode);
             } catch (Exception e) {
-                log.warn("error while sending django API");
-                e.printStackTrace();
+                log.warn("error while sending django API ", e);
+//                e.printStackTrace();
             }
         });
 
