@@ -16,9 +16,8 @@ class Mainb extends StatefulWidget {
   State<Mainb> createState() => _MainbState();
 }
 
-class _MainbState extends State<Mainb> with AutomaticKeepAliveClientMixin {
+class _MainbState extends State<Mainb> {
   @override
-  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
