@@ -28,7 +28,7 @@ class _DetailState extends State<Detail> {
               headerSliverBuilder: (context, isScrolled) {
                 return [
                   SliverAppBar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: Colors.grey[50],
                     iconTheme: IconThemeData(color: Colors.black),
                     collapsedHeight: 325,
                     expandedHeight: 325,
