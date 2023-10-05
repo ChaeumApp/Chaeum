@@ -213,9 +213,12 @@ class _LogInState extends State<LogIn> {
                                                             .loginWithKakaoTalk();
 
                                                     final sociallogininfo =
-                                                        await pageapi
-                                                            .kakaologin(token
-                                                                .accessToken);
+                                                        await pageapi.kakaologin(
+                                                            token.accessToken,
+                                                            context
+                                                                .read<
+                                                                    UserStore>()
+                                                                .deviceToken);
                                                     if (sociallogininfo
                                                             is Map &&
                                                         sociallogininfo
@@ -291,9 +294,12 @@ class _LogInState extends State<LogIn> {
                                                               .loginWithKakaoAccount();
 
                                                       final sociallogininfo =
-                                                          await pageapi
-                                                              .kakaologin(token
-                                                                  .accessToken);
+                                                          await pageapi.kakaologin(
+                                                              token.accessToken,
+                                                              context
+                                                                  .read<
+                                                                      UserStore>()
+                                                                  .deviceToken);
                                                       if (sociallogininfo
                                                               is Map &&
                                                           sociallogininfo
@@ -363,9 +369,12 @@ class _LogInState extends State<LogIn> {
                                                         .instance
                                                         .loginWithKakaoAccount();
                                                     final sociallogininfo =
-                                                        await pageapi
-                                                            .kakaologin(token
-                                                                .accessToken);
+                                                        await pageapi.kakaologin(
+                                                            token.accessToken,
+                                                            context
+                                                                .read<
+                                                                    UserStore>()
+                                                                .deviceToken);
                                                     if (sociallogininfo
                                                             is Map &&
                                                         sociallogininfo
@@ -459,8 +468,11 @@ class _LogInState extends State<LogIn> {
                                                       nlog.accessToken;
 
                                                   final sociallogininfo =
-                                                      await pageapi
-                                                          .naverlogin(token);
+                                                      await pageapi.naverlogin(
+                                                          token,
+                                                          context
+                                                              .read<UserStore>()
+                                                              .deviceToken);
 
                                                   if (sociallogininfo
                                                       .containsKey(
