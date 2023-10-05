@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService {
     private final IngredientRecommendRepository ingredientRecommendRepository;
     private final VeganConfig veganConfig;
 
-
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -101,39 +100,6 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
 
-            if (userDto.getVeganId() != 0){
-//                List<IngredientPreference> veganList = new ArrayList<>();
-               if (userDto.getVeganId() == 7) {
-                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
-                       IngredientPreference ingredientPreference = IngredientPreference.builder()
-                           .prefRating(-10)
-                           .ingredient(ingredient)
-                           .user(user)
-                           .build();
-                       try{
-                           ingredientPreferenceRepository.save(ingredientPreference);
-                       } catch (Exception e){
-                         log.info("duplicated key");
-                       }
-//                       veganList.add(ingredientPreference);
-                   });
-               } else {
-                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
-                       IngredientPreference ingredientPreference = IngredientPreference.builder()
-                           .prefRating(-50)
-                           .ingredient(ingredient)
-                           .user(user)
-                           .build();
-                       try{
-                           ingredientPreferenceRepository.save(ingredientPreference);
-                       } catch (Exception e){
-                           log.info("duplicated key");
-                       }
-//                       veganList.add(ingredientPreference);
-                   });
-               }
-//               ingredientPreferenceRepository.saveAll(veganList);
-            }
             // 토큰 정보 저장
             userDeviceTokenRepository.save(UserDeviceToken.builder()
                 .userId(user)
@@ -184,6 +150,9 @@ public class UserServiceImpl implements UserService {
                 );
             }
             ingredientRecommendRepository.saveAll(irList);
+            if (userDto.getVeganId() != 0){
+                if(veganConfig.veganIdToIngredient(user, userDto.getVeganId()) == -1) throw new Exception();
+            }
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (Exception e) {
             e.printStackTrace();
