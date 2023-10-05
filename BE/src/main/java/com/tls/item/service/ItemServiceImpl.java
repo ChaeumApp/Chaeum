@@ -141,7 +141,7 @@ public class ItemServiceImpl implements ItemService {
 
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
-            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 10);
+            ingredientPreference.updatePrefRating(10);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
@@ -175,7 +175,7 @@ public class ItemServiceImpl implements ItemService {
 
             IngredientPreference ingredientPreference = ingredientPreferenceRepository
                 .findByUserAndIngredient(user, item.getIngredient()).orElseThrow();
-            ingredientPreference.updatePrefRating(ingredientPreference.getPrefRating() + 100);
+            ingredientPreference.updatePrefRating(100);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
