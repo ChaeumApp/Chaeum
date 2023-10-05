@@ -359,6 +359,12 @@ footer img {
   width: 30px;
 }
 
+
+footer a {
+  text-decoration: underline;
+  color: black;
+}
+
 @media (max-width: 1024px) {
   .lastp {
     font-size: 3vw;
