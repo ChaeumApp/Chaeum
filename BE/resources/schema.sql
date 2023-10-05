@@ -294,7 +294,7 @@ ALTER TABLE `ingredient_group_tb`
 CREATE TABLE `user_devtoken_tb`
 (
     `user_id`  INT         NOT NULL,
-    `token_id` VARCHAR(30) NOT NULL
+    `token_id` VARCHAR(128) NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 

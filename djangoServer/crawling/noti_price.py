@@ -22,34 +22,47 @@ class IngredientPriceManager():
             price_difference=ExpressionWrapper(
                 F('today_price') - F('yesterday_price'),
                 output_field=FloatField()
+            ),
+            price_change_percent=ExpressionWrapper(
+                (F('price_difference') / F('yesterday_price')) * 100,
+                output_field=FloatField()
             )
         )
 
-        dropped_ingr_ids = prices_combined.filter(price_difference__lt=-0.3 * F('yesterday_price')).values_list('ingr_id', flat=True)
+        dropped_ingr = prices_combined.filter(price_change_percent__lte=-30)
+        dropped_ingr_ids = dropped_ingr.values_list('ingr_id', flat=True)
         logger.info(list(set(dropped_ingr_ids)))
+
+        price_drop_dict = {}
+        for item in dropped_ingr:
+            price_drop_dict[item.ingr_id] = item.price_change_percent
+
+        print(price_drop_dict)
         
         if dropped_ingr_ids:
             for ingr_id in dropped_ingr_ids:
-                cls.send_notification(ingr_id)
+                cls.send_notification(ingr_id, price_drop_dict)
 
     @classmethod
-    def send_notification(cls, ingr_id):
+    def send_notification(cls, ingr_id, price_drop_dict):
         # 1. saved_ingredient_tb에서 ingr_id를 가지고 있는 모든 데이터를 조회하여 user_id를 리스트로 모음
         users_with_ingr = SavedIngredient.objects.filter(ingr_id=ingr_id).values_list('user_id', flat=True)
 
         # 2. user_devtoken_tb에서 user_id에 해당하는 token_id를 찾아 하나의 리스트로 모음
         tokens = UserDeviceToken.objects.filter(user_id__in=users_with_ingr).values_list('token_id', flat=True)
+        # print(f'{ingr_id}: {tokens}')
 
         # 3. Firebase FCM을 사용하여 알림을 보냅니다.
         if tokens:
             ingr_name = Ingredient.objects.get(ingr_id=ingr_id).ingr_name
-            price_change_percent = IngredientPrice.objects.get(ingr_id=ingr_id, date=datetime.now().date()).price_change_percent
+            print(f'{ingr_name}: {tokens}')
             message = messaging.MulticastMessage(
                 tokens=list(tokens),
                 notification=messaging.Notification(
                     title="채움 가격 하락 알림",
-                    body=f"{ingr_name}의 가격이 어제보다 {price_change_percent:.2f}% 하락했어요!"
-                )
+                    body=f"{ingr_name}의 가격이 어제보다 {price_drop_dict[ingr_id]:.2f}% 하락했어요!"
+                ),
+                data={"id": str(ingr_id)}
             )
             try:
                 response = messaging.send_multicast(message)
