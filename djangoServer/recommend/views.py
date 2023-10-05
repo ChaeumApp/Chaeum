@@ -35,10 +35,12 @@ def init(request, user_id):
 
 
 def recommend(request, user_id):
-    # start_time = time.time()
+    response = HttpResponse("Recommendation process completed successfully")
+    yield response
+    start_time = time.time()
+    recommend_lst = []
     def recommend_als(request, user_id, user_ids, ingr_num, weight):
-        nonlocal R
-        print("recommend als init start")
+        nonlocal R, recommend_lst
         if weight == 0:
             return
         class AlternatingLeastSquares():
@@ -138,15 +140,14 @@ def recommend(request, user_id):
                 """
                 return self._users.dot(self._items.T)
             
-        als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=10, verbose=False, k=25)
+        als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=10, verbose=True, k=25)
         als.fit()
 
         als_result = als.get_complete_matrix()
         recommend_lst = als_result[userid_to_idx[user_id]]
-        return recommend_lst
 
-
-    def recommend_substitute(request, user_id, recommend_lst, weight):
+    def recommend_substitute(request, user_id, weight):
+        nonlocal recommend_lst
         if weight == 0:
             return
 
@@ -177,22 +178,21 @@ def recommend(request, user_id):
 
             # 사용자의 재료에 해당하는 recommend_lst 업데이트
             for ingredient in ingredients:
-                recommend_lst[ingredient.ingr_id] += score_delta
-        
-        return recommend_lst
+                recommend_lst[ingredient.ingr_id] += score_delta 
     
+    def recommend_month(request, user_id, ingr_num, weight):
+        nonlocal recommend_lst
 
-    def recommend_month(request, user_id, ingr_num, recommend_lst, weight):
         if weight == 0:
             return
         
         today = datetime.date.today()
         this_month = int(today.strftime('%m'))
-        ingredients_month = IngredientMonth.objects.filter(month_id=this_month)
-        for ingredient in ingredients_month:
-            recommend_lst[ingredient.ingr_id] += 30 * weight
-        
-        return recommend_lst
+        ingredient_month_data = IngredientMonth.objects.filter(month_id=this_month).values('ingr_id')
+
+        for item in ingredient_month_data:
+            ingr_id = item['ingr_id']
+            recommend_lst[ingr_id] += 30 * weight
 
 
     # 존재하는 모든 user_id를 가져옴
@@ -209,9 +209,15 @@ def recommend(request, user_id):
     for ingr_pref in ingr_prefs:
         R[userid_to_idx[ingr_pref.user_id]][ingr_pref.ingr_id] = ingr_pref.pref_rating
 
-    recommend_lst = recommend_als(request, user_id, user_ids, ingr_num, 1)
-    recommend_lst = recommend_substitute(request, user_id, recommend_lst, 1)
-    recommend_lst = recommend_month(request, user_id, ingr_num, recommend_lst, 1)
+    # 선호도 점수를 임시로 추천 DB에 삽입
+
+
+    print("als start")
+    # recommend_als(request, user_id, user_ids, ingr_num, 0)
+    print("substitute start")
+    recommend_substitute(request, user_id, 1)
+    print("month start")
+    recommend_month(request, user_id, ingr_num, 1)
 
     for ingr_id, ingr_recommend_score in enumerate(recommend_lst):
         # index 0 건너뛰기
@@ -224,9 +230,8 @@ def recommend(request, user_id):
         ingr_recommend.ingr_recommend_score = ingr_recommend_score
         ingr_recommend.save()
 
-    # end_time = time.time()
-    # print(f"{(end_time-start_time)}초")
-    response = HttpResponse("Recommendation process completed successfully")
-    return response
+    end_time = time.time()
+    print(end_time - start_time)
+
     
             
