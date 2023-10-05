@@ -5,6 +5,7 @@ import os
 import sys
 import django
 
+
 # current_dir = os.path.dirname(os.path.abspath(__file__))
 # parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
 # sys.path.append(parent_dir)
@@ -14,16 +15,27 @@ import django
 # django.setup()
 
 from recommend.models import *  
-from django.db.models import F, Q
 
-import scipy
 import numpy as np
 
+import datetime
 import time
 
 # Create your views here.
+def init(request, user_id):
+    ingr_num = len(Ingredient.objects.all())
+    for ingr_id in range(1, ingr_num+1):
+        IngredientRecommend.objects.create(
+            user_id=user_id,
+            ingr_id=ingr_id,
+            ingr_recommend_score = 0
+        ).save()
+    response = HttpResponse("Recommendation init table has made successfully")
+    return response
+
+
 def recommend(request, user_id):
-    start_time = time.time()
+    # start_time = time.time()
     def recommend_als(request, user_id, user_ids, ingr_num, weight):
         nonlocal R
         print("recommend als init start")
@@ -126,25 +138,12 @@ def recommend(request, user_id):
                 """
                 return self._users.dot(self._items.T)
             
-        als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=100, verbose=True, k=25)
+        als = AlternatingLeastSquares(R=R, reg_param=0.005, epochs=10, verbose=False, k=25)
         als.fit()
 
         als_result = als.get_complete_matrix()
         recommend_lst = als_result[userid_to_idx[user_id]]
         return recommend_lst
-        # 제거 코드
-        # for user, user_pref in enumerate(result):
-        #     user = user_ids[user]
-        #     for ingr, user_ingr_pref in enumerate(user_pref):
-        #         if abs(user_ingr_pref) > 0.01:
-        #             # Update the IngredientRecommend score using Django ORM
-        #             ingr_recommend, created = IngredientRecommend.objects.get_or_create(
-        #                 user_id=user,
-        #                 ingr_id=ingr,
-        #                 defaults={'ingr_recommend_score': 0}
-        #             )
-        #             ingr_recommend.ingr_recommend_score = F('ingr_recommend_score') + user_ingr_pref * weight
-        #             ingr_recommend.save()
 
 
     def recommend_substitute(request, user_id, recommend_lst, weight):
@@ -181,10 +180,19 @@ def recommend(request, user_id):
                 recommend_lst[ingredient.ingr_id] += score_delta
         
         return recommend_lst
-            # IngredientRecommend.objects.filter(
-            #     user_id=user_id,
-            #     ingr_id__in=ingredients.values('ingr_id')
-            # ).update(ingr_recommend_score=F('ingr_recommend_score') + score_delta)
+    
+
+    def recommend_month(request, user_id, ingr_num, recommend_lst, weight):
+        if weight == 0:
+            return
+        
+        today = datetime.date.today()
+        this_month = int(today.strftime('%m'))
+        ingredients_month = IngredientMonth.objects.filter(month_id=this_month)
+        for ingredient in ingredients_month:
+            recommend_lst[ingredient.ingr_id] += 30 * weight
+        
+        return recommend_lst
 
 
     # 존재하는 모든 user_id를 가져옴
@@ -201,32 +209,9 @@ def recommend(request, user_id):
     for ingr_pref in ingr_prefs:
         R[userid_to_idx[ingr_pref.user_id]][ingr_pref.ingr_id] = ingr_pref.pref_rating
 
-    ## 이하 삭제 코드
-    # ingredient_recommend_list = []
-
-    # for combi in combis:
-    #     ingredient_recommend = IngredientRecommend(
-    #         user_id=combi[0],
-    #         ingr_id=combi[1],
-    #         ingr_recommend_score=0
-    #     )
-    #     ingredient_recommend_list.append(ingredient_recommend)
-
-    # # ingredient_recommend_list를 한꺼번에 저장합니다.
-    # IngredientRecommend.objects.bulk_create(ingredient_recommend_list)
-
-    # ingr_prefs = IngredientPreference.objects.filter(user_id=user_id)
-    # for pref in ingr_prefs:
-    #     ingredient = pref.ingr_id
-    #     pref_rating = pref.pref_rating
-    #     ingr_recommend = IngredientRecommend.objects.get(
-    #         user_id=user_id,
-    #         ingr_id=ingredient)
-    #     ingr_recommend.ingr_recommend_score += pref_rating
-    #     ingr_recommend.save()
-
-    recommend_lst = recommend_als(request, user_id, user_ids, ingr_num, 0.5)
-    recommend_lst = recommend_substitute(request, user_id, recommend_lst, 0.5)
+    recommend_lst = recommend_als(request, user_id, user_ids, ingr_num, 1)
+    recommend_lst = recommend_substitute(request, user_id, recommend_lst, 1)
+    recommend_lst = recommend_month(request, user_id, ingr_num, recommend_lst, 1)
 
     for ingr_id, ingr_recommend_score in enumerate(recommend_lst):
         # index 0 건너뛰기
@@ -239,8 +224,8 @@ def recommend(request, user_id):
         ingr_recommend.ingr_recommend_score = ingr_recommend_score
         ingr_recommend.save()
 
-    end_time = time.time()
-    print(f"{(end_time-start_time)}초")
+    # end_time = time.time()
+    # print(f"{(end_time-start_time)}초")
     response = HttpResponse("Recommendation process completed successfully")
     return response
     

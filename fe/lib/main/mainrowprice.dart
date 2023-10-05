@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../detail/detail.dart';
@@ -230,7 +231,7 @@ class _MainRowPriceState extends State<MainRowPrice> {
                               Container(
                                   margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                   child: Text(
-                                    '어제보다 ${snapshot.data[i]['priceDropAmount']}원(${snapshot.data[i]['priceDropPercentage'].toInt()}%) 더 싸요!',
+                                    '어제보다 ${NumberFormat('#,###').format(snapshot.data[i]['priceDropAmount'].toInt())}원(${snapshot.data[i]['priceDropPercentage'].toInt()}%) 더 싸요!',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,

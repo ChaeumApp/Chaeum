@@ -300,18 +300,13 @@ CREATE TABLE `user_devtoken_tb`
 
 CREATE TABLE `item_purchased_log_tb`
 (
-    `item_purchased_log_pk` BIGINT    NOT NULL AUTO_INCREMENT,
+    `item_purchased_log_pk` BIGINT    PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `user_id`               INT       NOT NULL,
     `item_id`               VARCHAR(128)    NOT NULL,
     `item_purchased_time`   TIMESTAMP NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-ALTER TABLE `item_purchased_log_tb`
-    ADD CONSTRAINT `PK_ITEM_PURCHASED_LOG_TB`
-        PRIMARY KEY (
-                     `item_purchased_log_pk`
-            );
 
 ALTER TABLE `vegan_tb`
     ADD CONSTRAINT `PK_VEGAN_TB` PRIMARY KEY (
@@ -634,3 +629,17 @@ ALTER TABLE `ingredient_default_preference_tb` ADD CONSTRAINT `FK_ingredient_tb_
 REFERENCES `ingredient_tb` (
 	`ingr_id`
 );
+
+CREATE TABLE `ingredient_month_tb` (
+	`ingr_month_id`	INT	NOT NULL primary key auto_increment,
+	`month_id`	SMALLINT	NOT NULL,
+	`ingr_id`	INT	NOT NULL
+);
+
+ALTER TABLE `ingredient_month_tb` ADD CONSTRAINT `FK_ingredient_tb_TO_ingredient_month_tb_1` FOREIGN KEY (
+	`ingr_id`
+)
+REFERENCES `ingredient_tb` (
+	`ingr_id`
+);
+
