@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/webview/webview.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -111,7 +112,7 @@ class _PriceTableState extends State<PriceTable> {
                         cells: [
                           DataCell(
                             Text(
-                              '${entry['itemPrice'] as int}원',
+                              '${NumberFormat('#,###').format(entry['itemPrice'] as int)}원',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),

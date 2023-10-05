@@ -8,6 +8,7 @@ import com.tls.allergy.repository.AllergyRepository;
 import com.tls.allergy.repository.UserAllergyRepository;
 import com.tls.config.HttpConnectionConfig;
 import com.tls.config.RandomStringCreator;
+import com.tls.config.VeganConfig;
 import com.tls.ingredient.entity.composite.IngredientDefaultPreference;
 import com.tls.ingredient.entity.composite.IngredientPreference;
 import com.tls.ingredient.entity.composite.IngredientRecommend;
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
     private final IngredientDefaultPreferenceRepository ingredientDefaultPreferenceRepository;
     private final IngredientPreferenceRepository ingredientPreferenceRepository;
     private final IngredientRecommendRepository ingredientRecommendRepository;
+    private final VeganConfig veganConfig;
 
 
     @Value("${jwt.secret}")
@@ -99,6 +101,46 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
 
+            if (userDto.getVeganId() != 0){
+//                List<IngredientPreference> veganList = new ArrayList<>();
+               if (userDto.getVeganId() == 7) {
+                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
+                       IngredientPreference ingredientPreference = IngredientPreference.builder()
+                           .prefRating(-10)
+                           .ingredient(ingredient)
+                           .user(user)
+                           .build();
+                       try{
+                           ingredientPreferenceRepository.save(ingredientPreference);
+                       } catch (Exception e){
+                         log.info("duplicated key");
+                       }
+//                       veganList.add(ingredientPreference);
+                   });
+               } else {
+                   veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
+                       IngredientPreference ingredientPreference = IngredientPreference.builder()
+                           .prefRating(-50)
+                           .ingredient(ingredient)
+                           .user(user)
+                           .build();
+                       try{
+                           ingredientPreferenceRepository.save(ingredientPreference);
+                       } catch (Exception e){
+                           log.info("duplicated key");
+                       }
+//                       veganList.add(ingredientPreference);
+                   });
+               }
+//               ingredientPreferenceRepository.saveAll(veganList);
+            }
+            // 토큰 정보 저장
+            userDeviceTokenRepository.save(UserDeviceToken.builder()
+                .userId(user)
+                .tokenId(userDto.getNotiToken())
+                .build()
+            );
+
             // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
             int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
             // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
@@ -119,10 +161,10 @@ public class UserServiceImpl implements UserService {
                 for (AllergyIngredient ai : aiList) {
                     Optional<IngredientPreference> ip = ingredientPreferenceRepository.findByUserAndIngredient(user, ai.getIngrId());
                     if (ip.isPresent()) {
-                        ip.get().updatePrefRating(-10000);
+                        ip.get().updatePrefRating(-50);
                     } else {
                         IngredientPreference ingredientPreference = IngredientPreference.builder()
-                                .prefRating(-10000)
+                                .prefRating(-50)
                                 .ingredient(ai.getIngrId())
                                 .user(user)
                                 .build();
@@ -144,6 +186,7 @@ public class UserServiceImpl implements UserService {
             ingredientRecommendRepository.saveAll(irList);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("signup fail");
             return 406;
         }
@@ -238,7 +281,6 @@ public class UserServiceImpl implements UserService {
                     .build()
                 );
             }
-
             return tokenDto;
         } catch (Exception e) {
             log.info("sign in failed :: password is wrong");
@@ -321,7 +363,7 @@ public class UserServiceImpl implements UserService {
                 allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
                     IngredientPreference ingredientPreference = ingredientPreferenceRepository
                         .findByUserAndIngredient(updateUser.orElse(null), allergyIngredient.getIngrId()).orElseThrow();
-                    ingredientPreference.updatePrefRating(10000);
+                    ingredientPreference.updatePrefRating(0);
                 });
             });
 
@@ -336,10 +378,10 @@ public class UserServiceImpl implements UserService {
                         Optional<IngredientPreference> ip = ingredientPreferenceRepository
                             .findByUserAndIngredient(updateUser.get(), ai.getIngrId());
                         if (ip.isPresent()) {
-                            ip.get().updatePrefRating(-10000);
+                            ip.get().updatePrefRating(-50);
                         } else {
                             IngredientPreference ingredientPreference = IngredientPreference.builder()
-                                .prefRating(-10000)
+                                .prefRating(-50)
                                 .ingredient(ai.getIngrId())
                                 .user(updateUser.get())
                                 .build();
