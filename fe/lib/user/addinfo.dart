@@ -125,6 +125,7 @@ class _AddInfoState extends State<AddInfo> {
           color: Colors.black,
           icon: Icon(Icons.keyboard_backspace_rounded),
           onPressed: () {
+            context.read<UserStore>().disposePolicyCheck();
             Navigator.pop(context);
           },
         ),
@@ -576,6 +577,9 @@ class _AddInfoState extends State<AddInfo> {
                                     final accessToken = loginres['accessToken'];
                                     final refreshToken =
                                         loginres['refreshToken'];
+                                    context
+                                        .watch<UserStore>()
+                                        .disposePolicyCheck();
 
                                     await widget.storage.write(
                                         key: "login",
