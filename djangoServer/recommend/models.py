@@ -107,6 +107,16 @@ class IngredientGroup(models.Model):
             )
         ]
 
+
+class IngredientMonth(models.Model):
+    ingr_month_id = models.AutoField(primary_key=True)
+    month_id = models.SmallIntegerField()
+    ingr_id = models.IntegerField()
+
+    class Meta:
+        db_table = "ingredient_month_tb"
+
+
 class Item(models.Model):
     item_id = models.CharField(max_length=30, primary_key=True)  # 자동 증가하는 Primary Key
     ingr = models.ForeignKey('Ingredient', on_delete=models.CASCADE)  # Integer 필드
