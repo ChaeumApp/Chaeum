@@ -359,6 +359,10 @@ public class UserServiceImpl implements UserService {
                     });
             });
             userAllergyRepository.saveAll(userAllergyList);
+            // vegan 갱신
+            veganConfig.updateVegan(userRepository.findByUserEmail(userEmail).get(), userRepository.findByUserEmail(userEmail).get().getVegan().getVeganId());
+            veganConfig.veganIdToIngredient(userRepository.findByUserEmail(userEmail).get(), userVO.getVeganId());
+
             HttpConnectionConfig.callDjangoConn(updateUser.get().getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
