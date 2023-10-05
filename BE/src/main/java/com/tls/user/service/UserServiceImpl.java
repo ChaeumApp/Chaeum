@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
 
             if (userDto.getVeganId() != 0){
-                List<IngredientPreference> veganList = new ArrayList<>();
+//                List<IngredientPreference> veganList = new ArrayList<>();
                if (userDto.getVeganId() == 7) {
                    veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
                        IngredientPreference ingredientPreference = IngredientPreference.builder()
@@ -110,7 +110,12 @@ public class UserServiceImpl implements UserService {
                            .ingredient(ingredient)
                            .user(user)
                            .build();
-                       veganList.add(ingredientPreference);
+                       try{
+                           ingredientPreferenceRepository.save(ingredientPreference);
+                       } catch (Exception e){
+                         log.info("duplicated key");
+                       }
+//                       veganList.add(ingredientPreference);
                    });
                } else {
                    veganConfig.veganIdToIngredient(userDto.getVeganId()).forEach(ingredient -> {
@@ -119,10 +124,15 @@ public class UserServiceImpl implements UserService {
                            .ingredient(ingredient)
                            .user(user)
                            .build();
-                       veganList.add(ingredientPreference);
+                       try{
+                           ingredientPreferenceRepository.save(ingredientPreference);
+                       } catch (Exception e){
+                           log.info("duplicated key");
+                       }
+//                       veganList.add(ingredientPreference);
                    });
                }
-               ingredientPreferenceRepository.saveAll(veganList);
+//               ingredientPreferenceRepository.saveAll(veganList);
             }
             // 토큰 정보 저장
             userDeviceTokenRepository.save(UserDeviceToken.builder()
@@ -176,6 +186,7 @@ public class UserServiceImpl implements UserService {
             ingredientRecommendRepository.saveAll(irList);
             HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("signup fail");
             return 406;
         }
