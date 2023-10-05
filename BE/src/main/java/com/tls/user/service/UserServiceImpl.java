@@ -100,13 +100,6 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
 
-            // 토큰 정보 저장
-            userDeviceTokenRepository.save(UserDeviceToken.builder()
-                .userId(user)
-                .tokenId(userDto.getNotiToken())
-                .build()
-            );
-
             // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
             int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
             // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
