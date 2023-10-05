@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
                         .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
                         .build();
                 userAllergyList.add(userAllergy);
+                List<IngredientPreference> ipList = new ArrayList<>();
                 List<AllergyIngredient> aiList = allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null));
                 for (AllergyIngredient ai : aiList) {
                     Optional<IngredientPreference> ip = ingredientPreferenceRepository.findByUserAndIngredient(user, ai.getIngrId());
@@ -121,9 +122,10 @@ public class UserServiceImpl implements UserService {
                                 .ingredient(ai.getIngrId())
                                 .user(user)
                                 .build();
-                        ingredientPreferenceRepository.save(ingredientPreference);
+                        ipList.add(ingredientPreference);
                     }
-                };
+                }
+                ingredientPreferenceRepository.saveAll(ipList);
             });
             userAllergyRepository.saveAll(userAllergyList);
             List<IngredientRecommend> irList = new ArrayList<>();
@@ -148,6 +150,7 @@ public class UserServiceImpl implements UserService {
     public int saveDefaultPreference(User user, int groupId) {
         try {
             List<IngredientDefaultPreference> ingredientDefaultPreferenceList = ingredientDefaultPreferenceRepository.findAllByGroupId(groupId);
+            List<IngredientPreference> ipList = new ArrayList<>();
             if (!ingredientDefaultPreferenceList.isEmpty()) {
                 for (IngredientDefaultPreference defaultPreference : ingredientDefaultPreferenceList) {
                     IngredientPreference newPreference = IngredientPreference.builder()
@@ -155,8 +158,9 @@ public class UserServiceImpl implements UserService {
                         .ingredient(defaultPreference.getIngredient())
                         .prefRating(defaultPreference.getPrefRating())
                         .build();
-                    ingredientPreferenceRepository.save(newPreference);
+                    ipList.add(newPreference);
                 }
+                ingredientPreferenceRepository.saveAll(ipList);
                 return 1;
             } else {
                 return -1;
