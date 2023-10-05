@@ -33,4 +33,8 @@ class UserStore extends ChangeNotifier {
     policycheck = !policycheck;
     notifyListeners();
   }
+
+  disposePolicyCheck() {
+    policycheck = false;
+  }
 }
