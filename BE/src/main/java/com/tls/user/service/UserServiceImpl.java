@@ -85,7 +85,6 @@ public class UserServiceImpl implements UserService {
                     && userRepository.findByUserEmail(userDto.getUserEmail()).isPresent()) {
                 return 200;
             }
-            log.info("test1");
             User user = User.builder()
                     .userEmail(userDto.getUserEmail())
                     .userPwd(userDto.getUserPwd() != null ? passwordEncoder.encode(userDto.getUserPwd()) : "")
@@ -96,13 +95,10 @@ public class UserServiceImpl implements UserService {
                             veganRepository.findByVeganId(userDto.getVeganId()).get() : null)
                     .build();
             userRepository.save(user);
-            log.info("test2");
-
-//            // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
-//            int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
-//            // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
-//            if (saveDefaultPreference(user, groupId) == -1) throw new Exception();
-
+            // 1. 먼저 user의 생년 월일과 성별 정보로 그룹 아이디를 찾는다.
+            int groupId = getGroupId(userDto.getUserBirthday(), userDto.getUserGender());
+            // 2. 해당 그룹 아이디의 default preference 정보를 가져온다. 그리고 넣는다.
+            if (saveDefaultPreference(user, groupId) == -1) throw new Exception();
 
             // user 가 가지고 있는 allergy 정보를 저장한다.
             List<UserAllergy> userAllergyList = new ArrayList<>();
@@ -151,7 +147,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public int saveDefaultPreference(User user, int groupId) {
         try {
-            log.info("save default preference start!");
             List<IngredientDefaultPreference> ingredientDefaultPreferenceList = ingredientDefaultPreferenceRepository.findAllByGroupId(groupId);
             if (!ingredientDefaultPreferenceList.isEmpty()) {
                 for (IngredientDefaultPreference defaultPreference : ingredientDefaultPreferenceList) {
@@ -162,12 +157,12 @@ public class UserServiceImpl implements UserService {
                         .build();
                     ingredientPreferenceRepository.save(newPreference);
                 }
-                log.info("save default preference end!");
                 return 1;
             } else {
                 return -1;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         }
     }
@@ -291,37 +286,56 @@ public class UserServiceImpl implements UserService {
             updateUser.ifPresent(selectUser -> {
                 selectUser.updateVegan(veganRepository.findByVeganId(userVO.getVeganId()).get());
             });
-            List<UserAllergy> userAllergyList = new ArrayList<>();
-            userVO.getAllergyList().forEach(allergy -> {
-                UserAllergy userAllergy = UserAllergy.builder()
-                        .userId(updateUser.orElse(null))
-                        .algyId(allergyRepository.findByAlgyId(allergy).orElse(null))
-                        .build();
-                userAllergyList.add(userAllergy);
-                allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
+
+            // 1. 기존 알러지 리스트
+            List<Allergy> deletedAllergyList = (userAllergyRepository.findAllByUserId(updateUser.orElse(null)).get().stream()
+                    .map(UserAllergy::getAlgyId)
+                    .collect(Collectors.toList()));
+            List<Allergy> insertedAllergyList = userVO.getAllergyList().stream()
+                .map(allergyRepository::findByAlgyId)
+                .map(optionalAllergy -> optionalAllergy.orElse(null))
+                .collect(Collectors.toList());
+
+            List<Allergy> tmp = new ArrayList<>(deletedAllergyList);
+            // 삭제할 리스트
+            deletedAllergyList.removeAll(insertedAllergyList);
+            // 추가할 리스트
+            insertedAllergyList.removeAll(tmp);
+
+            deletedAllergyList.forEach(allergy -> {
+                userAllergyRepository.deleteByUserIdAndAlgyId(
+                updateUser.orElse(null), allergy);
+                allergyIngredientRepository.findByAlgyId(allergy).forEach(allergyIngredient -> {
                     IngredientPreference ingredientPreference = ingredientPreferenceRepository
-                        .findByUserAndIngredient(updateUser.get(), allergyIngredient.getIngrId()).orElseThrow();
-                    ingredientPreference.updatePrefRating(-10000);
+                        .findByUserAndIngredient(updateUser.orElse(null), allergyIngredient.getIngrId()).orElseThrow();
+                    ingredientPreference.updatePrefRating(10000);
                 });
+            });
+
+            List<UserAllergy> userAllergyList = new ArrayList<>();
+            insertedAllergyList.forEach(allergy -> {
+                    UserAllergy userAllergy = UserAllergy.builder()
+                        .userId(updateUser.orElse(null))
+                        .algyId(allergy)
+                        .build();
+                    userAllergyList.add(userAllergy);
+                    allergyIngredientRepository.findByAlgyId(allergy).forEach(ai -> {
+                        Optional<IngredientPreference> ip = ingredientPreferenceRepository
+                            .findByUserAndIngredient(updateUser.get(), ai.getIngrId());
+                        if (ip.isPresent()) {
+                            ip.get().updatePrefRating(-10000);
+                        } else {
+                            IngredientPreference ingredientPreference = IngredientPreference.builder()
+                                .prefRating(-10000)
+                                .ingredient(ai.getIngrId())
+                                .user(updateUser.get())
+                                .build();
+                            ingredientPreferenceRepository.save(ingredientPreference);
+                        }
+                    });
             });
             userAllergyRepository.saveAll(userAllergyList);
             HttpConnectionConfig.callDjangoConn(updateUser.get().getUserId()); // 장고에게 업데이트 되었다고 알려준다.
-            return 1;
-        } catch (NoSuchElementException e) { // 선호도 점수가 없을 경우 새로 만든다.
-            User user = userRepository.findByUserEmail(userEmail).orElseThrow();
-            List<IngredientPreference> list = new ArrayList<>();
-            userVO.getAllergyList().forEach(allergy ->
-                    allergyIngredientRepository.findByAlgyId(allergyRepository.findByAlgyId(allergy).orElse(null)).forEach(allergyIngredient -> {
-                        IngredientPreference ingredientPreference = IngredientPreference.builder()
-                            .prefRating(-10000)
-                            .ingredient(allergyIngredient.getIngrId())
-                            .user(user)
-                            .build();
-                        list.add(ingredientPreference);
-                    })
-            );
-            ingredientPreferenceRepository.saveAll(list);
-            HttpConnectionConfig.callDjangoConn(user.getUserId()); // 장고에게 업데이트 되었다고 알려준다.
             return 1;
         } catch (Exception e) {
             return -1;
