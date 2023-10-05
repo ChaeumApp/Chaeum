@@ -27,4 +27,10 @@ class UserStore extends ChangeNotifier {
   deleteSearchList(index) {
     searchList.removeAt(index);
   }
+
+  bool policycheck = false;
+  changePolicyCheck() {
+    policycheck = !policycheck;
+    notifyListeners();
+  }
 }
