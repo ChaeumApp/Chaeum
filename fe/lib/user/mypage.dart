@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fe/main.dart';
 import 'package:fe/user/my_more_food.dart';
 import 'package:fe/user/my_more_rec.dart';
@@ -357,7 +359,7 @@ class _MyPageState extends State<MyPage> {
         leading: Text(''),
       ),
       body: Container(
-        padding: EdgeInsets.all(30),
+        padding: EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -428,145 +430,170 @@ class _MyPageState extends State<MyPage> {
                   Expanded(
                     child: Column(
                       children: [
-                        SizedBox(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(children: [
-                                  Text(
-                                    '레시피 ',
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  Text(
-                                    '(${favorrecipe.length}건)',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ]),
-                                favorrecipe.isNotEmpty
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        FavoriteMoreRec(
-                                                            favorRec:
-                                                                favorrecipe)),
-                                          );
-                                        },
-                                        child: Text('더보기'))
-                                    : Text('')
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 110,
-                          child: GestureDetector(
-                              onTap: favorrecipe.isNotEmpty
-                                  ? () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                FavoriteMoreRec(
-                                                    favorRec: favorrecipe)),
-                                      );
-                                    }
-                                  : null,
-                              child: favorrecipe.isNotEmpty
-                                  ? GridView.count(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 2 / 1.1,
-                                      children: List<Widget>.generate(
-                                          favorrecipe.length > 2
-                                              ? 2
-                                              : favorrecipe.length, (idx) {
-                                        return Container(
-                                          margin: const EdgeInsets.all(5),
-                                          child: Image.network(
-                                            favorrecipe[idx]['recipeThumbnail'],
-                                          ),
-                                        );
-                                      }).toList())
-                                  : Center(child: Text('좋아하는 레시피를 추가해 보세요'))),
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                        Flexible(
+                          flex: 1,
+                          child: Column(
                             children: [
-                              Row(children: [
-                                Text(
-                                  '식재료 ',
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
+                              SizedBox(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(children: [
+                                        Text(
+                                          '레시피 ',
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        Text(
+                                          '(${favorrecipe.length}건)',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ]),
+                                      favorrecipe.isNotEmpty
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          FavoriteMoreRec(
+                                                              favorRec:
+                                                                  favorrecipe)),
+                                                );
+                                              },
+                                              child: Text('더보기'))
+                                          : Text('')
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  '(${favoringredient.length}건)',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ]),
-                              favoringredient.isNotEmpty
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  FavoriteMoreFood(
-                                                      favorIngr:
-                                                          favoringredient)),
-                                        );
-                                      },
-                                      child: Text('더보기'))
-                                  : Text('')
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                    onTap: favorrecipe.isNotEmpty
+                                        ? () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          FavoriteMoreRec(
+                                                              favorRec:
+                                                                  favorrecipe)),
+                                            );
+                                          }
+                                        : null,
+                                    child: favorrecipe.isNotEmpty
+                                        ? GridView.count(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 2 / 1.1,
+                                            children: List<Widget>.generate(
+                                                favorrecipe.length > 2
+                                                    ? 2
+                                                    : favorrecipe.length,
+                                                (idx) {
+                                              return Container(
+                                                margin: const EdgeInsets.all(5),
+                                                child: Image.network(
+                                                  favorrecipe[idx]
+                                                      ['recipeThumbnail'],
+                                                ),
+                                              );
+                                            }).toList())
+                                        : Center(
+                                            child: Text('좋아하는 레시피를 추가해 보세요'))),
+                              ),
                             ],
                           ),
                         ),
-                        Expanded(
-                          child: GestureDetector(
-                              onTap: favoringredient.isNotEmpty
-                                  ? () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                FavoriteMoreFood(
-                                                    favorIngr:
-                                                        favoringredient)),
-                                      );
-                                    }
-                                  : null,
-                              child: favoringredient.isNotEmpty
-                                  ? GridView.count(
-                                      crossAxisCount: 2, // 열 개수
-                                      childAspectRatio: 1 / 0.9,
-                                      children: List<Widget>.generate(
-                                          favoringredient.length > 2
-                                              ? 2
-                                              : favoringredient.length, (idx) {
-                                        return Container(
-                                          margin: const EdgeInsets.all(3),
-                                          child: Image.asset(
-                                            'assets/images/ingr/${favoringredient[idx]['ingrName']}.jpg',
-                                            fit: BoxFit.fill,
-                                          ),
-                                        );
-                                      }).toList())
-                                  : Center(child: Text('좋아하는 식재료를 추가해 보세요'))),
+                        Flexible(
+                          flex: 2,
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(children: [
+                                      Text(
+                                        '식재료 ',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Text(
+                                        '(${favoringredient.length}건)',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ]),
+                                    favoringredient.isNotEmpty
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        FavoriteMoreFood(
+                                                            favorIngr:
+                                                                favoringredient)),
+                                              );
+                                            },
+                                            child: Text('더보기'))
+                                        : Text('')
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                    onTap: favoringredient.isNotEmpty
+                                        ? () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      FavoriteMoreFood(
+                                                          favorIngr:
+                                                              favoringredient)),
+                                            );
+                                          }
+                                        : null,
+                                    child: favoringredient.isNotEmpty
+                                        ? GridView.count(
+                                            crossAxisCount: 2, // 열 개수
+                                            childAspectRatio: 1 / 0.9,
+                                            children: List<Widget>.generate(
+                                                favoringredient.length > 2
+                                                    ? 2
+                                                    : favoringredient.length,
+                                                (idx) {
+                                              return Container(
+                                                margin: const EdgeInsets.all(3),
+                                                child: Image.asset(
+                                                  'assets/images/ingr/${favoringredient[idx]['ingrName']}.jpg',
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              );
+                                            }).toList())
+                                        : Center(
+                                            child: Text('좋아하는 식재료를 추가해 보세요'))),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

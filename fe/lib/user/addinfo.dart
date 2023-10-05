@@ -1,6 +1,7 @@
 import 'package:fe/main.dart';
 import 'package:fe/store/userstore.dart';
 import 'package:fe/user/pageapi.dart';
+import 'package:fe/user/private_policy.dart';
 import 'package:flutter/material.dart';
 
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -493,13 +494,62 @@ class _AddInfoState extends State<AddInfo> {
                       ]
                     : [],
               ),
+              Padding(
+                  padding: EdgeInsets.all(1),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (context.read<UserStore>().policycheck) {
+                        context.watch<UserStore>().changePolicyCheck();
+                        setState(() {});
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return AlertDialog(
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    context
+                                        .watch<UserStore>()
+                                        .changePolicyCheck();
+                                    setState(() {});
+
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('동의'),
+                                ),
+                              ],
+                              title: Text('<채움> 개인정보 처리 방안'),
+                              content: SizedBox(
+                                height: 300,
+                                child: SingleChildScrollView(
+                                  child: Policycheck(),
+                                ),
+                              ),
+                            );
+                          }),
+                        );
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            value: context.watch<UserStore>().policycheck,
+                            onChanged: null),
+                        Text('개인정보 처리방침에 동의합니다.'),
+                      ],
+                    ),
+                  )),
               SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Flexible(
                       child: TextButton(
-                          onPressed: yearcheck && monthcheck && daycheck
+                          onPressed: yearcheck &&
+                                  monthcheck &&
+                                  daycheck &&
+                                  context.watch<UserStore>().policycheck
                               ? () async {
                                   if (controller2.text.length == 1) {
                                     controller2.text = '0${controller2.text}';
@@ -561,7 +611,8 @@ class _AddInfoState extends State<AddInfo> {
                           style: ButtonStyle(
                               backgroundColor: yearcheck &&
                                       monthcheck &&
-                                      daycheck
+                                      daycheck &&
+                                      context.watch<UserStore>().policycheck
                                   ? MaterialStatePropertyAll(Color(0xffA1CBA1))
                                   : MaterialStatePropertyAll(Colors.grey)),
                           child: SizedBox(
