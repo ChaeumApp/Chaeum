@@ -9,29 +9,10 @@
       "client_info": {
         "mobilesdk_app_id": "1:59382500288:android:c603fc96d495e1bf11d625",
         "android_client_info": {
-          "package_name": "com.example.fe"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDUKDOL9-oQ44GS3MTUYpDlyyf3DXagovU"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:59382500288:android:b35125bfcde523f111d625",
-        "android_client_info": {
           "package_name": "com.thelegendsix.chaeum"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [{ "client_id": "107887093283493484520" }],
       "api_key": [
         {
           "current_key": "AIzaSyDUKDOL9-oQ44GS3MTUYpDlyyf3DXagovU"

@@ -1,10 +1,12 @@
 import 'package:fe/main.dart';
+import 'package:fe/store/userstore.dart';
 import 'package:fe/user/addinfo.dart';
 import 'package:fe/user/signuptimer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:provider/provider.dart';
 
 import 'pageapi.dart';
 
@@ -561,7 +563,10 @@ class _SignUpState extends State<SignUp> {
                                                     .loginWithKakaoTalk();
                                                 final sociallogininfo =
                                                     await pageapi.kakaologin(
-                                                        token.accessToken);
+                                                        token.accessToken,
+                                                        context
+                                                            .read<UserStore>()
+                                                            .deviceToken);
                                                 if (sociallogininfo is Map &&
                                                     sociallogininfo.containsKey(
                                                         'accessToken')) {
@@ -608,7 +613,10 @@ class _SignUpState extends State<SignUp> {
                                                       .loginWithKakaoAccount();
                                                   final sociallogininfo =
                                                       await pageapi.kakaologin(
-                                                          token.accessToken);
+                                                          token.accessToken,
+                                                          context
+                                                              .read<UserStore>()
+                                                              .deviceToken);
                                                   if (sociallogininfo is Map &&
                                                       sociallogininfo
                                                           .containsKey(
@@ -676,7 +684,10 @@ class _SignUpState extends State<SignUp> {
 
                                                 final sociallogininfo =
                                                     await pageapi.kakaologin(
-                                                        token.accessToken);
+                                                        token.accessToken,
+                                                        context
+                                                            .read<UserStore>()
+                                                            .deviceToken);
                                                 if (sociallogininfo is Map &&
                                                     sociallogininfo.containsKey(
                                                         'accessToken')) {
@@ -778,8 +789,11 @@ class _SignUpState extends State<SignUp> {
                                               final token = nlog.accessToken;
 
                                               final sociallogininfo =
-                                                  await pageapi
-                                                      .naverlogin(token);
+                                                  await pageapi.naverlogin(
+                                                      token,
+                                                      context
+                                                          .read<UserStore>()
+                                                          .deviceToken);
 
                                               if (sociallogininfo
                                                   .containsKey('accessToken')) {

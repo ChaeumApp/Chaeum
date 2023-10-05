@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.fe"
+    namespace "com.thelegendsix.chaeum"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

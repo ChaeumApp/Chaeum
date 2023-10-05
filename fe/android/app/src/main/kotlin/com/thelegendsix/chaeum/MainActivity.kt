@@ -1,4 +1,4 @@
-package com.example.fe
+package com.thelegendsix.chaeum
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
