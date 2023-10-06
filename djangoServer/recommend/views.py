@@ -67,16 +67,16 @@ def recommend(request, user_id):
                 # IngredientRecommend 업데이트를 위한 딕셔너리에 추가
                 if group_id not in update_dict:
                     update_dict[group_id] = 0.0
-                update_dict[group_id] += 0.005 * pref_rating * weight
+                update_dict[group_id] += 0.000001 * pref_rating * weight
 
         # 그룹별로 스코어 업데이트
-        for group_id, score_delta in update_dict.items():
+        for group_id, pref_rating in update_dict.items():
             # 해당 그룹에 속하는 모든 재료
             ingredients = IngredientGroup.objects.filter(group_id=group_id)
 
             # 사용자의 재료에 해당하는 recommend_lst 업데이트
             for ingredient in ingredients:
-                recommend_lst[ingredient.ingr_id] += score_delta 
+                recommend_lst[ingredient.ingr_id] += pref_rating
     
     def recommend_month(request, user_id, ingr_num, weight):
         nonlocal recommend_lst
@@ -104,7 +104,7 @@ def recommend(request, user_id):
 
     R = csr_matrix(R)
 
-    model = ALS(iterations=100, regularization=0.005, factors=25)
+    model = ALS(iterations=15, regularization=0.5, factors=25)
     model.fit(R)
     
     recommendations = model.recommend(userid_to_idx[user_id], R[userid_to_idx[user_id]], N=ingr_num, filter_already_liked_items=False)
