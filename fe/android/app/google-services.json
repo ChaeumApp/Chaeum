@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "59382500288",
+    "project_id": "chaeum-2e60e",
+    "storage_bucket": "chaeum-2e60e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:59382500288:android:b35125bfcde523f111d625",
+        "android_client_info": {
+          "package_name": "com.thelegendsix.chaeum"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUKDOL9-oQ44GS3MTUYpDlyyf3DXagovU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
