@@ -6,20 +6,19 @@ import com.tls.recipe.entity.composite.RecipeProc;
 import com.tls.recipe.entity.composite.UserRecipe;
 import com.tls.recipe.entity.composite.UserRecipeLog;
 import com.tls.recipe.entity.single.Recipe;
-import com.tls.recipe.repository.RecipeIngredientRepository;
-import com.tls.recipe.repository.RecipeProcRepository;
-import com.tls.recipe.repository.RecipeRepository;
-import com.tls.recipe.repository.UserRecipeLogRepository;
-import com.tls.recipe.repository.UserRecipeRepository;
+import com.tls.recipe.entity.single.RecipeDesc;
+import com.tls.recipe.repository.*;
 import com.tls.user.entity.User;
 import com.tls.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,6 +31,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeProcRepository recipeProcRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeDescriptionRepository recipeDescriptionRepository;
     private final RecipeSimilarityCalculator recipeSimilarityCalculator = new RecipeSimilarityCalculator();
 
     @Override
@@ -169,11 +169,44 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> similarRecipes(int recipeId) {
         try {
-            Recipe recipe = recipeRepository.findByRecipeId(recipeId).orElseThrow();
-            return recipeSimilarityCalculator.getTop3SimilarRecipes(recipe, recipeRepository.findAll());
+            RecipeDesc recipeDesc = recipeDescriptionRepository.findByRecipeId(recipeId).orElseThrow();
+            return recipeSimilarityCalculator.getTop3SimilarRecipes(recipeDesc, recipeDescriptionRepository.findAll()).stream()
+                    .map(RecipeDesc::getRecipeId)
+                    .map(rId -> recipeRepository.findByRecipeId(rId).orElse(new Recipe())) // 빈 Recipe 객체로 대체
+                    .collect(Collectors.toList());
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    public int makeDescriptions() {
+        try {
+            List<String> recipeIngrList = new ArrayList<>();
+            recipeRepository.findAll().forEach(recipe -> {
+                recipeIngredientRepository.findByRecipeId(recipe).forEach(recipeIngr -> {
+                    if (recipeIngr.getRecipeIngrName().length() != 0) {
+                        recipeIngrList.add(recipeIngr.getRecipeIngrName());
+                    } else {
+
+                    }
+                });
+
+                StringBuilder sb = new StringBuilder();
+                for (String ingr: recipeIngrList) {
+                    sb.append(ingr).append(" ");
+                }
+                recipeDescriptionRepository.save(RecipeDesc.builder()
+                        .recipeId(recipe.getRecipeId())
+                        .recipeDescription(sb.toString())
+                        .build()
+                );
+                recipeIngrList.clear();
+            });
+            return 1;
+        } catch (Exception e) {
+            return -1;
         }
     }
 }

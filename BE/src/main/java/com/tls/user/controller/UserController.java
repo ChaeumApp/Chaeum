@@ -74,11 +74,11 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "네이버 로그인에 성공하면 success, 실패하면 fail을 반환한다.")
     })
-    public ResponseEntity<?> signUpN(@RequestParam(name = "token") String token) {
+    public ResponseEntity<?> signUpN(@RequestParam(name = "token") String token, @RequestParam(name = "notiToken") String notiToken) {
         try {
             UserKakaoVO vo = oAuthService.signUp(token, "naver");
             if (vo.getMsg() != null) {
-                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", notiToken);
                 TokenDto tokenDto = userService.signIn(userSignInVO);
                 if (tokenDto != null) {
                     log.debug("signin 성공");
@@ -101,11 +101,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "카카오 로그인에 성공하면 success를 반환한다."),
             @ApiResponse(responseCode = "406", description = "카카오 로그인 시도 중 오류 발생 시 fail을 반환한다.")
     })
-    public ResponseEntity<?> signUpK(@RequestParam(name = "token") String token) {
+    public ResponseEntity<?> signUpK(@RequestParam(name = "token") String token, @RequestParam(name = "notiToken") String notiToken) {
         try {
             UserKakaoVO vo = oAuthService.signUp(token, "kakao");
             if (vo.getMsg() != null) {
-                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", null);
+                UserSignInVO userSignInVO = new UserSignInVO(vo.getUserEmail(), "", notiToken);
                 TokenDto tokenDto = userService.signIn(userSignInVO);
                 if (tokenDto != null) {
                     log.debug("signin 성공");
