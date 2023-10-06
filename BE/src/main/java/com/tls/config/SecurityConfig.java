@@ -51,7 +51,7 @@ public class SecurityConfig {
             .httpBasic()
             .and()
             .authorizeRequests()
-            .anyRequest().authenticated();
+            .anyRequest().denyAll();
         return http.build();
     }
 
