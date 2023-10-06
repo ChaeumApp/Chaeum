@@ -12,17 +12,17 @@ def start():
     scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
     scheduler.add_jobstore(DjangoJobStore(), 'default')
 
-    # scheduler.add_job(
-    #     main,
-    #     trigger=CronTrigger(hour="00", minute="59"),
-    #     id = "main",
-    #     max_instances=1,
-    #     replace_existing=True
-    # )
+    scheduler.add_job(
+        main,
+        trigger=CronTrigger(hour="3", minute="0"),
+        id = "main",
+        max_instances=1,
+        replace_existing=True
+    )
     
     scheduler.add_job(
         IngredientPriceManager.notify_pricedrop,
-        trigger=CronTrigger(hour="20", minute="41", second="50"),
+        trigger=CronTrigger(hour="7", minute="0"),
         id = "notiPrice",
         max_instances=1,
         replace_existing=True
