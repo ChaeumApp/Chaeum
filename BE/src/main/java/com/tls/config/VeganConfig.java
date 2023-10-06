@@ -85,4 +85,27 @@ public class VeganConfig {
         }
     }
 
+    public int updateVegan(User user, int veganId) {
+        try {
+            for (int ingrId : vegan[veganId]) {
+                if(ingredientPreferenceRepository.findByUserAndIngredient(user,
+                    ingredientRepository.findByIngrId(ingrId).get()).isPresent()){
+                    ingredientPreferenceRepository.findByUserAndIngredient(user,
+                        ingredientRepository.findByIngrId(ingrId).get()).get().updatePrefRating(-50);
+                }else{
+                    IngredientPreference ingredientPreference = IngredientPreference.builder()
+                        .ingredient(ingredientRepository.findByIngrId(ingrId).get())
+                        .prefRating(0)
+                        .user(user)
+                        .build();
+                    ingredientPreferenceRepository.save(ingredientPreference);
+                }
+            }
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
 }

@@ -19,7 +19,7 @@ public interface IngredientPriceRepository extends JpaRepository<IngredientPrice
         "JOIN IngredientPrice pToday ON i.ingrId = pToday.ingrId.ingrId " +
         "JOIN IngredientPrice pYesterday ON i.ingrId = pYesterday.ingrId.ingrId " +
         "WHERE pToday.date = :today AND pYesterday.date = :yesterday AND pToday.price < pYesterday.price " +
-        "ORDER BY pYesterday.price - pToday.price DESC")
+        "ORDER BY (pYesterday.price - pToday.price) * 100.0 / pYesterday.price DESC")
     List<IngredientPriceDropDto> findTop10PriceDrops(LocalDate today, LocalDate yesterday, Pageable pageable);
 
 }

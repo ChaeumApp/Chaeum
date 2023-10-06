@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:fe/detail/detail.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

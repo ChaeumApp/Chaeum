@@ -500,7 +500,7 @@ class _AddInfoState extends State<AddInfo> {
                   child: GestureDetector(
                     onTap: () {
                       if (context.read<UserStore>().policycheck) {
-                        context.watch<UserStore>().changePolicyCheck();
+                        context.read<UserStore>().changePolicyCheck();
                         setState(() {});
                       } else {
                         showDialog(
@@ -511,7 +511,7 @@ class _AddInfoState extends State<AddInfo> {
                                 TextButton(
                                   onPressed: () {
                                     context
-                                        .watch<UserStore>()
+                                        .read<UserStore>()
                                         .changePolicyCheck();
                                     setState(() {});
 
@@ -578,7 +578,7 @@ class _AddInfoState extends State<AddInfo> {
                                     final refreshToken =
                                         loginres['refreshToken'];
                                     context
-                                        .watch<UserStore>()
+                                        .read<UserStore>()
                                         .disposePolicyCheck();
 
                                     await widget.storage.write(
