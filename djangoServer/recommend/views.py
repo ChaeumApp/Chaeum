@@ -94,6 +94,7 @@ def recommend(request, user_id):
 
     # userid를 키로 갖고 idx를 값으로 갖는 dictionary 생성
     userid_to_idx = {value: index for index, value in enumerate(user_ids)}
+    print(userid_to_idx)
 
     # 선호도를 추천 점수로 갖는 초기 R 생성
     ingr_prefs = IngredientPreference.objects.all()
@@ -105,7 +106,8 @@ def recommend(request, user_id):
 
     model = ALS(iterations=100, regularization=0.005, factors=25)
     model.fit(R)
-    recommendations = model.recommend(user_id, R[userid_to_idx[user_id]], N=ingr_num, filter_already_liked_items=False)
+    
+    recommendations = model.recommend(userid_to_idx[user_id], R[userid_to_idx[user_id]], N=ingr_num, filter_already_liked_items=False)
         
     idxs, values = recommendations
     for k in range(ingr_num):
